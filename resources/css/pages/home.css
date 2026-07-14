@@ -1,0 +1,9 @@
+@layer components {
+    .hero-section { @apply relative bg-emerald-50/70; background-image: radial-gradient(circle at 10% 100%, rgb(163 230 53 / .18), transparent 29%), radial-gradient(circle at 85% 25%, rgb(110 231 183 / .24), transparent 25%); }
+    .hero-orb { @apply absolute rounded-full blur-2xl; }
+    .hero-orb-one { @apply -right-12 -top-12 h-44 w-44 bg-lime-300/30; }
+    .hero-orb-two { @apply -bottom-12 -left-10 h-40 w-40 bg-emerald-300/25; }
+    .umkm-sage { @apply bg-emerald-100; }
+    .umkm-cream { @apply bg-amber-100; }
+    .umkm-sky { @apply bg-sky-100; }
+}

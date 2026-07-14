@@ -1,0 +1,15 @@
+@layer components {
+    .container-page { @apply mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-10; }
+    .font-display { font-family: var(--font-display); }
+    .eyebrow { @apply text-xs font-bold uppercase tracking-[.18em]; }
+    .section-title { @apply mt-3 font-display text-3xl font-bold leading-tight text-slate-900 sm:text-4xl; }
+    .btn-primary { @apply inline-flex items-center gap-2 rounded-xl bg-emerald-700 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-900/15 transition hover:-translate-y-0.5 hover:bg-emerald-800; }
+    .btn-light { @apply inline-flex items-center gap-2 rounded-xl bg-lime-300 px-5 py-3 text-sm font-bold text-emerald-950 transition hover:-translate-y-0.5 hover:bg-lime-200; }
+    .btn-soft { @apply inline-flex items-center gap-2 rounded-xl bg-emerald-50 px-5 py-3 text-sm font-bold text-emerald-800 ring-1 ring-emerald-100 transition hover:-translate-y-0.5 hover:bg-emerald-100; }
+    .link-arrow { @apply text-sm font-bold text-emerald-700 transition hover:text-emerald-900; }
+    .service-card { @apply flex min-h-64 flex-col rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-900/5 transition hover:-translate-y-1 hover:shadow-lg; }
+    .service-card h3 { @apply mt-5 font-display text-xl font-bold text-slate-900; }
+    .service-card p { @apply mt-2 text-sm leading-6 text-slate-500; }
+    .umkm-cover { @apply grid h-40 place-items-center; }
+    .umkm-cover span { @apply grid h-20 w-20 place-items-center rounded-full bg-white/70 text-4xl shadow-sm; }
+}
