@@ -29,28 +29,17 @@
             </div>
         </aside>
 
-        <aside class="fixed inset-y-0 left-0 z-40 hidden w-72 flex-col border-r border-slate-200/80 bg-white px-5 py-7 lg:flex" aria-label="Sidebar navigasi">
-            <a href="{{ route('home') }}" class="flex items-center gap-3 px-2">
-                <span class="grid h-11 w-11 place-items-center rounded-2xl bg-emerald-700 text-sm font-black text-white">DS</span>
-                <span><span class="block text-[10px] font-bold uppercase tracking-[.16em] text-emerald-700">Website Resmi</span><span class="font-display text-xl font-bold text-slate-900">Desa Sambo</span></span>
-            </a>
-            <p class="mt-10 px-3 text-[10px] font-bold uppercase tracking-[.16em] text-slate-400">Menu utama</p>
-            <nav class="mt-3 space-y-1">
-                @foreach ($navigation as $item)
-                    <a href="{{ $item['url'] }}" class="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold {{ request()->routeIs($item['route']) ? 'bg-emerald-50 text-emerald-800' : 'text-slate-600 hover:bg-slate-50 hover:text-emerald-800' }}"><span class="grid h-6 w-6 place-items-center rounded-md {{ request()->routeIs($item['route']) ? 'bg-emerald-100' : 'bg-slate-100' }} text-[11px">{{ $item['icon'] }}</span>{{ $item['label'] }}</a>
-                @endforeach
-            </nav>
-            <div class="mt-auto rounded-2xl bg-emerald-50 p-5 ring-1 ring-emerald-100"><p class="text-xs font-bold uppercase tracking-wider text-emerald-700">Pelayanan</p><p class="mt-2 text-sm font-bold text-slate-800">Butuh bantuan administrasi?</p><a href="{{ route('layanan') }}" class="mt-4 inline-flex text-sm font-bold text-emerald-700">Akses layanan →</a></div>
-        </aside>
-
-        <div class="lg:pl-72">
         <header class="relative z-30 border-b border-slate-200/80 bg-white/90 backdrop-blur">
             <div class="container-page flex h-20 items-center justify-between gap-4">
-                <a href="{{ route('home') }}" class="flex items-center gap-3 lg:hidden" aria-label="Beranda Desa Sambo">
+                <a href="{{ route('home') }}" class="flex items-center gap-3" aria-label="Beranda Desa Sambo">
                     <span class="grid h-11 w-11 place-items-center rounded-2xl bg-emerald-700 text-sm font-black text-white shadow-lg shadow-emerald-900/15">DS</span>
                     <span><span class="block text-[10px] font-bold uppercase tracking-[.18em] text-emerald-700">Website Resmi</span><span class="font-display text-xl font-bold text-slate-900">Desa Sambo</span></span>
                 </a>
-                <p class="hidden text-sm font-medium text-slate-500 lg:block">Portal informasi &amp; pelayanan masyarakat</p>
+                <nav class="hidden items-center gap-1 lg:flex" aria-label="Navigasi utama">
+                    @foreach ($navigation as $item)
+                        <a href="{{ $item['url'] }}" class="rounded-lg px-3 py-2 text-sm font-semibold {{ request()->routeIs($item['route']) ? 'bg-emerald-50 text-emerald-800' : 'text-slate-600 hover:text-emerald-700' }}">{{ $item['label'] }}</a>
+                    @endforeach
+                </nav>
                 <a href="{{ route('layanan') }}" class="btn-primary hidden sm:inline-flex">Layanan Online <span aria-hidden="true">→</span></a>
                 <button type="button" class="rounded-xl border border-slate-200 p-2.5 text-slate-700 lg:hidden" data-sidebar-open aria-label="Buka menu"><span class="block text-xl leading-none">☰</span></button>
             </div>
@@ -71,6 +60,5 @@
             </div>
             <div class="border-t border-white/10"><div class="container-page py-5 text-xs text-slate-500">© {{ date('Y') }} Pemerintah Desa Sambo. Dibangun untuk pelayanan masyarakat.</div></div>
         </footer>
-        </div>
     </body>
 </html>

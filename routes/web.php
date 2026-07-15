@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminAuthController;
 use Illuminate\Support\Facades\Route;
 
 $navigation = [
@@ -46,3 +47,42 @@ foreach ([
         'navigation' => $navigation,
     ])->name($page['name']);
 }
+
+$adminNavigation = [
+    ['label' => 'Dashboard', 'route' => 'admin.dashboard', 'url' => '/admin', 'icon' => 'D'],
+    ['label' => 'Kelola Berita', 'route' => 'admin.berita.*', 'url' => '/admin/berita', 'icon' => 'B'],
+    ['label' => 'Kelola UMKM', 'route' => 'admin.umkm.*', 'url' => '/admin/umkm', 'icon' => 'U'],
+    ['label' => 'Layanan Masuk', 'route' => 'admin.layanan.*', 'url' => '/admin/layanan', 'icon' => 'L'],
+];
+
+Route::middleware('guest')->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/login', [AdminAuthController::class, 'create'])->name('login');
+    Route::post('/login', [AdminAuthController::class, 'store'])->name('login.store');
+});
+
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () use ($adminNavigation) {
+    Route::get('/', function () use ($adminNavigation) {
+        return view('admin.dashboard', [
+            'title' => 'Dashboard Operator | Desa Sambo', 'heading' => 'Dashboard', 'adminNavigation' => $adminNavigation,
+            'stats' => [
+                ['label' => 'Berita dipublikasikan', 'value' => '0', 'note' => 'Siap dikelola'],
+                ['label' => 'UMKM terdaftar', 'value' => '0', 'note' => 'Siap ditambahkan'],
+                ['label' => 'Layanan masuk', 'value' => '0', 'note' => 'Belum ada pengajuan'],
+                ['label' => 'Pengunjung hari ini', 'value' => '-', 'note' => 'Integrasi analitik nanti'],
+            ],
+            'activities' => [
+                ['icon' => 'B', 'text' => 'Modul berita siap untuk dibuatkan CRUD.', 'time' => 'Template awal'],
+                ['icon' => 'U', 'text' => 'Etalase UMKM siap menerima data produk.', 'time' => 'Template awal'],
+                ['icon' => 'L', 'text' => 'Pengajuan layanan akan tampil di sini.', 'time' => 'Template awal'],
+            ],
+        ]);
+    })->name('dashboard');
+
+    foreach (['berita' => ['resource' => 'Berita Desa', 'singular' => 'berita'], 'umkm' => ['resource' => 'UMKM Desa', 'singular' => 'UMKM'], 'layanan' => ['resource' => 'Pengajuan Layanan', 'singular' => 'pengajuan']] as $slug => $resource) {
+        Route::get('/'.$slug, function () use ($adminNavigation, $resource) {
+            return view('admin.resource-index', ['title' => $resource['resource'].' | Operator Desa Sambo', 'heading' => $resource['resource'], 'resource' => $resource['resource'], 'singular' => $resource['singular'], 'adminNavigation' => $adminNavigation]);
+        })->name($slug.'.index');
+    }
+
+    Route::post('/logout', [AdminAuthController::class, 'destroy'])->name('logout');
+});

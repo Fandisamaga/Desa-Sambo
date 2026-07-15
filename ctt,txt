@@ -1,0 +1,17 @@
+Desain sudah diperbarui menjadi lebih clean: dominan putih, sage, emerald lembut, dan aksen lime seperlunya.
+Perubahan utama:
+Sidebar desktop permanen dengan menu Beranda, Profil, Berita, UMKM, KKN, dan Layanan.
+Sidebar mobile tetap tersedia melalui tombol menu.
+Hero beranda dibuat lebih terang dan minimal.
+Fitur UMKM ditambahkan:Menu dan route /umkm
+Etalase UMKM di beranda
+Contoh kategori kuliner, kerajinan, dan pertanian
+
+Komponen layanan masyarakat tetap tersedia dan tampak lebih rapi.
+Route dan Blade telah tervalidasi.
+File penting:
+[Layout sidebar dan navigasi](D:\\DesaSambo\\resources\\views\\layouts\\public.blade.php)
+[Beranda dengan UMKM](D:\\DesaSambo\\resources\\views\\pages\\home.blade.php)
+[Style halaman beranda](D:\\DesaSambo\\resources\\css\\pages\\home.css)
+[Komponen tombol dan kartu](D:\\DesaSambo\\resources\\css\\components.css)
+[Konfigurasi menu, UMKM, dan route](D:\\DesaSambo\\routes\\web.php)
