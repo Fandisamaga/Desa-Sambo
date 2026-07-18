@@ -1,6 +1,12 @@
 <?php
 
 use App\Http\Controllers\AdminAuthController;
+use App\Http\Controllers\ApbdesController;
+use App\Http\Controllers\ArsipSuratController;
+use App\Http\Controllers\KategoriSuratController;
+use App\Http\Controllers\BeritaController;
+use App\Http\Controllers\KategoriBeritaController;
+use App\Http\Controllers\ProdukUmkmController;
 use Illuminate\Support\Facades\Route;
 
 $navigation = [
@@ -54,6 +60,13 @@ $adminNavigation = [
     ['label' => 'Kelola UMKM', 'route' => 'admin.umkm.*', 'url' => '/admin/umkm', 'icon' => 'U'],
     ['label' => 'Layanan Masuk', 'route' => 'admin.layanan.*', 'url' => '/admin/layanan', 'icon' => 'L'],
 ];
+
+Route::resource('kategori-surat', KategoriSuratController::class);
+Route::resource('arsip-surat', ArsipSuratController::class);
+Route::resource('apbdes', ApbdesController::class);
+Route::resource('produk-umkm', ProdukUmkmController::class);
+Route::resource('berita', BeritaController::class);
+Route::resource('kategori-berita', KategoriBeritaController::class);
 
 Route::middleware('guest')->prefix('admin')->name('admin.')->group(function () {
     Route::get('/login', [AdminAuthController::class, 'create'])->name('login');
