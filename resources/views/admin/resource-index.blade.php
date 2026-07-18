@@ -1,19 +1,30 @@
 @extends('layouts.admin')
 
+@php
+    $resources = [
+        'admin.berita.index' => ['resource' => 'Berita Desa', 'singular' => 'berita'],
+        'admin.umkm.index' => ['resource' => 'UMKM Desa', 'singular' => 'UMKM'],
+        'admin.layanan.index' => ['resource' => 'Pengajuan Layanan', 'singular' => 'pengajuan'],
+    ];
+    $currentResource = $resources[request()->route()->getName()] ?? ['resource' => 'Data Desa', 'singular' => 'data'];
+@endphp
+
+@section('title', $currentResource['resource'] . ' | Operator Desa Sambo')
+
 @section('content')
     <section class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
         {{-- Header Bagian --}}
         <div class="flex flex-wrap items-center justify-between gap-4">
             <div>
                 <h2 class="font-display text-2xl font-bold text-slate-900">
-                    {{ $resource }}
+                    {{ $currentResource['resource'] }}
                 </h2>
                 <p class="mt-1 text-sm text-slate-500">
                     Template daftar data untuk proses CRUD.
                 </p>
             </div>
             <button type="button" class="btn-primary">
-                + Tambah {{ $singular }}
+                + Tambah {{ $currentResource['singular'] }}
             </button>
         </div>
 
