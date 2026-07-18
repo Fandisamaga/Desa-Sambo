@@ -107,7 +107,7 @@
                 <h2 class="section-title">Sekilas data Desa Sambo</h2>
                 <p class="mt-3 max-w-xl text-slate-600">Visualisasi singkat tentang layanan, partisipasi warga, dan keberlanjutan desa.</p>
             </div>
-            <a href="{{ route('profil') }}" class="link-arrow">Lihat profil desa →</a>
+            <a href="{{ route('infografis') }}" class="link-arrow">Lihat info grafis →</a>
         </div>
 
         <div class="mt-9 grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
