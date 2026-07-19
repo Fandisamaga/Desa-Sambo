@@ -7,6 +7,37 @@ use Illuminate\Http\Request;
 
 class KeluargaController extends Controller
 {
+    private function resource(): array
+    {
+        return [
+            'title' => 'Kartu Keluarga',
+            'singular' => 'kartu keluarga',
+            'route' => 'admin.kartu-keluarga',
+            'description' => 'Kelola data kartu keluarga penduduk desa.',
+        ];
+    }
+
+    private function columns(): array
+    {
+        return [
+            ['label' => 'Nomor KK', 'key' => 'no_kk', 'secondary' => 'alamat'],
+            ['label' => 'Dusun', 'key' => 'dusun'],
+            ['label' => 'RT', 'key' => 'rt'],
+            ['label' => 'RW', 'key' => 'rw'],
+        ];
+    }
+
+    private function fields(): array
+    {
+        return [
+            ['name' => 'no_kk', 'label' => 'Nomor KK', 'type' => 'text', 'required' => true],
+            ['name' => 'dusun', 'label' => 'Dusun', 'type' => 'text', 'required' => true],
+            ['name' => 'rt', 'label' => 'RT', 'type' => 'text'],
+            ['name' => 'rw', 'label' => 'RW', 'type' => 'text', 'required' => true],
+            ['name' => 'alamat', 'label' => 'Alamat', 'type' => 'textarea', 'rows' => 5, 'required' => true],
+        ];
+    }
+
     /**
      * Menampilkan seluruh data KK.
      */
@@ -14,7 +45,11 @@ class KeluargaController extends Controller
     {
         $data = KartuKeluarga::latest()->paginate(10);
 
-        return view('kartu-keluarga.index', compact('data'));
+        return view('admin.resources.index', [
+            'resource' => $this->resource(),
+            'items' => $data,
+            'columns' => $this->columns(),
+        ]);
     }
 
     /**
@@ -22,7 +57,10 @@ class KeluargaController extends Controller
      */
     public function create()
     {
-        return view('kartu-keluarga.create');
+        return view('admin.resources.form', [
+            'resource' => $this->resource(),
+            'fields' => $this->fields(),
+        ]);
     }
 
     /**
@@ -41,7 +79,7 @@ class KeluargaController extends Controller
         KartuKeluarga::create($validated);
 
         return redirect()
-            ->route('kartu-keluarga.index')
+            ->route('admin.kartu-keluarga.index')
             ->with('success', 'Data KK berhasil ditambahkan.');
     }
 
@@ -50,7 +88,11 @@ class KeluargaController extends Controller
      */
     public function show(KartuKeluarga $kartuKeluarga)
     {
-        return view('kartu-keluarga.show', compact('kartuKeluarga'));
+        return view('admin.resources.show', [
+            'resource' => $this->resource(),
+            'item' => $kartuKeluarga,
+            'fields' => $this->fields(),
+        ]);
     }
 
     /**
@@ -58,7 +100,11 @@ class KeluargaController extends Controller
      */
     public function edit(KartuKeluarga $kartuKeluarga)
     {
-        return view('kartu-keluarga.edit', compact('kartuKeluarga'));
+        return view('admin.resources.form', [
+            'resource' => $this->resource(),
+            'fields' => $this->fields(),
+            'item' => $kartuKeluarga,
+        ]);
     }
 
     /**
@@ -77,7 +123,7 @@ class KeluargaController extends Controller
         $kartuKeluarga->update($validated);
 
         return redirect()
-            ->route('kartu-keluarga.index')
+            ->route('admin.kartu-keluarga.index')
             ->with('success', 'Data KK berhasil diperbarui.');
     }
 
@@ -89,7 +135,7 @@ class KeluargaController extends Controller
         $kartuKeluarga->delete();
 
         return redirect()
-            ->route('kartu-keluarga.index')
+            ->route('admin.kartu-keluarga.index')
             ->with('success', 'Data KK berhasil dihapus.');
     }
 }

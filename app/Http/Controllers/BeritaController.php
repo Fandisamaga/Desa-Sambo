@@ -10,6 +10,36 @@ use Illuminate\Support\Str;
 
 class BeritaController extends Controller
 {
+    private function resource(): array
+    {
+        return [
+            'title' => 'Berita Desa',
+            'singular' => 'berita',
+            'route' => 'admin.berita',
+            'description' => 'Kelola publikasi berita untuk website desa.',
+        ];
+    }
+
+    private function columns(): array
+    {
+        return [
+            ['label' => 'Judul', 'key' => 'judul', 'secondary' => 'kategori.nama_kategori'],
+            ['label' => 'Status', 'key' => 'status', 'type' => 'badge'],
+            ['label' => 'Dibuat', 'key' => 'created_at', 'type' => 'date'],
+        ];
+    }
+
+    private function fields($kategori): array
+    {
+        return [
+            ['name' => 'kategori_berita_id', 'label' => 'Kategori', 'type' => 'select', 'options' => $kategori->pluck('nama_kategori', 'id')->toArray(), 'required' => true],
+            ['name' => 'judul', 'label' => 'Judul', 'type' => 'text', 'required' => true],
+            ['name' => 'status', 'label' => 'Status', 'type' => 'select', 'options' => ['draft' => 'Draft', 'publish' => 'Publish'], 'required' => true, 'default' => 'draft'],
+            ['name' => 'thumbnail', 'label' => 'Thumbnail', 'type' => 'file', 'accept' => 'image/*', 'current_path' => 'thumbnail_path'],
+            ['name' => 'konten', 'label' => 'Konten', 'type' => 'textarea', 'rows' => 10, 'required' => true],
+        ];
+    }
+
     /**
      * Menampilkan daftar berita
      */
@@ -19,7 +49,11 @@ class BeritaController extends Controller
             ->latest()
             ->paginate(10);
 
-        return view('berita.index', compact('berita'));
+        return view('admin.resources.index', [
+            'resource' => $this->resource(),
+            'items' => $berita,
+            'columns' => $this->columns(),
+        ]);
     }
 
     /**
@@ -29,7 +63,10 @@ class BeritaController extends Controller
     {
         $kategori = KategoriBerita::orderBy('nama_kategori')->get();
 
-        return view('berita.create', compact('kategori'));
+        return view('admin.resources.form', [
+            'resource' => $this->resource(),
+            'fields' => $this->fields($kategori),
+        ]);
     }
 
     /**
@@ -56,10 +93,12 @@ class BeritaController extends Controller
                 ->store('berita', 'public');
         }
 
+        unset($validated['thumbnail']);
+
         Berita::create($validated);
 
         return redirect()
-            ->route('berita.index')
+            ->route('admin.berita.index')
             ->with('success', 'Berita berhasil ditambahkan.');
     }
 
@@ -70,7 +109,13 @@ class BeritaController extends Controller
     {
         $berita->load('kategori');
 
-        return view('berita.show', compact('berita'));
+        $kategori = KategoriBerita::orderBy('nama_kategori')->get();
+
+        return view('admin.resources.show', [
+            'resource' => $this->resource(),
+            'item' => $berita,
+            'fields' => $this->fields($kategori),
+        ]);
     }
 
     /**
@@ -80,7 +125,11 @@ class BeritaController extends Controller
     {
         $kategori = KategoriBerita::orderBy('nama_kategori')->get();
 
-        return view('berita.edit', compact('berita', 'kategori'));
+        return view('admin.resources.form', [
+            'resource' => $this->resource(),
+            'fields' => $this->fields($kategori),
+            'item' => $berita,
+        ]);
     }
     /**
      * Update berita
@@ -121,10 +170,12 @@ class BeritaController extends Controller
                 ->store('berita', 'public');
         }
 
+        unset($validated['thumbnail']);
+
         $berita->update($validated);
 
         return redirect()
-            ->route('berita.index')
+            ->route('admin.berita.index')
             ->with('success', 'Berita berhasil diperbarui.');
     }
     
@@ -143,7 +194,7 @@ class BeritaController extends Controller
         $berita->delete();
 
         return redirect()
-            ->route('berita.index')
+            ->route('admin.berita.index')
             ->with('success', 'Berita berhasil dihapus.');
     }
 }

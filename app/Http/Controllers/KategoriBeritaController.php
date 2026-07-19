@@ -8,6 +8,31 @@ use Illuminate\Support\Str;
 
 class KategoriBeritaController extends Controller
 {
+    private function resource(): array
+    {
+        return [
+            'title' => 'Kategori Berita',
+            'singular' => 'kategori',
+            'route' => 'admin.kategori-berita',
+            'description' => 'Kelola kategori untuk pengelompokan berita.',
+        ];
+    }
+
+    private function columns(): array
+    {
+        return [
+            ['label' => 'Kategori', 'key' => 'nama_kategori', 'secondary' => 'slug'],
+            ['label' => 'Dibuat', 'key' => 'created_at', 'type' => 'date'],
+        ];
+    }
+
+    private function fields(): array
+    {
+        return [
+            ['name' => 'nama_kategori', 'label' => 'Nama kategori', 'type' => 'text', 'required' => true],
+        ];
+    }
+
     /**
      * Menampilkan seluruh kategori berita.
      */
@@ -15,7 +40,11 @@ class KategoriBeritaController extends Controller
     {
         $kategori = KategoriBerita::latest()->paginate(10);
 
-        return view('kategori-berita.index', compact('kategori'));
+        return view('admin.resources.index', [
+            'resource' => $this->resource(),
+            'items' => $kategori,
+            'columns' => $this->columns(),
+        ]);
     }
 
     /**
@@ -23,7 +52,10 @@ class KategoriBeritaController extends Controller
      */
     public function create()
     {
-        return view('kategori-berita.create');
+        return view('admin.resources.form', [
+            'resource' => $this->resource(),
+            'fields' => $this->fields(),
+        ]);
     }
 
     /**
@@ -41,7 +73,7 @@ class KategoriBeritaController extends Controller
         ]);
 
         return redirect()
-            ->route('kategori-berita.index')
+            ->route('admin.kategori-berita.index')
             ->with('success', 'Kategori berhasil ditambahkan.');
     }
 
@@ -50,7 +82,14 @@ class KategoriBeritaController extends Controller
      */
     public function show(KategoriBerita $kategoriBerita)
     {
-        return view('kategori-berita.show', compact('kategoriBerita'));
+        return view('admin.resources.show', [
+            'resource' => $this->resource(),
+            'item' => $kategoriBerita,
+            'fields' => [
+                ['name' => 'nama_kategori', 'label' => 'Nama kategori', 'type' => 'text'],
+                ['name' => 'slug', 'label' => 'Slug', 'type' => 'text'],
+            ],
+        ]);
     }
 
     /**
@@ -58,7 +97,11 @@ class KategoriBeritaController extends Controller
      */
     public function edit(KategoriBerita $kategoriBerita)
     {
-        return view('kategori-berita.edit', compact('kategoriBerita'));
+        return view('admin.resources.form', [
+            'resource' => $this->resource(),
+            'fields' => $this->fields(),
+            'item' => $kategoriBerita,
+        ]);
     }
 
     /**
@@ -76,7 +119,7 @@ class KategoriBeritaController extends Controller
         ]);
 
         return redirect()
-            ->route('kategori-berita.index')
+            ->route('admin.kategori-berita.index')
             ->with('success', 'Kategori berhasil diperbarui.');
     }
 
@@ -88,7 +131,7 @@ class KategoriBeritaController extends Controller
         $kategoriBerita->delete();
 
         return redirect()
-            ->route('kategori-berita.index')
+            ->route('admin.kategori-berita.index')
             ->with('success', 'Kategori berhasil dihapus.');
     }
 }
