@@ -1,5 +1,22 @@
 @extends('layouts.public')
 
+@php
+    $pages = [
+        'profil' => 'Profil Desa',
+        'infografis' => 'Info Grafis Desa',
+        'berita' => 'Berita Desa',
+        'umkm' => 'UMKM Desa Sambo',
+        'kkn' => 'Program KKN',
+        'layanan' => 'Layanan Masyarakat',
+        'layanan.domisili' => 'Surat Keterangan Domisili',
+        'layanan.pengantar' => 'Surat Pengantar KK/KTP',
+        'layanan.pengaduan' => 'Pengaduan Masyarakat',
+    ];
+    $heading = $pages[request()->route()->getName()] ?? 'Desa Sambo';
+@endphp
+
+@section('title', $heading . ' | Desa Sambo')
+
 @section('content')
     <section class="container-page py-20 lg:py-28">
         <p class="eyebrow text-emerald-700">Desa Sambo</p>

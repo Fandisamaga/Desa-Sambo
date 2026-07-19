@@ -1,6 +1,22 @@
 @extends('layouts.admin')
 
+@section('title', 'Dashboard Operator | Desa Sambo')
+
 @section('content')
+    @php
+        $stats = [
+            ['label' => 'Berita dipublikasikan', 'value' => '0', 'note' => 'Siap dikelola'],
+            ['label' => 'UMKM terdaftar', 'value' => '0', 'note' => 'Siap ditambahkan'],
+            ['label' => 'Layanan masuk', 'value' => '0', 'note' => 'Belum ada pengajuan'],
+            ['label' => 'Pengunjung hari ini', 'value' => '-', 'note' => 'Integrasi analitik nanti'],
+        ];
+
+        $activities = [
+            ['icon' => 'B', 'text' => 'Modul berita siap untuk dibuatkan CRUD.', 'time' => 'Template awal'],
+            ['icon' => 'U', 'text' => 'Etalase UMKM siap menerima data produk.', 'time' => 'Template awal'],
+            ['icon' => 'L', 'text' => 'Pengajuan layanan akan tampil di sini.', 'time' => 'Template awal'],
+        ];
+    @endphp
     <div class="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
         @foreach ($stats as $stat)
             <article class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">

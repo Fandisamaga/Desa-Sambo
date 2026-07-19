@@ -1,7 +1,15 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>{{ $title ?? 'Admin Desa Sambo' }}</title>@vite(['resources/css/app.css', 'resources/js/app.js'])</head>
+    <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>@yield('title', 'Admin Desa Sambo')</title>@vite(['resources/css/app.css', 'resources/js/app.js'])</head>
     <body class="bg-slate-50 text-slate-800 antialiased">
+        @php
+            $adminNavigation = [
+                ['label' => 'Dashboard', 'route' => 'admin.dashboard', 'url' => '/admin', 'icon' => 'D'],
+                ['label' => 'Kelola Berita', 'route' => 'admin.berita.*', 'url' => '/admin/berita', 'icon' => 'B'],
+                ['label' => 'Kelola UMKM', 'route' => 'admin.umkm.*', 'url' => '/admin/umkm', 'icon' => 'U'],
+                ['label' => 'Layanan Masuk', 'route' => 'admin.layanan.*', 'url' => '/admin/layanan', 'icon' => 'L'],
+            ];
+        @endphp
         <aside class="fixed inset-y-0 left-0 hidden w-72 flex-col border-r border-slate-200 bg-white px-5 py-7 lg:flex">
             <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 px-2"><span class="grid h-11 w-11 place-items-center rounded-2xl bg-emerald-700 text-sm font-black text-white">DS</span><span><span class="block text-[10px] font-bold uppercase tracking-[.16em] text-emerald-700">Operator</span><span class="font-display text-xl font-bold text-slate-900">Desa Sambo</span></span></a>
             <p class="mt-10 px-3 text-[10px] font-bold uppercase tracking-[.16em] text-slate-400">Monitoring &amp; kelola</p>

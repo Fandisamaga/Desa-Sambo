@@ -4,10 +4,31 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#0f5d45">
-        <title>{{ $title ?? 'Desa Sambo' }}</title>
+        <title>@yield('title', 'Desa Sambo')</title>
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="bg-stone-50 text-slate-800 antialiased">
+        @php
+            $navigation = [
+                ['label' => 'Beranda', 'route' => 'home', 'url' => '/', 'icon' => 'home'],
+                ['label' => 'Profil Desa', 'route' => 'profil', 'url' => '/profil-desa', 'icon' => 'profile'],
+                ['label' => 'Berita', 'route' => 'berita', 'url' => '/berita', 'icon' => 'news'],
+                ['label' => 'Info Grafis', 'route' => 'infografis', 'url' => '/info-grafis', 'icon' => 'chart'],
+                ['label' => 'UMKM Desa', 'route' => 'umkm', 'url' => '/umkm', 'icon' => 'business'],
+                ['label' => 'Program KKN', 'route' => 'kkn', 'url' => '/program-kkn', 'icon' => 'program'],
+                [
+                    'label' => 'Layanan',
+                    'route' => 'layanan*',
+                    'url' => '/layanan',
+                    'icon' => 'service',
+                    'children' => [
+                        ['label' => 'Surat Keterangan Domisili', 'route' => 'layanan.domisili', 'url' => '/layanan/surat-keterangan-domisili'],
+                        ['label' => 'Surat Pengantar KK/KTP', 'route' => 'layanan.pengantar', 'url' => '/layanan/surat-pengantar-kk-ktp'],
+                        ['label' => 'Pengaduan Masyarakat', 'route' => 'layanan.pengaduan', 'url' => '/layanan/pengaduan-masyarakat'],
+                    ],
+                ],
+            ];
+        @endphp
         <div id="sidebar-overlay" class="fixed inset-0 z-40 hidden bg-slate-950/45 lg:hidden"></div>
         <aside id="mobile-sidebar" class="fixed inset-y-0 left-0 z-50 flex w-80 -translate-x-full flex-col bg-white px-6 py-6 shadow-2xl transition-transform duration-300 lg:hidden" aria-label="Navigasi utama">
             <div class="flex items-center justify-between">
@@ -19,7 +40,18 @@
             </div>
             <nav class="mt-10 space-y-1">
                 @foreach ($navigation as $item)
-                    <a href="{{ $item['url'] }}" class="block rounded-xl px-4 py-3 text-sm font-semibold {{ request()->routeIs($item['route']) ? 'bg-emerald-50 text-emerald-800' : 'text-slate-600 hover:bg-slate-50' }}">{{ $item['label'] }}</a>
+                    @if (isset($item['children']))
+                        <details class="group rounded-xl {{ request()->routeIs($item['route']) ? 'bg-emerald-50 text-emerald-800' : 'text-slate-600' }}">
+                            <summary class="flex cursor-pointer list-none items-center justify-between px-4 py-3 text-sm font-semibold hover:bg-slate-50"><span>{{ $item['label'] }}</span><span class="text-xs transition group-open:rotate-180">⌄</span></summary>
+                            <div class="space-y-1 px-4 pb-3">
+                                @foreach ($item['children'] as $child)
+                                    <a href="{{ $child['url'] }}" class="block rounded-lg px-3 py-2 text-sm {{ request()->routeIs($child['route']) ? 'bg-white font-semibold text-emerald-800' : 'hover:bg-white/70' }}">{{ $child['label'] }}</a>
+                                @endforeach
+                            </div>
+                        </details>
+                    @else
+                        <a href="{{ $item['url'] }}" class="block rounded-xl px-4 py-3 text-sm font-semibold {{ request()->routeIs($item['route']) ? 'bg-emerald-50 text-emerald-800' : 'text-slate-600 hover:bg-slate-50' }}">{{ $item['label'] }}</a>
+                    @endif
                 @endforeach
             </nav>
             <div class="mt-auto rounded-2xl bg-emerald-800 p-5 text-emerald-50">
@@ -36,9 +68,20 @@
                     <span><span class="block text-[10px] font-bold uppercase tracking-[.18em] text-emerald-700">Website Resmi</span><span class="font-display text-xl font-bold text-slate-900">Desa Sambo</span></span>
                 </a>
                 <nav class="hidden items-center gap-1 lg:flex" aria-label="Navigasi utama">
-                    @foreach ($navigation as $item)
+                @foreach ($navigation as $item)
+                    @if (isset($item['children']))
+                        <details class="group relative">
+                            <summary class="flex cursor-pointer list-none items-center gap-1 rounded-lg px-3 py-2 text-sm font-semibold {{ request()->routeIs($item['route']) ? 'bg-emerald-50 text-emerald-800' : 'text-slate-600 hover:text-emerald-700' }}"><span>{{ $item['label'] }}</span><span class="text-xs transition group-open:rotate-180">⌄</span></summary>
+                            <div class="absolute right-0 top-full z-50 mt-2 w-64 rounded-xl border border-slate-200 bg-white p-2 shadow-lg">
+                                @foreach ($item['children'] as $child)
+                                    <a href="{{ $child['url'] }}" class="block rounded-lg px-3 py-2.5 text-sm {{ request()->routeIs($child['route']) ? 'bg-emerald-50 font-semibold text-emerald-800' : 'text-slate-600 hover:bg-slate-50 hover:text-emerald-700' }}">{{ $child['label'] }}</a>
+                                @endforeach
+                            </div>
+                        </details>
+                    @else
                         <a href="{{ $item['url'] }}" class="rounded-lg px-3 py-2 text-sm font-semibold {{ request()->routeIs($item['route']) ? 'bg-emerald-50 text-emerald-800' : 'text-slate-600 hover:text-emerald-700' }}">{{ $item['label'] }}</a>
-                    @endforeach
+                    @endif
+                @endforeach
                 </nav>
                 <a href="{{ route('layanan') }}" class="btn-primary hidden sm:inline-flex">Layanan Online <span aria-hidden="true">→</span></a>
                 <button type="button" class="rounded-xl border border-slate-200 p-2.5 text-slate-700 lg:hidden" data-sidebar-open aria-label="Buka menu"><span class="block text-xl leading-none">☰</span></button>

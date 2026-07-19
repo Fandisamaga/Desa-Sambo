@@ -1,6 +1,27 @@
 @extends('layouts.public')
 
+@section('title', 'Desa Sambo | Website Resmi')
+
 @section('content')
+    @php
+        $services = [
+            ['icon' => '📝', 'title' => 'Surat Pengantar', 'description' => 'Ajukan surat pengantar dari rumah.'],
+            ['icon' => '👨‍👩‍👧', 'title' => 'Data Kependudukan', 'description' => 'Informasi dan pembaruan data warga.'],
+            ['icon' => '📣', 'title' => 'Aspirasi Warga', 'description' => 'Sampaikan saran dan laporan Anda.'],
+            ['icon' => '📅', 'title' => 'Jadwal Kegiatan', 'description' => 'Agenda desa dan kegiatan masyarakat.'],
+        ];
+
+        $news = [
+            ['category' => 'Kegiatan Desa', 'title' => 'Musyawarah warga untuk program 2026', 'excerpt' => 'Warga dan perangkat desa menyusun prioritas pembangunan bersama.', 'date' => '12 Juli 2026'],
+            ['category' => 'KKN', 'title' => 'Mahasiswa KKN mulai program literasi digital', 'excerpt' => 'Pelatihan praktis untuk mendampingi warga menggunakan layanan digital.', 'date' => '8 Juli 2026'],
+        ];
+
+        $umkm = [
+            ['icon' => '🍪', 'name' => 'Dapur Sambo', 'category' => 'Kuliner', 'owner' => 'Aneka kue & camilan rumahan', 'color' => 'umkm-cream'],
+            ['icon' => '🧺', 'name' => 'Anyam Lestari', 'category' => 'Kerajinan', 'owner' => 'Anyaman khas karya warga', 'color' => 'umkm-sage'],
+            ['icon' => '🌿', 'name' => 'Kebun Hijau', 'category' => 'Pertanian', 'owner' => 'Sayur segar hasil kebun lokal', 'color' => 'umkm-sky'],
+        ];
+    @endphp
     <section class="hero-section overflow-hidden">
         <div class="container-page relative grid items-center gap-12 py-16 lg:grid-cols-[1.05fr_.95fr] lg:py-24">
             <div class="relative z-10">
@@ -100,7 +121,7 @@
         </div>
     </section>
 
-    <section class="container-page py-16 lg:py-24">
+    <section id="infografis" class="container-page py-16 lg:py-24">
         <div class="flex flex-wrap items-end justify-between gap-5">
             <div>
                 <p class="eyebrow text-emerald-700">Infografis Desa</p>
