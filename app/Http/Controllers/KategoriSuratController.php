@@ -8,16 +8,48 @@ use Illuminate\Validation\Rule;
 
 class KategoriSuratController extends Controller
 {
+    private function resource(): array
+    {
+        return [
+            'title' => 'Kategori Surat',
+            'singular' => 'kategori',
+            'route' => 'admin.kategori-surat',
+            'description' => 'Kelola kategori arsip surat layanan desa.',
+        ];
+    }
+
+    private function columns(): array
+    {
+        return [
+            ['label' => 'Kategori', 'key' => 'nama_kategori'],
+            ['label' => 'Dibuat', 'key' => 'created_at', 'type' => 'date'],
+        ];
+    }
+
+    private function fields(): array
+    {
+        return [
+            ['name' => 'nama_kategori', 'label' => 'Nama kategori', 'type' => 'text', 'required' => true],
+        ];
+    }
+
     public function index()
     {
         $kategoriSurat = KategoriSurat::latest()->get();
 
-        return view('kategori-surat.index', compact('kategoriSurat'));
+        return view('admin.resources.index', [
+            'resource' => $this->resource(),
+            'items' => $kategoriSurat,
+            'columns' => $this->columns(),
+        ]);
     }
 
     public function create()
     {
-        return view('kategori-surat.create');
+        return view('admin.resources.form', [
+            'resource' => $this->resource(),
+            'fields' => $this->fields(),
+        ]);
     }
 
     public function store(Request $request)
@@ -28,18 +60,26 @@ class KategoriSuratController extends Controller
 
         KategoriSurat::create($data);
 
-        return redirect()->route('kategori-surat.index')
+        return redirect()->route('admin.kategori-surat.index')
             ->with('success', 'Kategori surat berhasil ditambahkan.');
     }
 
     public function show(KategoriSurat $kategoriSurat)
     {
-        return view('kategori-surat.show', compact('kategoriSurat'));
+        return view('admin.resources.show', [
+            'resource' => $this->resource(),
+            'item' => $kategoriSurat,
+            'fields' => $this->fields(),
+        ]);
     }
 
     public function edit(KategoriSurat $kategoriSurat)
     {
-        return view('kategori-surat.edit', compact('kategoriSurat'));
+        return view('admin.resources.form', [
+            'resource' => $this->resource(),
+            'fields' => $this->fields(),
+            'item' => $kategoriSurat,
+        ]);
     }
 
     public function update(Request $request, KategoriSurat $kategoriSurat)
@@ -50,7 +90,7 @@ class KategoriSuratController extends Controller
 
         $kategoriSurat->update($data);
 
-        return redirect()->route('kategori-surat.index')
+        return redirect()->route('admin.kategori-surat.index')
             ->with('success', 'Kategori surat berhasil diperbarui.');
     }
 
@@ -58,7 +98,7 @@ class KategoriSuratController extends Controller
     {
         $kategoriSurat->delete();
 
-        return redirect()->route('kategori-surat.index')
+        return redirect()->route('admin.kategori-surat.index')
             ->with('success', 'Kategori surat berhasil dihapus.');
     }
 }

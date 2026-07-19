@@ -1,67 +1,53 @@
 @extends('layouts.admin')
 
 @section('title', 'Dashboard Operator | Desa Sambo')
+@section('page-title', 'Dashboard')
 
 @section('content')
-    @php
-        $stats = [
-            ['label' => 'Berita dipublikasikan', 'value' => '0', 'note' => 'Siap dikelola'],
-            ['label' => 'UMKM terdaftar', 'value' => '0', 'note' => 'Siap ditambahkan'],
-            ['label' => 'Layanan masuk', 'value' => '0', 'note' => 'Belum ada pengajuan'],
-            ['label' => 'Pengunjung hari ini', 'value' => '-', 'note' => 'Integrasi analitik nanti'],
-        ];
-
-        $activities = [
-            ['icon' => 'B', 'text' => 'Modul berita siap untuk dibuatkan CRUD.', 'time' => 'Template awal'],
-            ['icon' => 'U', 'text' => 'Etalase UMKM siap menerima data produk.', 'time' => 'Template awal'],
-            ['icon' => 'L', 'text' => 'Pengajuan layanan akan tampil di sini.', 'time' => 'Template awal'],
-        ];
-    @endphp
     <div class="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
         @foreach ($stats as $stat)
-            <article class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
+            <a href="{{ route($stat['route']) }}" class="rounded-lg bg-white p-5 shadow-sm ring-1 ring-slate-200 transition hover:-translate-y-0.5 hover:shadow-md">
                 <p class="text-sm font-medium text-slate-500">{{ $stat['label'] }}</p>
-                <p class="mt-3 font-display text-3xl font-bold text-slate-900">{{ $stat['value'] }}</p>
+                <p class="mt-3 font-display text-3xl font-bold text-slate-900">{{ number_format((int) $stat['value'], 0, ',', '.') }}</p>
                 <p class="mt-2 text-xs font-semibold text-emerald-700">{{ $stat['note'] }}</p>
-            </article>
+            </a>
         @endforeach
     </div>
 
     <div class="mt-8 grid gap-6 xl:grid-cols-[1.35fr_.65fr]">
-        <section class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
-            <div class="flex items-center justify-between">
+        <section class="rounded-lg bg-white p-6 shadow-sm ring-1 ring-slate-200">
+            <div class="flex items-center justify-between gap-4">
                 <div>
                     <p class="text-sm font-bold text-slate-900">Aktivitas terbaru</p>
-                    <p class="mt-1 text-sm text-slate-500">Ringkasan konten yang perlu diperhatikan.</p>
+                    <p class="mt-1 text-sm text-slate-500">Ringkasan data terakhir dari modul admin.</p>
                 </div>
-                <a href="{{ route('admin.berita.index') }}" class="text-sm font-bold text-emerald-700">Kelola berita →</a>
+                <a href="{{ route('admin.berita.index') }}" class="text-sm font-bold text-emerald-700">Kelola berita &rarr;</a>
             </div>
 
             <div class="mt-6 divide-y divide-slate-100">
                 @foreach ($activities as $activity)
-                    <div class="flex gap-4 py-4 first:pt-0">
-                        <span class="grid h-9 w-9 place-items-center rounded-xl bg-emerald-50 text-sm">{{ $activity['icon'] }}</span>
-                        <div>
-                            <p class="text-sm font-semibold text-slate-800">{{ $activity['text'] }}</p>
-                            <p class="mt-1 text-xs text-slate-500">{{ $activity['time'] }}</p>
-                        </div>
-                    </div>
+                    <a href="{{ route($activity['route']) }}" class="flex gap-4 py-4 first:pt-0 hover:bg-slate-50">
+                        <span class="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-emerald-50 text-sm font-bold text-emerald-700">{{ $activity['icon'] }}</span>
+                        <span>
+                            <span class="block text-sm font-semibold text-slate-800">{{ $activity['text'] }}</span>
+                            <span class="mt-1 block text-xs text-slate-500">{{ $activity['time'] }}</span>
+                        </span>
+                    </a>
                 @endforeach
             </div>
         </section>
 
-        <section class="rounded-2xl bg-emerald-800 p-6 text-white">
+        <section class="rounded-lg bg-emerald-800 p-6 text-white">
             <p class="text-sm font-bold">Akses cepat CRUD</p>
-            <p class="mt-2 text-sm leading-6 text-emerald-100">
-                Gunakan menu untuk menambah, mengubah, atau menghapus data yang tampil kepada masyarakat.
-            </p>
-
             <div class="mt-6 space-y-3">
-                <a href="{{ route('admin.umkm.index') }}" class="block rounded-xl bg-white/10 px-4 py-3 text-sm font-bold hover:bg-white/15">
-                    Kelola UMKM →
+                <a href="{{ route('admin.produk-umkm.index') }}" class="block rounded-lg bg-white/10 px-4 py-3 text-sm font-bold hover:bg-white/15">
+                    Kelola UMKM &rarr;
                 </a>
-                <a href="{{ route('admin.layanan.index') }}" class="block rounded-xl bg-white/10 px-4 py-3 text-sm font-bold hover:bg-white/15">
-                    Tinjau pengajuan layanan →
+                <a href="{{ route('admin.pengaduan.index') }}" class="block rounded-lg bg-white/10 px-4 py-3 text-sm font-bold hover:bg-white/15">
+                    Tinjau pengaduan &rarr;
+                </a>
+                <a href="{{ route('admin.apbdes.index') }}" class="block rounded-lg bg-white/10 px-4 py-3 text-sm font-bold hover:bg-white/15">
+                    Kelola APBDes &rarr;
                 </a>
             </div>
         </section>

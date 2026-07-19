@@ -8,16 +8,54 @@ use Illuminate\Validation\Rule;
 
 class ApbdesController extends Controller
 {
+    private function resource(): array
+    {
+        return [
+            'title' => 'APBDes',
+            'singular' => 'data APBDes',
+            'route' => 'admin.apbdes',
+            'description' => 'Kelola data anggaran pendapatan dan belanja desa.',
+        ];
+    }
+
+    private function columns(): array
+    {
+        return [
+            ['label' => 'Tahun', 'key' => 'tahun'],
+            ['label' => 'Pendapatan', 'key' => 'pendapatan', 'type' => 'money'],
+            ['label' => 'Belanja', 'key' => 'belanja', 'type' => 'money'],
+            ['label' => 'Diperbarui', 'key' => 'updated_at', 'type' => 'date'],
+        ];
+    }
+
+    private function fields(): array
+    {
+        return [
+            ['name' => 'tahun', 'label' => 'Tahun', 'type' => 'number', 'min' => 1900, 'required' => true],
+            ['name' => 'pendapatan', 'label' => 'Pendapatan', 'type' => 'number', 'min' => 0, 'default' => 0],
+            ['name' => 'belanja', 'label' => 'Belanja', 'type' => 'number', 'min' => 0, 'default' => 0],
+            ['name' => 'penerimaan_pembiayaan', 'label' => 'Penerimaan pembiayaan', 'type' => 'number', 'min' => 0, 'default' => 0],
+            ['name' => 'pengeluaran_pembiayaan', 'label' => 'Pengeluaran pembiayaan', 'type' => 'number', 'min' => 0, 'default' => 0],
+        ];
+    }
+
     public function index()
     {
         $apbdes = Apbdes::latest('tahun')->get();
 
-        return view('apbdes.index', compact('apbdes'));
+        return view('admin.resources.index', [
+            'resource' => $this->resource(),
+            'items' => $apbdes,
+            'columns' => $this->columns(),
+        ]);
     }
 
     public function create()
     {
-        return view('apbdes.create');
+        return view('admin.resources.form', [
+            'resource' => $this->resource(),
+            'fields' => $this->fields(),
+        ]);
     }
 
     public function store(Request $request)
@@ -39,18 +77,26 @@ class ApbdesController extends Controller
 
         Apbdes::create($data);
 
-        return redirect()->route('apbdes.index')
+        return redirect()->route('admin.apbdes.index')
             ->with('success', 'Data APBDes berhasil ditambahkan.');
     }
 
     public function show(Apbdes $apbde)
     {
-        return view('apbdes.show', compact('apbde'));
+        return view('admin.resources.show', [
+            'resource' => $this->resource(),
+            'item' => $apbde,
+            'fields' => $this->fields(),
+        ]);
     }
 
     public function edit(Apbdes $apbde)
     {
-        return view('apbdes.edit', compact('apbde'));
+        return view('admin.resources.form', [
+            'resource' => $this->resource(),
+            'fields' => $this->fields(),
+            'item' => $apbde,
+        ]);
     }
 
     public function update(Request $request, Apbdes $apbde)
@@ -72,7 +118,7 @@ class ApbdesController extends Controller
 
         $apbde->update($data);
 
-        return redirect()->route('apbdes.index')
+        return redirect()->route('admin.apbdes.index')
             ->with('success', 'Data APBDes berhasil diperbarui.');
     }
 
@@ -80,7 +126,7 @@ class ApbdesController extends Controller
     {
         $apbde->delete();
 
-        return redirect()->route('apbdes.index')
+        return redirect()->route('admin.apbdes.index')
             ->with('success', 'Data APBDes berhasil dihapus.');
     }
 }

@@ -28,6 +28,6 @@ class Penduduk extends Model
 
     public function kartuKeluarga()
     {
-        return $this->belongsTo(Keluarga::class, 'kartu_keluarga_id');
+        return $this->belongsTo(KartuKeluarga::class, 'kartu_keluarga_id');
     }
 }
