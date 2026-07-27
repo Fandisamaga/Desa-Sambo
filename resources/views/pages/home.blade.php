@@ -16,11 +16,13 @@
             ['category' => 'KKN', 'title' => 'Mahasiswa KKN mulai program literasi digital', 'excerpt' => 'Pelatihan praktis untuk mendampingi warga menggunakan layanan digital.', 'date' => '8 Juli 2026'],
         ];
 
-        $umkm = [
-            ['icon' => '🍪', 'name' => 'Dapur Sambo', 'category' => 'Kuliner', 'owner' => 'Aneka kue & camilan rumahan', 'color' => 'umkm-cream'],
-            ['icon' => '🧺', 'name' => 'Anyam Lestari', 'category' => 'Kerajinan', 'owner' => 'Anyaman khas karya warga', 'color' => 'umkm-sage'],
-            ['icon' => '🌿', 'name' => 'Kebun Hijau', 'category' => 'Pertanian', 'owner' => 'Sayur segar hasil kebun lokal', 'color' => 'umkm-sky'],
-        ];
+        $umkm = ($featuredUmkm ?? collect())->map(fn ($item) => [
+            'icon' => strtoupper(substr($item->nama_produk, 0, 2)),
+            'name' => $item->nama_produk,
+            'category' => $item->jenis_usaha ?: 'UMKM Desa',
+            'owner' => $item->deskripsi ? \Illuminate\Support\Str::limit($item->deskripsi, 70) : ($item->produk_jasa ?: 'Produk dan jasa warga Desa Sambo'),
+            'color' => 'umkm-sage',
+        ]);
     @endphp
     <section class="hero-section overflow-hidden">
         <div class="container-page relative grid items-center gap-12 py-16 lg:grid-cols-[1.05fr_.95fr] lg:py-24">
@@ -84,7 +86,7 @@
         </div>
 
         <div class="mt-9 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
-            @foreach ($umkm as $item)
+            @forelse ($umkm as $item)
                 <article class="overflow-hidden rounded-2xl bg-white ring-1 ring-slate-200 transition hover:-translate-y-1 hover:shadow-lg">
                     <div class="umkm-cover {{ $item['color'] }}">
                         <span>{{ $item['icon'] }}</span>
@@ -96,7 +98,12 @@
                         <a href="{{ route('umkm') }}" class="mt-5 inline-block text-sm font-bold text-emerald-700">Lihat produk →</a>
                     </div>
                 </article>
-            @endforeach
+            @empty
+                <article class="rounded-2xl border border-dashed border-slate-300 bg-white p-8 sm:col-span-2 xl:col-span-3">
+                    <p class="font-display text-2xl font-bold text-slate-900">Belum ada data UMKM.</p>
+                    <p class="mt-2 max-w-xl text-sm leading-6 text-slate-500">Data yang ditambahkan melalui admin Produk UMKM akan tampil di bagian ini.</p>
+                </article>
+            @endforelse
         </div>
     </section>
 
@@ -128,7 +135,7 @@
                 <h2 class="section-title">Sekilas data Desa Sambo</h2>
                 <p class="mt-3 max-w-xl text-slate-600">Visualisasi singkat tentang layanan, partisipasi warga, dan keberlanjutan desa.</p>
             </div>
-            <a href="{{ route('profil') }}" class="link-arrow">Lihat profil desa →</a>
+            <a href="{{ route('infografis') }}" class="link-arrow">Lihat info grafis →</a>
         </div>
 
         <div class="mt-9 grid gap-5 sm:grid-cols-2 xl:grid-cols-4">

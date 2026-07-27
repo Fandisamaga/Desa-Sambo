@@ -99,4 +99,27 @@ class AdminCrudViewsTest extends TestCase
             $this->actingAs($admin)->get(route($route . '.edit', $model))->assertOk();
         }
     }
+
+    public function test_public_layanan_page_uses_admin_data_and_records_pengaduan(): void
+    {
+        KategoriSurat::create(['nama_kategori' => 'Domisili']);
+
+        $this->get(route('layanan'))
+            ->assertOk()
+            ->assertSee('Layanan Masyarakat Desa Sambo')
+            ->assertSee('Domisili');
+
+        $this->post(route('layanan.pengaduan.store'), [
+            'nama_pengirim' => 'Warga Sambo',
+            'kontak_pengirim' => '081234567890',
+            'isi_aduan' => 'Lampu jalan di dusun satu perlu diperbaiki.',
+        ])->assertRedirect(route('layanan.pengaduan'));
+
+        $this->assertDatabaseHas('pengaduan', [
+            'nama_pengirim' => 'Warga Sambo',
+            'kontak_pengirim' => '081234567890',
+            'status' => 'pending',
+            'catatan_admin' => null,
+        ]);
+    }
 }

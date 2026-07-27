@@ -72,6 +72,24 @@ class PengaduanController extends Controller
             ->with('success', 'Pengaduan berhasil ditambahkan.');
     }
 
+    public function storePublic(Request $request)
+    {
+        $data = $request->validate([
+            'nama_pengirim' => ['required', 'string', 'max:100'],
+            'kontak_pengirim' => ['required', 'string', 'max:50'],
+            'isi_aduan' => ['required', 'string', 'min:10'],
+        ]);
+
+        Pengaduan::create([
+            ...$data,
+            'status' => 'pending',
+            'catatan_admin' => null,
+        ]);
+
+        return redirect()->route('layanan.pengaduan')
+            ->with('success', 'Pengaduan berhasil dikirim. Operator desa akan menindaklanjuti melalui panel admin.');
+    }
+
     public function show(Pengaduan $pengaduan)
     {
         return view('admin.resources.show', [

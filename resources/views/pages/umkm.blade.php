@@ -1,0 +1,167 @@
+@extends('layouts.public')
+
+@section('title', 'UMKM Desa Sambo')
+
+@section('content')
+    @php
+        $produkUmkm = $produkUmkm ?? collect();
+        $stats = $stats ?? [
+            ['label' => 'UMKM terdata', 'value' => $produkUmkm->count()],
+            ['label' => 'Jenis usaha', 'value' => $produkUmkm->pluck('jenis_usaha')->filter()->unique()->count()],
+            ['label' => 'Kontak tersedia', 'value' => $produkUmkm->pluck('no_whatsapp')->filter()->count()],
+        ];
+    @endphp
+
+    <section class="bg-white">
+        <div class="container-page grid gap-10 py-16 lg:grid-cols-[.82fr_1.18fr] lg:py-24">
+            <div>
+                <p class="eyebrow text-emerald-700">Etalase Warga</p>
+                <h1 class="mt-5 font-display text-5xl font-bold leading-tight text-slate-900 sm:text-6xl">UMKM Desa Sambo</h1>
+                <p class="mt-5 max-w-xl text-lg leading-8 text-slate-600">Direktori usaha warga yang terhubung dengan data Produk UMKM di admin desa.</p>
+            </div>
+
+            <div class="grid gap-4 sm:grid-cols-3">
+                @foreach ($stats as $stat)
+                    <article class="rounded-2xl border border-emerald-900/10 bg-emerald-50 p-6">
+                        <p class="text-xs font-bold uppercase tracking-[.16em] text-emerald-700">{{ $stat['label'] }}</p>
+                        <p class="mt-4 font-display text-4xl font-bold text-slate-950">{{ $stat['value'] }}</p>
+                    </article>
+                @endforeach
+            </div>
+        </div>
+    </section>
+
+    <section class="bg-slate-50 py-16 lg:py-24">
+        <div class="container-page">
+            <div class="flex flex-wrap items-end justify-between gap-5">
+                <div>
+                    <p class="eyebrow text-emerald-700">Data UMKM</p>
+                    <h2 class="section-title">Daftar usaha desa</h2>
+                </div>
+                <p class="rounded-full bg-white px-4 py-2 text-xs font-bold text-slate-500 ring-1 ring-slate-200">Terhubung dengan CRUD admin</p>
+            </div>
+
+            <div class="mt-9 grid gap-6">
+                @forelse ($produkUmkm as $item)
+                    @php
+                        $photoPath = trim((string) $item->foto_path);
+                        $photoUrl = null;
+                        if ($photoPath !== '') {
+                            $photoUrl = str_starts_with($photoPath, 'http://') || str_starts_with($photoPath, 'https://') || str_starts_with($photoPath, '/')
+                                ? $photoPath
+                                : asset('storage/' . $photoPath);
+                        }
+
+                        $digits = preg_replace('/\D+/', '', (string) $item->no_whatsapp);
+                        if ($digits !== '' && str_starts_with($digits, '0')) {
+                            $digits = '62' . substr($digits, 1);
+                        } elseif ($digits !== '' && ! str_starts_with($digits, '62')) {
+                            $digits = '62' . $digits;
+                        }
+                        $whatsappUrl = $digits !== '' ? 'https://wa.me/' . $digits : null;
+
+                        $products = collect(preg_split('/[\r\n,;]+/', (string) $item->produk_jasa))
+                            ->map(fn ($product) => trim($product))
+                            ->filter();
+                        $initials = strtoupper(substr($item->nama_produk, 0, 2));
+                    @endphp
+
+                    <article class="overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-200">
+                        <div class="grid lg:grid-cols-[.78fr_1.22fr]">
+                            <div class="relative min-h-72 bg-emerald-100 p-6">
+                                @if ($photoUrl)
+                                    <img src="{{ $photoUrl }}" alt="Foto {{ $item->nama_produk }}" class="h-full min-h-72 w-full rounded-2xl object-cover">
+                                @else
+                                    <div class="grid h-full min-h-72 place-items-center rounded-2xl border border-emerald-900/10 bg-[linear-gradient(145deg,#ecfdf5_0%,#bbf7d0_46%,#0f766e_100%)] p-8 text-center">
+                                        <div>
+                                            <span class="mx-auto grid h-24 w-24 place-items-center rounded-full bg-white/85 font-display text-3xl font-bold text-emerald-800 shadow-sm">{{ $initials }}</span>
+                                            <p class="mt-6 text-xs font-bold uppercase tracking-[.18em] text-emerald-900/70">{{ $item->jenis_usaha ?: 'UMKM Desa' }}</p>
+                                            <h3 class="mt-3 font-display text-4xl font-bold text-emerald-950">{{ $item->nama_produk }}</h3>
+                                        </div>
+                                    </div>
+                                @endif
+                            </div>
+
+                            <div class="p-6 sm:p-8">
+                                <div class="flex flex-wrap items-start justify-between gap-4">
+                                    <div>
+                                        <p class="text-xs font-bold uppercase tracking-[.16em] text-emerald-700">{{ $item->jenis_usaha ?: 'UMKM Desa' }}</p>
+                                        <h3 class="mt-2 font-display text-3xl font-bold text-slate-900">{{ $item->nama_produk }}</h3>
+                                        <p class="mt-3 max-w-2xl leading-7 text-slate-600">{{ $item->deskripsi ?: 'Informasi usaha dapat dilengkapi melalui admin Produk UMKM.' }}</p>
+                                    </div>
+                                    @if ($item->jam_operasional)
+                                        <span class="rounded-full bg-emerald-50 px-4 py-2 text-xs font-bold text-emerald-700">{{ $item->jam_operasional }}</span>
+                                    @endif
+                                </div>
+
+                                <div class="mt-7 grid gap-x-8 gap-y-5 border-y border-slate-200 py-6 sm:grid-cols-2">
+                                    <div>
+                                        <p class="text-xs font-bold uppercase tracking-[.16em] text-slate-400">Nama Pemilik</p>
+                                        <p class="mt-2 font-bold text-slate-900">{{ $item->nama_pemilik ?: '-' }}</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs font-bold uppercase tracking-[.16em] text-slate-400">Jenis Usaha</p>
+                                        <p class="mt-2 font-bold text-slate-900">{{ $item->jenis_usaha ?: '-' }}</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs font-bold uppercase tracking-[.16em] text-slate-400">Alamat</p>
+                                        <p class="mt-2 font-bold text-slate-900">{{ $item->alamat ?: '-' }}</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs font-bold uppercase tracking-[.16em] text-slate-400">WhatsApp</p>
+                                        <p class="mt-2 font-bold text-slate-900">
+                                            {{ $item->no_whatsapp ?: '-' }}
+                                            @if ($item->nama_kontak)
+                                                <span class="text-slate-500">({{ $item->nama_kontak }})</span>
+                                            @endif
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs font-bold uppercase tracking-[.16em] text-slate-400">Jam Operasional</p>
+                                        <p class="mt-2 font-bold text-slate-900">{{ $item->jam_operasional ?: '-' }}</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs font-bold uppercase tracking-[.16em] text-slate-400">Harga Mulai Dari</p>
+                                        <p class="mt-2 font-bold text-slate-900">{{ $item->harga > 0 ? 'Rp ' . number_format($item->harga, 0, ',', '.') : '-' }}</p>
+                                    </div>
+                                </div>
+
+                                <div class="mt-6">
+                                    <p class="text-xs font-bold uppercase tracking-[.16em] text-slate-400">Produk/Jasa yang Dijual</p>
+                                    <div class="mt-3 flex flex-wrap gap-2">
+                                        @forelse ($products as $product)
+                                            <span class="rounded-full bg-emerald-50 px-4 py-2 text-sm font-bold text-emerald-800">{{ $product }}</span>
+                                        @empty
+                                            <span class="text-sm font-semibold text-slate-500">Belum ada rincian produk/jasa.</span>
+                                        @endforelse
+                                    </div>
+                                </div>
+
+                                @if ($item->keterangan_tambahan)
+                                    <div class="mt-6 rounded-xl bg-slate-50 p-4">
+                                        <p class="text-xs font-bold uppercase tracking-[.16em] text-slate-400">Keterangan Tambahan</p>
+                                        <p class="mt-2 text-sm font-semibold leading-6 text-slate-700">{{ $item->keterangan_tambahan }}</p>
+                                    </div>
+                                @endif
+
+                                <div class="mt-8 flex flex-wrap gap-3">
+                                    @if ($whatsappUrl)
+                                        <a href="{{ $whatsappUrl }}" target="_blank" rel="noopener noreferrer" class="btn-primary">Hubungi WhatsApp <span aria-hidden="true">&rarr;</span></a>
+                                    @endif
+                                    @if ($item->lokasi_maps)
+                                        <a href="{{ $item->lokasi_maps }}" target="_blank" rel="noopener noreferrer" class="btn-soft">Lihat lokasi</a>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                @empty
+                    <article class="rounded-2xl border border-dashed border-slate-300 bg-white px-6 py-14 text-center">
+                        <p class="font-display text-3xl font-bold text-slate-900">Belum ada data UMKM.</p>
+                        <p class="mx-auto mt-3 max-w-xl text-sm leading-6 text-slate-500">Data usaha yang ditambahkan dari menu admin Produk UMKM akan tampil otomatis di halaman ini.</p>
+                    </article>
+                @endforelse
+            </div>
+        </div>
+    </section>
+@endsection
