@@ -17,6 +17,7 @@
                 ['label' => 'APBDes', 'route' => 'admin.apbdes.*', 'url' => route('admin.apbdes.index'), 'icon' => 'A'],
                 ['label' => 'Kartu Keluarga', 'route' => 'admin.kartu-keluarga.*', 'url' => route('admin.kartu-keluarga.index'), 'icon' => 'K'],
                 ['label' => 'Penduduk', 'route' => 'admin.penduduk.*', 'url' => route('admin.penduduk.index'), 'icon' => 'P'],
+                ['label' => 'Stunting', 'route' => 'admin.stunting.*', 'url' => route('admin.stunting.index'), 'icon' => 'S'],
                 ['label' => 'Kategori Surat', 'route' => 'admin.kategori-surat.*', 'url' => route('admin.kategori-surat.index'), 'icon' => 'S'],
                 ['label' => 'Arsip Surat', 'route' => 'admin.arsip-surat.*', 'url' => route('admin.arsip-surat.index'), 'icon' => 'R'],
                 ['label' => 'Pengaduan', 'route' => ['admin.pengaduan.*', 'admin.layanan.*'], 'url' => route('admin.pengaduan.index'), 'icon' => 'L'],

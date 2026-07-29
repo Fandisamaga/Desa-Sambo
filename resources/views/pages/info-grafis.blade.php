@@ -74,7 +74,6 @@
                                         <p class="eyebrow text-emerald-700">Data Penduduk</p>
                                         <h2 class="section-title">Ringkasan kependudukan</h2>
                                     </div>
-                                    <p class="rounded-full bg-slate-100 px-4 py-2 text-xs font-bold text-slate-500">Sumber: CRUD Penduduk & Kartu Keluarga</p>
                                 </div>
 
                                 <div class="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -190,7 +189,6 @@
                                     <div>
                                         <h2 class="font-display text-4xl font-bold leading-tight text-emerald-700 sm:text-5xl">APB Desa Sambo</h2>
                                         <p class="mt-4 max-w-lg text-lg font-semibold leading-9 text-slate-950">{{ $apbdesStats['location'] }}</p>
-                                        <p class="mt-4 rounded-full bg-slate-100 px-4 py-2 text-xs font-bold text-slate-500">Sumber: CRUD APBDes admin</p>
                                     </div>
 
                                     @if ($apbdesStats['hasData'])
@@ -318,10 +316,13 @@
                                 @endif
                             </div>
                         @else
-                            <div class="min-h-80 rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-6 py-12 text-center sm:px-10">
-                                <p class="text-sm font-bold uppercase tracking-[.18em] text-emerald-700">Stunting</p>
-                                <h2 class="mt-4 font-display text-3xl font-bold text-slate-900">Data Stunting belum memiliki CRUD admin.</h2>
-                                <p class="mx-auto mt-4 max-w-2xl text-sm leading-6 text-slate-500">Jika modul Stunting ditambahkan di admin, tab ini bisa langsung disambungkan seperti Penduduk dan APBDes.</p>
+                            <div class="flex flex-col justify-center items-center d">
+                                <article class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+                                    <p class="eyebrow text-emerald-700">Stunting</p>
+                                    <h3 class="mt-2 font-display text-2xl font-bold text-slate-900">Jumlah anak stunting</h3>
+                                    <p class="mt-6 text-5xl font-bold text-slate-950">{{ number_format($stuntingStats['count'] ?? 0, 0, ',', '.') }}</p>
+                                    <p class="mt-4 text-sm leading-6 text-slate-600">{{ $stuntingStats['description'] }}</p>
+                                </article>
                             </div>
                         @endif
                     </section>

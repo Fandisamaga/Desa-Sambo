@@ -42,11 +42,11 @@ class PendudukController extends Controller
             ['name' => 'tempat_lahir', 'label' => 'Tempat lahir', 'type' => 'text', 'required' => true],
             ['name' => 'tanggal_lahir', 'label' => 'Tanggal lahir', 'type' => 'date', 'required' => true],
             ['name' => 'jenis_kelamin', 'label' => 'Jenis kelamin', 'type' => 'select', 'options' => ['Laki-laki' => 'Laki-laki', 'Perempuan' => 'Perempuan'], 'required' => true],
-            ['name' => 'agama', 'label' => 'Agama', 'type' => 'text', 'required' => true],
-            ['name' => 'pendidikan', 'label' => 'Pendidikan', 'type' => 'text', 'required' => true],
+            ['name' => 'agama', 'label' => 'Agama', 'type' => 'select', 'options' => ['Islam' => 'Islam', 'Kristen' => 'Kristen', 'Katolik' => 'Katolik', 'Hindu' => 'Hindu', 'Buddha' => 'Buddha', 'Konghucu' => 'Konghucu', 'Lainnya' => 'Lainnya'], 'required' => true],
+            ['name' => 'pendidikan', 'label' => 'Pendidikan', 'type' => 'select', 'options' => ['SD' => 'SD', 'SMP' => 'SMP', 'SMA' => 'SMA', 'S1' => 'S1', 'S2' => 'S2', 'S3' => 'S3'], 'required' => true],
             ['name' => 'pekerjaan', 'label' => 'Pekerjaan', 'type' => 'text', 'required' => true],
-            ['name' => 'status_kawin', 'label' => 'Status kawin', 'type' => 'text', 'required' => true],
-            ['name' => 'status_keluarga', 'label' => 'Status keluarga', 'type' => 'text', 'required' => true],
+            ['name' => 'status_kawin', 'label' => 'Status kawin', 'type' => 'select', 'options' => ['Menikah' => 'Menikah', 'Belum Menikah' => 'Belum Menikah', 'Cerai' => 'Cerai'], 'required' => true],
+            ['name' => 'status_keluarga', 'label' => 'Status keluarga', 'type' => 'select', 'options' => ['Kepala Keluarga' => 'Kepala Keluarga', 'Ibu Rumah Tangga' => 'Ibu Rumah Tangga', 'Anak' => 'Anak'], 'required' => true],
         ];
     }
 

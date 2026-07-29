@@ -14,6 +14,7 @@ use App\Http\Controllers\PendudukController;
 use App\Http\Controllers\PengaduanController;
 use App\Http\Controllers\ProdukUmkmController;
 use App\Http\Controllers\PublicPageController;
+use App\Http\Controllers\StuntingController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [PublicPageController::class, 'home'])->name('home');
@@ -46,6 +47,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::resource('kategori-berita', KategoriBeritaController::class)->parameters(['kategori-berita' => 'kategoriBerita']);
     Route::resource('kartu-keluarga', KeluargaController::class)->parameters(['kartu-keluarga' => 'kartuKeluarga']);
     Route::resource('penduduk', PendudukController::class);
+    Route::resource('stunting', StuntingController::class);
     Route::resource('pengaduan', PengaduanController::class);
     Route::resource('dokumen-publik', DokumenPublikController::class)->parameters(['dokumen-publik' => 'dokumenPublik']);
 
