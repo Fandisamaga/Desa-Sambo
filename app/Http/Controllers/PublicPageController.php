@@ -6,6 +6,7 @@ use App\Models\Apbdes;
 use App\Models\KartuKeluarga;
 use App\Models\Penduduk;
 use App\Models\ProdukUmkm;
+use App\Models\Stunting;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\View\View;
 
@@ -65,11 +66,13 @@ class PublicPageController extends Controller
                 ->values()
             : collect();
 
+        $stuntingCount = Schema::hasTable('stunting') ? Stunting::query()->count() : 0;
+
         return view('pages.info-grafis', [
             'populationStats' => [
                 'summary' => [
                     ['label' => 'Jumlah Penduduk', 'value' => $formatCount($totalPenduduk), 'unit' => 'Jiwa', 'description' => 'Total warga yang tercatat pada CRUD Penduduk.', 'tone' => 'emerald'],
-                    ['label' => 'Kepala Keluarga', 'value' => $formatCount($totalKk), 'unit' => 'KK', 'description' => 'Jumlah kartu keluarga yang tercatat di admin.', 'tone' => 'amber'],
+                    ['label' => 'Keluarga', 'value' => $formatCount($totalKk), 'unit' => 'KK', 'description' => 'Jumlah kartu keluarga yang tercatat di admin.', 'tone' => 'amber'],
                     ['label' => 'Laki-laki', 'value' => $formatCount($totalLakiLaki), 'unit' => 'Jiwa', 'description' => $percent($totalLakiLaki) . '% dari total penduduk.', 'tone' => 'sky'],
                     ['label' => 'Perempuan', 'value' => $formatCount($totalPerempuan), 'unit' => 'Jiwa', 'description' => $percent($totalPerempuan) . '% dari total penduduk.', 'tone' => 'rose'],
                 ],
@@ -93,7 +96,9 @@ class PublicPageController extends Controller
                 'hasData' => $apbdesYears->isNotEmpty(),
             ],
             'stuntingStats' => [
-                'hasData' => false,
+                'count' => $stuntingCount,
+                'hasData' => $stuntingCount > 0,
+                'description' => 'Jumlah anak di daftar stunting berdasarkan data penduduk.',
             ],
         ]);
     }

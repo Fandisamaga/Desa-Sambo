@@ -12,9 +12,9 @@
             $navigation = [
                 ['label' => 'Beranda', 'route' => 'home', 'url' => '/', 'icon' => 'home'],
                 ['label' => 'Profil Desa', 'route' => 'profil', 'url' => '/profil-desa', 'icon' => 'profile'],
-                ['label' => 'Berita', 'route' => 'berita', 'url' => '/berita', 'icon' => 'news'],
-                ['label' => 'Info Grafis', 'route' => 'infografis', 'url' => '/info-grafis', 'icon' => 'chart'],
+                ['label' => 'Infografis', 'route' => 'infografis', 'url' => '/info-grafis', 'icon' => 'chart'],
                 ['label' => 'UMKM Desa', 'route' => 'umkm', 'url' => '/umkm', 'icon' => 'business'],
+                ['label' => 'Berita', 'route' => 'berita', 'url' => '/berita', 'icon' => 'news'],
                 ['label' => 'Program KKN', 'route' => 'kkn', 'url' => '/program-kkn', 'icon' => 'program'],
                 [
                     'label' => 'Layanan',
