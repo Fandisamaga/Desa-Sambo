@@ -18,12 +18,17 @@ class AdminAuthController extends Controller
     {
         $credentials = $request->validate(['email' => ['required', 'email'], 'password' => ['required']]);
 
-        if (Auth::attempt($credentials, $request->boolean('remember')) && $request->user()->is_admin) {
+        $loginData = [
+            'email' => $credentials['email'],
+            'password' => $credentials['password'],
+            'is_admin' => true,
+        ];
+
+        if (Auth::attempt($loginData, $request->boolean('remember'))) {
             $request->session()->regenerate();
             return redirect()->intended(route('admin.dashboard'));
         }
 
-        Auth::logout();
         return back()->withErrors(['email' => 'Email atau kata sandi administrator tidak valid.'])->onlyInput('email');
     }
 

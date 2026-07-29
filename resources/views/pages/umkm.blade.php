@@ -10,6 +10,55 @@
             ['label' => 'Jenis usaha', 'value' => $produkUmkm->pluck('jenis_usaha')->filter()->unique()->count()],
             ['label' => 'Kontak tersedia', 'value' => $produkUmkm->pluck('no_whatsapp')->filter()->count()],
         ];
+
+        $formatHours = function (?string $jamOperasional): ?string {
+            if (! $jamOperasional) {
+                return null;
+            }
+
+            $parts = array_map('trim', explode('-', $jamOperasional, 2));
+            $format = function (?string $part): ?string {
+                if ($part === null || $part === '') {
+                    return null;
+                }
+                if (! preg_match('/^\d{1,2}$/', trim($part))) {
+                    return null;
+                }
+                $hour = (int) trim($part);
+                if ($hour < 0 || $hour > 23) {
+                    return null;
+                }
+                return sprintf('%02d:00', $hour);
+            };
+
+            $start = $format($parts[0] ?? null);
+            $end = $format($parts[1] ?? null);
+
+            if ($start && $end) {
+                return "$start - $end";
+            }
+
+            if ($start) {
+                return "$start -";
+            }
+
+            if ($end) {
+                return "- $end";
+            }
+
+            return null;
+        };
+
+        $formatPriceRange = function ($item): string {
+            $low = $item->harga > 0 ? 'Rp ' . number_format($item->harga, 0, ',', '.') : null;
+            $high = isset($item->harga_max) && $item->harga_max > 0 ? 'Rp ' . number_format($item->harga_max, 0, ',', '.') : null;
+
+            if ($low && $high) {
+                return "$low - $high";
+            }
+
+            return $low ?? $high ?? '-';
+        };
     @endphp
 
     <section class="bg-white">
@@ -38,7 +87,6 @@
                     <p class="eyebrow text-emerald-700">Data UMKM</p>
                     <h2 class="section-title">Daftar usaha desa</h2>
                 </div>
-                <p class="rounded-full bg-white px-4 py-2 text-xs font-bold text-slate-500 ring-1 ring-slate-200">Terhubung dengan CRUD admin</p>
             </div>
 
             <div class="mt-9 grid gap-6">
@@ -89,9 +137,6 @@
                                         <h3 class="mt-2 font-display text-3xl font-bold text-slate-900">{{ $item->nama_produk }}</h3>
                                         <p class="mt-3 max-w-2xl leading-7 text-slate-600">{{ $item->deskripsi ?: 'Informasi usaha dapat dilengkapi melalui admin Produk UMKM.' }}</p>
                                     </div>
-                                    @if ($item->jam_operasional)
-                                        <span class="rounded-full bg-emerald-50 px-4 py-2 text-xs font-bold text-emerald-700">{{ $item->jam_operasional }}</span>
-                                    @endif
                                 </div>
 
                                 <div class="mt-7 grid gap-x-8 gap-y-5 border-y border-slate-200 py-6 sm:grid-cols-2">
@@ -116,13 +161,14 @@
                                             @endif
                                         </p>
                                     </div>
+                                    @php $formattedHours = $formatHours($item->jam_operasional); @endphp
                                     <div>
                                         <p class="text-xs font-bold uppercase tracking-[.16em] text-slate-400">Jam Operasional</p>
-                                        <p class="mt-2 font-bold text-slate-900">{{ $item->jam_operasional ?: '-' }}</p>
+                                        <p class="mt-2 font-bold text-slate-900">{{ $formattedHours ?? '-' }}</p>
                                     </div>
                                     <div>
-                                        <p class="text-xs font-bold uppercase tracking-[.16em] text-slate-400">Harga Mulai Dari</p>
-                                        <p class="mt-2 font-bold text-slate-900">{{ $item->harga > 0 ? 'Rp ' . number_format($item->harga, 0, ',', '.') : '-' }}</p>
+                                        <p class="text-xs font-bold uppercase tracking-[.16em] text-slate-400">Harga</p>
+                                        <p class="mt-2 font-bold text-slate-900">{{ $formatPriceRange($item) }}</p>
                                     </div>
                                 </div>
 

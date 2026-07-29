@@ -60,7 +60,7 @@
                                 <a class="mt-2 inline-flex text-sm font-bold text-emerald-700" href="{{ asset('storage/' . data_get($item, $field['current_path'])) }}" target="_blank">Lihat file tersimpan</a>
                             @endif
                         @else
-                            <input id="{{ $name }}" name="{{ $name }}" type="{{ $type }}" value="{{ $value }}" class="input" min="{{ $field['min'] ?? null }}" max="{{ $field['max'] ?? null }}" @required($field['required'] ?? false)>
+                            <input id="{{ $name }}" name="{{ $name }}" type="{{ $type }}" value="{{ $value }}" class="input" min="{{ $field['min'] ?? null }}" max="{{ $field['max'] ?? null }}" placeholder="{{ $field['placeholder'] ?? '' }}" @required($field['required'] ?? false)>
                         @endif
 
                         @error($name)

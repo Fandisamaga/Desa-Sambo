@@ -28,8 +28,11 @@ class ProdukUmkmController extends Controller
         ];
     }
 
-    private function fields(): array
+    private function fields(?ProdukUmkm $item = null): array
     {
+        $jamOperasional = $item ? $item->jam_operasional : null;
+        [$jamOperasionalMulai, $jamOperasionalSelesai] = $this->splitOperatingHours($jamOperasional);
+
         return [
             ['name' => 'nama_produk', 'label' => 'Nama usaha', 'type' => 'text', 'required' => true],
             ['name' => 'nama_pemilik', 'label' => 'Nama pemilik', 'type' => 'text'],
@@ -37,13 +40,34 @@ class ProdukUmkmController extends Controller
             ['name' => 'alamat', 'label' => 'Alamat (RT/Dusun)', 'type' => 'text'],
             ['name' => 'no_whatsapp', 'label' => 'Nomor WhatsApp', 'type' => 'text'],
             ['name' => 'nama_kontak', 'label' => 'Nama kontak WhatsApp', 'type' => 'text'],
-            ['name' => 'jam_operasional', 'label' => 'Jam operasional', 'type' => 'text'],
-            ['name' => 'harga', 'label' => 'Harga mulai dari', 'type' => 'number', 'min' => 0, 'default' => 0],
+            ['name' => 'jam_operasional_mulai', 'label' => 'Jam buka', 'type' => 'number', 'min' => 0, 'max' => 23, 'default' => $jamOperasionalMulai, 'placeholder' => '0-23'],
+            ['name' => 'jam_operasional_selesai', 'label' => 'Jam tutup', 'type' => 'number', 'min' => 0, 'max' => 23, 'default' => $jamOperasionalSelesai, 'placeholder' => '0-23'],
+            ['name' => 'harga', 'label' => 'Harga rendah', 'type' => 'number', 'min' => 0, 'default' => $item?->harga ?? null, 'placeholder' => 'Harga rendah'],
+            ['name' => 'harga_max', 'label' => 'Harga tinggi', 'type' => 'number', 'min' => 0, 'default' => $item?->harga_max ?? null, 'placeholder' => 'Harga tinggi'],
             ['name' => 'foto_path', 'label' => 'Foto usaha/produk', 'type' => 'file', 'accept' => 'image/*', 'current_path' => 'foto_path'],
             ['name' => 'lokasi_maps', 'label' => 'Lokasi Google Maps', 'type' => 'text'],
             ['name' => 'produk_jasa', 'label' => 'Produk/Jasa yang dijual', 'type' => 'textarea', 'rows' => 4],
             ['name' => 'deskripsi', 'label' => 'Deskripsi', 'type' => 'textarea', 'rows' => 6],
             ['name' => 'keterangan_tambahan', 'label' => 'Keterangan tambahan', 'type' => 'textarea', 'rows' => 3],
+        ];
+    }
+
+    private function showFields(ProdukUmkm $item): array
+    {
+        return [
+            ['name' => 'nama_produk', 'label' => 'Nama usaha', 'type' => 'text'],
+            ['name' => 'nama_pemilik', 'label' => 'Nama pemilik', 'type' => 'text'],
+            ['name' => 'jenis_usaha', 'label' => 'Jenis usaha', 'type' => 'text'],
+            ['name' => 'alamat', 'label' => 'Alamat (RT/Dusun)', 'type' => 'text'],
+            ['name' => 'no_whatsapp', 'label' => 'Nomor WhatsApp', 'type' => 'text'],
+            ['name' => 'nama_kontak', 'label' => 'Nama kontak WhatsApp', 'type' => 'text'],
+            ['name' => 'formatted_jam_operasional', 'label' => 'Jam Operasional', 'type' => 'text'],
+            ['name' => 'harga_range', 'label' => 'Harga', 'type' => 'text'],
+            ['name' => 'foto_path', 'label' => 'Foto usaha/produk', 'type' => 'file', 'current_path' => 'foto_path'],
+            ['name' => 'lokasi_maps', 'label' => 'Lokasi Google Maps', 'type' => 'text'],
+            ['name' => 'produk_jasa', 'label' => 'Produk/Jasa yang dijual', 'type' => 'text'],
+            ['name' => 'deskripsi', 'label' => 'Deskripsi', 'type' => 'text'],
+            ['name' => 'keterangan_tambahan', 'label' => 'Keterangan tambahan', 'type' => 'text'],
         ];
     }
 
@@ -81,7 +105,7 @@ class ProdukUmkmController extends Controller
         return view('admin.resources.show', [
             'resource' => $this->resource(),
             'item' => $produkUmkm,
-            'fields' => $this->fields(),
+            'fields' => $this->showFields($produkUmkm),
         ]);
     }
 
@@ -89,7 +113,7 @@ class ProdukUmkmController extends Controller
     {
         return view('admin.resources.form', [
             'resource' => $this->resource(),
-            'fields' => $this->fields(),
+            'fields' => $this->fields($produkUmkm),
             'item' => $produkUmkm,
         ]);
     }
@@ -122,14 +146,28 @@ class ProdukUmkmController extends Controller
             'alamat' => ['nullable', 'string', 'max:255'],
             'deskripsi' => ['nullable', 'string'],
             'harga' => ['nullable', 'integer', 'min:0'],
+            'harga_max' => ['nullable', 'integer', 'min:0'],
             'foto_path' => ['nullable', 'image', 'max:4096'],
             'no_whatsapp' => ['nullable', 'string', 'max:20'],
             'nama_kontak' => ['nullable', 'string', 'max:150'],
-            'jam_operasional' => ['nullable', 'string', 'max:100'],
+            'jam_operasional_mulai' => ['nullable', 'integer', 'min:0', 'max:23'],
+            'jam_operasional_selesai' => ['nullable', 'integer', 'min:0', 'max:23'],
             'produk_jasa' => ['nullable', 'string'],
             'lokasi_maps' => ['nullable', 'string', 'max:255'],
             'keterangan_tambahan' => ['nullable', 'string'],
         ]);
+
+        if ($data['jam_operasional_mulai'] !== null && $data['jam_operasional_selesai'] !== null) {
+            $data['jam_operasional'] = sprintf('%02d - %02d', $data['jam_operasional_mulai'], $data['jam_operasional_selesai']);
+        } elseif ($data['jam_operasional_mulai'] !== null) {
+            $data['jam_operasional'] = sprintf('%02d -', $data['jam_operasional_mulai']);
+        } elseif ($data['jam_operasional_selesai'] !== null) {
+            $data['jam_operasional'] = sprintf('- %02d', $data['jam_operasional_selesai']);
+        } else {
+            $data['jam_operasional'] = null;
+        }
+
+        unset($data['jam_operasional_mulai'], $data['jam_operasional_selesai']);
 
         $data = array_merge($data, [
             'harga' => $data['harga'] ?? 0,
@@ -146,6 +184,29 @@ class ProdukUmkmController extends Controller
         }
 
         return $data;
+    }
+
+    private function splitOperatingHours(?string $jamOperasional): array
+    {
+        if (! $jamOperasional || ! str_contains($jamOperasional, '-')) {
+            return [null, null];
+        }
+
+        $parts = array_map('trim', explode('-', $jamOperasional, 2));
+        $hours = array_map(function (?string $part) {
+            if ($part === null) {
+                return null;
+            }
+
+            if (preg_match('/^(\d{1,2})/', $part, $matches)) {
+                $hour = (int) $matches[1];
+                return $hour >= 0 && $hour <= 23 ? (string) $hour : null;
+            }
+
+            return null;
+        }, $parts);
+
+        return [$hours[0] ?? null, $hours[1] ?? null];
     }
 
     private function deletePhoto(?string $path): void
