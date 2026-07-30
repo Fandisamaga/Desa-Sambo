@@ -6,7 +6,6 @@ use App\Http\Controllers\ArsipSuratController;
 use App\Http\Controllers\BeritaController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DokumenPublikController;
-use App\Http\Controllers\KategoriBeritaController;
 use App\Http\Controllers\KategoriSuratController;
 use App\Http\Controllers\KeluargaController;
 use App\Http\Controllers\LayananController;
@@ -21,12 +20,15 @@ Route::get('/', [PublicPageController::class, 'home'])->name('home');
 Route::get('/profil-desa', [PublicPageController::class, 'profil'])->name('profil');
 Route::get('/info-grafis', [PublicPageController::class, 'infoGrafis'])->name('infografis');
 Route::get('/berita', [PublicPageController::class, 'berita'])->name('berita');
+Route::get('/berita/{berita:slug}', [PublicPageController::class, 'detailBerita'])->name('berita.detail');
 Route::get('/umkm', [PublicPageController::class, 'umkm'])->name('umkm');
+Route::get('/ppid', [PublicPageController::class, 'ppid'])->name('ppid');
+Route::redirect('/dokumen-publik', '/ppid')->name('dokumen-publik');
 Route::get('/program-kkn', [PublicPageController::class, 'programKkn'])->name('kkn');
 
 Route::get('/layanan', [LayananController::class, 'index'])->name('layanan');
-Route::get('/layanan/surat-keterangan-domisili', [LayananController::class, 'domisili'])->name('layanan.domisili');
-Route::get('/layanan/surat-pengantar-kk-ktp', [LayananController::class, 'pengantar'])->name('layanan.pengantar');
+Route::redirect('/layanan/surat-keterangan-domisili', '/layanan')->name('layanan.domisili');
+Route::redirect('/layanan/surat-pengantar-kk-ktp', '/layanan')->name('layanan.pengantar');
 Route::get('/layanan/pengaduan-masyarakat', [LayananController::class, 'pengaduan'])->name('layanan.pengaduan');
 Route::post('/layanan/pengaduan-masyarakat', [PengaduanController::class, 'storePublic'])->middleware('throttle:6,1')->name('layanan.pengaduan.store');
 
@@ -44,7 +46,6 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::resource('apbdes', ApbdesController::class)->parameters(['apbdes' => 'apbde']);
     Route::resource('produk-umkm', ProdukUmkmController::class)->parameters(['produk-umkm' => 'produkUmkm']);
     Route::resource('berita', BeritaController::class)->parameters(['berita' => 'berita']);
-    Route::resource('kategori-berita', KategoriBeritaController::class)->parameters(['kategori-berita' => 'kategoriBerita']);
     Route::resource('kartu-keluarga', KeluargaController::class)->parameters(['kartu-keluarga' => 'kartuKeluarga']);
     Route::resource('penduduk', PendudukController::class);
     Route::resource('stunting', StuntingController::class);

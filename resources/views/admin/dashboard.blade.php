@@ -46,6 +46,9 @@
                 <a href="{{ route('admin.pengaduan.index') }}" class="block rounded-lg bg-white/10 px-4 py-3 text-sm font-bold hover:bg-white/15">
                     Tinjau pengaduan &rarr;
                 </a>
+                <a href="{{ route('admin.dokumen-publik.index') }}" class="block rounded-lg bg-white/10 px-4 py-3 text-sm font-bold hover:bg-white/15">
+                    Kelola dokumen PPID &rarr;
+                </a>
                 <a href="{{ route('admin.apbdes.index') }}" class="block rounded-lg bg-white/10 px-4 py-3 text-sm font-bold hover:bg-white/15">
                     Kelola APBDes &rarr;
                 </a>

@@ -15,18 +15,9 @@
                 ['label' => 'Infografis', 'route' => 'infografis', 'url' => '/info-grafis', 'icon' => 'chart'],
                 ['label' => 'UMKM Desa', 'route' => 'umkm', 'url' => '/umkm', 'icon' => 'business'],
                 ['label' => 'Berita', 'route' => 'berita', 'url' => '/berita', 'icon' => 'news'],
+                ['label' => 'PPID', 'route' => 'ppid', 'url' => '/ppid', 'icon' => 'document'],
                 ['label' => 'Program KKN', 'route' => 'kkn', 'url' => '/program-kkn', 'icon' => 'program'],
-                [
-                    'label' => 'Layanan',
-                    'route' => 'layanan*',
-                    'url' => '/layanan',
-                    'icon' => 'service',
-                    'children' => [
-                        ['label' => 'Surat Keterangan Domisili', 'route' => 'layanan.domisili', 'url' => '/layanan/surat-keterangan-domisili'],
-                        ['label' => 'Surat Pengantar KK/KTP', 'route' => 'layanan.pengantar', 'url' => '/layanan/surat-pengantar-kk-ktp'],
-                        ['label' => 'Pengaduan Masyarakat', 'route' => 'layanan.pengaduan', 'url' => '/layanan/pengaduan-masyarakat'],
-                    ],
-                ],
+                ['label' => 'Pengaduan', 'route' => 'layanan*', 'url' => '/layanan', 'icon' => 'service'],
             ];
         @endphp
         <div id="sidebar-overlay" class="fixed inset-0 z-40 hidden bg-slate-950/45 lg:hidden"></div>
@@ -57,7 +48,7 @@
             <div class="mt-auto rounded-2xl bg-emerald-800 p-5 text-emerald-50">
                 <p class="text-sm font-bold">Butuh bantuan?</p>
                 <p class="mt-1 text-xs leading-5 text-emerald-100">Hubungi kantor desa pada jam pelayanan.</p>
-                <a href="{{ route('layanan') }}" class="mt-4 inline-flex text-sm font-bold underline underline-offset-4">Layanan masyarakat →</a>
+                <a href="{{ route('layanan') }}" class="mt-4 inline-flex text-sm font-bold underline underline-offset-4">Kanal pengaduan →</a>
             </div>
         </aside>
 
@@ -83,7 +74,6 @@
                     @endif
                 @endforeach
                 </nav>
-                <a href="{{ route('layanan') }}" class="btn-primary hidden sm:inline-flex">Layanan Online <span aria-hidden="true">→</span></a>
                 <button type="button" class="rounded-xl border border-slate-200 p-2.5 text-slate-700 lg:hidden" data-sidebar-open aria-label="Buka menu"><span class="block text-xl leading-none">☰</span></button>
             </div>
         </header>
@@ -96,12 +86,12 @@
             <div class="container-page grid gap-10 py-14 md:grid-cols-[1.3fr_.7fr_.9fr]">
                 <div>
                     <p class="font-display text-2xl font-bold text-white">Desa Sambo</p>
-                    <p class="mt-3 max-w-sm text-sm leading-6 text-slate-400">Media informasi, pelayanan, dan kolaborasi warga Desa Sambo.</p>
+                    <p class="mt-3 max-w-sm text-sm leading-6 text-slate-400">Media informasi, PPID, pengaduan, dan kolaborasi warga Desa Sambo.</p>
                 </div>
                 <div><p class="text-sm font-bold text-white">Tautan cepat</p><div class="mt-4 space-y-2 text-sm">@foreach ($navigation as $item)<a class="block hover:text-white" href="{{ $item['url'] }}">{{ $item['label'] }}</a>@endforeach</div></div>
                 <div><p class="text-sm font-bold text-white">Kontak kantor desa</p><p class="mt-4 text-sm leading-6 text-slate-400">Desa Sambo, Indonesia<br>Senin–Jumat, 08.00–15.00 WITA</p></div>
             </div>
-            <div class="border-t border-white/10"><div class="container-page py-5 text-xs text-slate-500">© {{ date('Y') }} Pemerintah Desa Sambo. Dibangun untuk pelayanan masyarakat.</div></div>
+            <div class="border-t border-white/10"><div class="container-page py-5 text-xs text-slate-500">© {{ date('Y') }} Pemerintah Desa Sambo. Dibangun untuk informasi publik dan pelayanan masyarakat.</div></div>
         </footer>
     </body>
 </html>

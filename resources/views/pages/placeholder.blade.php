@@ -6,10 +6,9 @@
         'infografis' => 'Info Grafis Desa',
         'berita' => 'Berita Desa',
         'umkm' => 'UMKM Desa Sambo',
+        'ppid' => 'PPID Desa Sambo',
         'kkn' => 'Program KKN',
         'layanan' => 'Layanan Masyarakat',
-        'layanan.domisili' => 'Surat Keterangan Domisili',
-        'layanan.pengantar' => 'Surat Pengantar KK/KTP',
         'layanan.pengaduan' => 'Pengaduan Masyarakat',
     ];
     $heading = $pages[request()->route()->getName()] ?? 'Desa Sambo';

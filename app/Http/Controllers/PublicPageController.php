@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Apbdes;
+use App\Models\Berita;
+use App\Models\DokumenPublik;
 use App\Models\KartuKeluarga;
 use App\Models\Penduduk;
 use App\Models\ProdukUmkm;
 use App\Models\Stunting;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class PublicPageController extends Controller
@@ -105,7 +108,36 @@ class PublicPageController extends Controller
 
     public function berita(): View
     {
-        return view('pages.placeholder');
+        $berita = Schema::hasTable('berita')
+            ? Berita::query()
+                ->where('status', 'publish')
+                ->orderByDesc(Schema::hasColumn('berita', 'tanggal_upload') ? 'tanggal_upload' : 'created_at')
+                ->latest('created_at')
+                ->get()
+            : collect();
+
+        return view('pages.berita', [
+            'berita' => $berita,
+            'featuredBerita' => $berita->first(),
+        ]);
+    }
+
+    public function detailBerita(Berita $berita): View
+    {
+        abort_unless($berita->status === 'publish', 404);
+
+        $relatedBerita = Berita::query()
+            ->where('status', 'publish')
+            ->whereKeyNot($berita->id)
+            ->orderByDesc(Schema::hasColumn('berita', 'tanggal_upload') ? 'tanggal_upload' : 'created_at')
+            ->latest('created_at')
+            ->take(3)
+            ->get();
+
+        return view('pages.berita-detail', [
+            'berita' => $berita,
+            'relatedBerita' => $relatedBerita,
+        ]);
     }
 
     public function umkm(): View
@@ -122,9 +154,52 @@ class PublicPageController extends Controller
         ]);
     }
 
+    public function ppid(): View
+    {
+        $documents = Schema::hasTable('dokumen_publik')
+            ? DokumenPublik::query()
+                ->orderByDesc('tahun')
+                ->latest('updated_at')
+                ->get()
+                ->map(fn (DokumenPublik $document) => [
+                    'title' => $document->judul_dokumen,
+                    'year' => $document->tahun,
+                    'file_path' => $document->file_path,
+                    'url' => $this->documentUrl($document->file_path),
+                    'updated_at' => $document->updated_at,
+                ])
+            : collect();
+        $latestDocument = $documents->first();
+
+        return view('pages.ppid', [
+            'documents' => $documents,
+            'years' => $documents->pluck('year')->filter()->unique()->sortDesc()->values(),
+            'stats' => [
+                ['label' => 'Dokumen tersedia', 'value' => $documents->count()],
+                ['label' => 'Tahun arsip', 'value' => $documents->pluck('year')->filter()->unique()->count()],
+                ['label' => 'Terbaru', 'value' => $latestDocument['year'] ?? '-'],
+            ],
+        ]);
+    }
+
     public function programKkn(): View
     {
         return view('pages.placeholder');
+    }
+
+    private function documentUrl(?string $path): string
+    {
+        $path = trim((string) $path);
+
+        if ($path === '') {
+            return '#';
+        }
+
+        if (preg_match('/^https?:\/\//i', $path) || str_starts_with($path, '/')) {
+            return $path;
+        }
+
+        return Storage::url($path);
     }
 
     private function buildAgeBuckets($penduduk): array

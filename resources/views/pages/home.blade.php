@@ -5,10 +5,10 @@
 @section('content')
     @php
         $services = [
-            ['icon' => '📝', 'title' => 'Surat Pengantar', 'description' => 'Ajukan surat pengantar dari rumah.'],
-            ['icon' => '👨‍👩‍👧', 'title' => 'Data Kependudukan', 'description' => 'Informasi dan pembaruan data warga.'],
-            ['icon' => '📣', 'title' => 'Aspirasi Warga', 'description' => 'Sampaikan saran dan laporan Anda.'],
-            ['icon' => '📅', 'title' => 'Jadwal Kegiatan', 'description' => 'Agenda desa dan kegiatan masyarakat.'],
+            ['icon' => 'PP', 'title' => 'PPID', 'description' => 'Akses arsip dokumen publik desa.', 'href' => route('ppid'), 'cta' => 'Buka'],
+            ['icon' => 'DK', 'title' => 'Data Kependudukan', 'description' => 'Informasi dan pembaruan data warga.', 'href' => route('infografis'), 'cta' => 'Lihat'],
+            ['icon' => 'AW', 'title' => 'Aspirasi Warga', 'description' => 'Sampaikan saran dan laporan Anda.', 'href' => route('layanan'), 'cta' => 'Kirim'],
+            ['icon' => 'JD', 'title' => 'Jadwal Kegiatan', 'description' => 'Agenda desa dan kegiatan masyarakat.', 'href' => route('kkn'), 'cta' => 'Lihat'],
         ];
 
         $news = [
@@ -32,11 +32,11 @@
                     Sambo tumbuh melalui <span class="text-emerald-700">kebersamaan.</span>
                 </h1>
                 <p class="mt-6 max-w-xl text-base leading-7 text-slate-600 sm:text-lg">
-                    Informasi desa, layanan masyarakat, UMKM lokal, dan kegiatan KKN tersedia dalam satu tempat yang mudah diakses.
+                    Informasi desa, PPID, layanan pengaduan, UMKM lokal, dan kegiatan KKN tersedia dalam satu tempat yang mudah diakses.
                 </p>
                 <div class="mt-8 flex flex-wrap gap-3">
                     <a href="{{ route('profil') }}" class="btn-primary">Jelajahi Desa <span>→</span></a>
-                    <a href="{{ route('layanan') }}" class="btn-soft">Ajukan Layanan</a>
+                    <a href="{{ route('ppid') }}" class="btn-soft">Akses PPID</a>
                 </div>
 
                 <div class="mt-12 grid max-w-lg grid-cols-3 gap-5 border-t border-emerald-900/10 pt-6">
@@ -111,18 +111,18 @@
         <div class="flex flex-wrap items-end justify-between gap-5">
             <div>
                 <p class="eyebrow text-emerald-700">Akses cepat</p>
-                <h2 class="section-title">Layanan untuk masyarakat</h2>
+                <h2 class="section-title">Akses untuk masyarakat</h2>
             </div>
-            <a href="{{ route('layanan') }}" class="link-arrow">Lihat semua layanan →</a>
+            <a href="{{ route('ppid') }}" class="link-arrow">Buka PPID →</a>
         </div>
 
         <div class="mt-9 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             @foreach ($services as $service)
-                <a href="{{ route('layanan') }}" class="service-card">
-                    <span class="grid h-11 w-11 place-items-center rounded-xl bg-emerald-50 text-xl">{{ $service['icon'] }}</span>
+                <a href="{{ $service['href'] }}" class="service-card">
+                    <span class="grid h-11 w-11 place-items-center rounded-xl bg-emerald-50 text-sm font-black text-emerald-800">{{ $service['icon'] }}</span>
                     <h3>{{ $service['title'] }}</h3>
                     <p>{{ $service['description'] }}</p>
-                    <span class="mt-auto text-sm font-bold text-emerald-700">Ajukan →</span>
+                    <span class="mt-auto text-sm font-bold text-emerald-700">{{ $service['cta'] }} →</span>
                 </a>
             @endforeach
         </div>
@@ -133,7 +133,7 @@
             <div>
                 <p class="eyebrow text-emerald-700">Infografis Desa</p>
                 <h2 class="section-title">Sekilas data Desa Sambo</h2>
-                <p class="mt-3 max-w-xl text-slate-600">Visualisasi singkat tentang layanan, partisipasi warga, dan keberlanjutan desa.</p>
+                <p class="mt-3 max-w-xl text-slate-600">Visualisasi singkat tentang data, partisipasi warga, dan keberlanjutan desa.</p>
             </div>
             <a href="{{ route('infografis') }}" class="link-arrow">Lihat info grafis →</a>
         </div>
@@ -142,7 +142,7 @@
             <article class="rounded-3xl border border-emerald-900/10 bg-white p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg">
                 <p class="text-xs font-bold uppercase tracking-wider text-emerald-700">Cakupan digital</p>
                 <p class="mt-4 text-4xl font-display font-bold text-slate-900">100%</p>
-                <p class="mt-2 text-sm leading-6 text-slate-500">Akses informasi desa dan layanan online tersedia untuk seluruh warga.</p>
+                <p class="mt-2 text-sm leading-6 text-slate-500">Akses informasi desa, PPID, dan kanal pengaduan tersedia untuk seluruh warga.</p>
             </article>
 
             <article class="rounded-3xl border border-emerald-900/10 bg-white p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg">
