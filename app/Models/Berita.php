@@ -18,6 +18,11 @@ class Berita extends Model
         'konten',
         'thumbnail_path',
         'status',
+        'tanggal_upload',
+    ];
+
+    protected $casts = [
+        'tanggal_upload' => 'date',
     ];
 
     /**

@@ -30,7 +30,6 @@
                     <h1 class="max-w-xl text-5xl font-black uppercase leading-tight text-emerald-700 sm:text-6xl lg:text-7xl">
                         Infografis<br>Desa Sambo
                     </h1>
-                    <p class="mt-5 max-w-xl text-base leading-7 text-slate-600">Data pada halaman ini tersambung dengan CRUD admin desa, sehingga perubahan data admin akan ikut mengubah tampilan infografis publik.</p>
                 </div>
 
                 <div class="lg:pt-2">
@@ -93,7 +92,6 @@
                                 @unless ($populationStats['hasData'])
                                     <div class="mt-6 rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center">
                                         <p class="font-display text-2xl font-bold text-slate-900">Belum ada data penduduk.</p>
-                                        <p class="mt-2 text-sm leading-6 text-slate-500">Tambahkan data melalui admin Penduduk dan Kartu Keluarga agar grafik di bawah otomatis terisi.</p>
                                     </div>
                                 @endunless
 

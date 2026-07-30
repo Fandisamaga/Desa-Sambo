@@ -11,15 +11,12 @@
             $adminNavigation = [
                 ['label' => 'Dashboard', 'route' => 'admin.dashboard', 'url' => route('admin.dashboard'), 'icon' => 'D'],
                 ['label' => 'Berita', 'route' => 'admin.berita.*', 'url' => route('admin.berita.index'), 'icon' => 'B'],
-                ['label' => 'Kategori Berita', 'route' => 'admin.kategori-berita.*', 'url' => route('admin.kategori-berita.index'), 'icon' => 'K'],
                 ['label' => 'Produk UMKM', 'route' => 'admin.produk-umkm.*', 'url' => route('admin.produk-umkm.index'), 'icon' => 'U'],
-                ['label' => 'Dokumen Publik', 'route' => 'admin.dokumen-publik.*', 'url' => route('admin.dokumen-publik.index'), 'icon' => 'D'],
+                ['label' => 'PPID Dokumen', 'route' => 'admin.dokumen-publik.*', 'url' => route('admin.dokumen-publik.index'), 'icon' => 'D'],
                 ['label' => 'APBDes', 'route' => 'admin.apbdes.*', 'url' => route('admin.apbdes.index'), 'icon' => 'A'],
                 ['label' => 'Kartu Keluarga', 'route' => 'admin.kartu-keluarga.*', 'url' => route('admin.kartu-keluarga.index'), 'icon' => 'K'],
                 ['label' => 'Penduduk', 'route' => 'admin.penduduk.*', 'url' => route('admin.penduduk.index'), 'icon' => 'P'],
                 ['label' => 'Stunting', 'route' => 'admin.stunting.*', 'url' => route('admin.stunting.index'), 'icon' => 'S'],
-                ['label' => 'Kategori Surat', 'route' => 'admin.kategori-surat.*', 'url' => route('admin.kategori-surat.index'), 'icon' => 'S'],
-                ['label' => 'Arsip Surat', 'route' => 'admin.arsip-surat.*', 'url' => route('admin.arsip-surat.index'), 'icon' => 'R'],
                 ['label' => 'Pengaduan', 'route' => ['admin.pengaduan.*', 'admin.layanan.*'], 'url' => route('admin.pengaduan.index'), 'icon' => 'L'],
             ];
         @endphp

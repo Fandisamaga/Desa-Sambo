@@ -12,7 +12,7 @@
                     <p class="mt-1 text-sm text-slate-500">{{ $resource['description'] }}</p>
                 @endisset
             </div>
-            @if (($resource['can_create'] ?? true))
+            @if ($resource['can_create'] ?? true)
                 <a href="{{ route($resource['route'] . '.create') }}" class="btn-primary">
                     <span class="text-lg leading-none">+</span>
                     Tambah {{ $resource['singular'] }}
@@ -23,12 +23,6 @@
         @if (session('success'))
             <div class="rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-800">
                 {{ session('success') }}
-            </div>
-        @endif
-
-        @if (session('info'))
-            <div class="rounded-lg border border-sky-200 bg-sky-50 px-4 py-3 text-sm font-semibold text-sky-800">
-                {{ session('info') }}
             </div>
         @endif
 
@@ -86,16 +80,12 @@
                                 <td class="px-4 py-4">
                                     <div class="flex items-center justify-end gap-2">
                                         <a href="{{ route($resource['route'] . '.show', $item) }}" class="rounded-lg border border-slate-200 px-3 py-2 text-xs font-bold text-slate-600 hover:border-emerald-200 hover:text-emerald-700">Detail</a>
-                                        @if (($resource['can_edit'] ?? true))
-                                            <a href="{{ route($resource['route'] . '.edit', $item) }}" class="rounded-lg border border-slate-200 px-3 py-2 text-xs font-bold text-slate-600 hover:border-emerald-200 hover:text-emerald-700">Edit</a>
-                                        @endif
-                                        @if (($resource['can_delete'] ?? true))
-                                            <form method="POST" action="{{ route($resource['route'] . '.destroy', $item) }}" onsubmit="return confirm('Hapus data ini?')">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="rounded-lg border border-red-100 px-3 py-2 text-xs font-bold text-red-600 hover:bg-red-50">Hapus</button>
-                                            </form>
-                                        @endif
+                                        <a href="{{ route($resource['route'] . '.edit', $item) }}" class="rounded-lg border border-slate-200 px-3 py-2 text-xs font-bold text-slate-600 hover:border-emerald-200 hover:text-emerald-700">Edit</a>
+                                        <form method="POST" action="{{ route($resource['route'] . '.destroy', $item) }}" onsubmit="return confirm('Hapus data ini?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="rounded-lg border border-red-100 px-3 py-2 text-xs font-bold text-red-600 hover:bg-red-50">Hapus</button>
+                                        </form>
                                     </div>
                                 </td>
                             </tr>

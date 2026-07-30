@@ -23,17 +23,17 @@ class BeritaController extends Controller
     private function columns(): array
     {
         return [
-            ['label' => 'Judul', 'key' => 'judul', 'secondary' => 'kategori.nama_kategori'],
+            ['label' => 'Judul', 'key' => 'judul'],
             ['label' => 'Status', 'key' => 'status', 'type' => 'badge'],
-            ['label' => 'Dibuat', 'key' => 'created_at', 'type' => 'date'],
+            ['label' => 'Tanggal upload', 'key' => 'tanggal_upload', 'type' => 'date'],
         ];
     }
 
-    private function fields($kategori): array
+    private function fields(): array
     {
         return [
-            ['name' => 'kategori_berita_id', 'label' => 'Kategori', 'type' => 'select', 'options' => $kategori->pluck('nama_kategori', 'id')->toArray(), 'required' => true],
             ['name' => 'judul', 'label' => 'Judul', 'type' => 'text', 'required' => true],
+            ['name' => 'tanggal_upload', 'label' => 'Tanggal upload', 'type' => 'date', 'required' => true, 'default' => now()->toDateString()],
             ['name' => 'status', 'label' => 'Status', 'type' => 'select', 'options' => ['draft' => 'Draft', 'publish' => 'Publish'], 'required' => true, 'default' => 'draft'],
             ['name' => 'thumbnail', 'label' => 'Thumbnail', 'type' => 'file', 'accept' => 'image/*', 'current_path' => 'thumbnail_path'],
             ['name' => 'konten', 'label' => 'Konten', 'type' => 'textarea', 'rows' => 10, 'required' => true],
@@ -61,11 +61,9 @@ class BeritaController extends Controller
      */
     public function create()
     {
-        $kategori = KategoriBerita::orderBy('nama_kategori')->get();
-
         return view('admin.resources.form', [
             'resource' => $this->resource(),
-            'fields' => $this->fields($kategori),
+            'fields' => $this->fields(),
         ]);
     }
 
@@ -75,13 +73,14 @@ class BeritaController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'kategori_berita_id' => 'required|exists:kategori_berita,id',
             'judul' => 'required|max:255',
+            'tanggal_upload' => 'required|date',
             'konten' => 'required',
             'thumbnail' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'status' => 'required|in:draft,publish',
         ]);
 
+        $validated['kategori_berita_id'] = $this->defaultKategoriBeritaId();
         $validated['slug'] = Str::slug($request->judul);
 
         if (Berita::where('slug', $validated['slug'])->exists()) {
@@ -107,14 +106,10 @@ class BeritaController extends Controller
      */
     public function show(Berita $berita)
     {
-        $berita->load('kategori');
-
-        $kategori = KategoriBerita::orderBy('nama_kategori')->get();
-
         return view('admin.resources.show', [
             'resource' => $this->resource(),
             'item' => $berita,
-            'fields' => $this->fields($kategori),
+            'fields' => $this->fields(),
         ]);
     }
 
@@ -123,11 +118,9 @@ class BeritaController extends Controller
      */
     public function edit(Berita $berita)
     {
-        $kategori = KategoriBerita::orderBy('nama_kategori')->get();
-
         return view('admin.resources.form', [
             'resource' => $this->resource(),
-            'fields' => $this->fields($kategori),
+            'fields' => $this->fields(),
             'item' => $berita,
         ]);
     }
@@ -137,8 +130,8 @@ class BeritaController extends Controller
     public function update(Request $request, Berita $berita)
     {
         $validated = $request->validate([
-            'kategori_berita_id' => 'required|exists:kategori_berita,id',
             'judul' => 'required|max:255',
+            'tanggal_upload' => 'required|date',
             'konten' => 'required',
             'thumbnail' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'status' => 'required|in:draft,publish',
@@ -177,6 +170,14 @@ class BeritaController extends Controller
         return redirect()
             ->route('admin.berita.index')
             ->with('success', 'Berita berhasil diperbarui.');
+    }
+
+    private function defaultKategoriBeritaId(): int
+    {
+        return KategoriBerita::firstOrCreate(
+            ['slug' => 'berita-desa'],
+            ['nama_kategori' => 'Berita Desa'],
+        )->id;
     }
     
     /**

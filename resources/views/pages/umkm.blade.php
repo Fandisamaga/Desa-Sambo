@@ -66,7 +66,7 @@
             <div>
                 <p class="eyebrow text-emerald-700">Etalase Warga</p>
                 <h1 class="mt-5 font-display text-5xl font-bold leading-tight text-slate-900 sm:text-6xl">UMKM Desa Sambo</h1>
-                <p class="mt-5 max-w-xl text-lg leading-8 text-slate-600">Direktori usaha warga yang terhubung dengan data Produk UMKM di admin desa.</p>
+                <p class="mt-5 max-w-xl text-lg leading-8 text-slate-600">Berikut Daftar UMKM yang ada di desa Sambo</p>
             </div>
 
             <div class="grid gap-4 sm:grid-cols-3">
