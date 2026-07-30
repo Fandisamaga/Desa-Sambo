@@ -45,7 +45,7 @@
                 'tone' => 'bg-amber-600 text-white',
                 'surface' => 'bg-amber-50 text-amber-800 ring-amber-100',
                 'requirements' => ['Nama pengirim', 'Kontak yang bisa dihubungi', 'Uraian aduan yang jelas'],
-                'admin' => 'Masuk ke CRUD Pengaduan dengan status awal pending.',
+                'admin' => 'Laporan masyarakat akan masuk ke panel admin desa untuk ditinjau.',
             ],
         ];
 
@@ -53,16 +53,8 @@
             ['label' => 'Pilih layanan', 'description' => 'Warga memilih jenis surat atau kanal pengaduan yang sesuai kebutuhan.'],
             ['label' => 'Lengkapi data', 'description' => 'Berkas dan identitas disiapkan sesuai kategori layanan.'],
             ['label' => 'Verifikasi operator', 'description' => 'Operator desa mengecek data melalui panel admin.'],
-            ['label' => 'Tindak lanjut', 'description' => 'Surat diterbitkan sebagai arsip atau pengaduan diperbarui statusnya.'],
+            ['label' => 'Tindak lanjut', 'description' => 'Surat diterbitkan sebagai arsip atau pengaduan ditinjau oleh operator desa.'],
         ];
-
-        $statusLabels = [
-            'pending' => ['label' => 'Pending', 'class' => 'bg-amber-500'],
-            'diproses' => ['label' => 'Diproses', 'class' => 'bg-sky-500'],
-            'selesai' => ['label' => 'Selesai', 'class' => 'bg-emerald-600'],
-            'ditolak' => ['label' => 'Ditolak', 'class' => 'bg-red-500'],
-        ];
-        $maxStatus = max(1, max($statusCounts ?? [0]));
     @endphp
 
     <section class="bg-white">
@@ -94,8 +86,8 @@
                         <p class="mt-2 text-sm leading-6 text-slate-300">Pelayanan administrasi, surat, dan konsultasi warga.</p>
                     </div>
                     <div class="rounded-xl bg-white/10 p-4 ring-1 ring-white/10">
-                        <p class="text-sm font-bold text-white">Status aduan</p>
-                        <p class="mt-2 text-sm leading-6 text-slate-300">Pending, diproses, selesai, atau ditolak oleh operator.</p>
+                        <p class="text-sm font-bold text-white">Tindak lanjut</p>
+                        <p class="mt-2 text-sm leading-6 text-slate-300">Laporan diterima dan akan ditinjau oleh operator desa.</p>
                     </div>
                 </div>
 
@@ -199,27 +191,20 @@
         <div class="container-page grid gap-10 lg:grid-cols-[.9fr_1.1fr]">
             <div>
                 <p class="eyebrow text-emerald-700">Monitoring Pengaduan</p>
-                <h2 class="section-title">Status tindak lanjut warga</h2>
-                <p class="mt-4 max-w-xl leading-7 text-slate-600">Ringkasan ini menggunakan status yang sama dengan CRUD Pengaduan di admin, sehingga operator dapat menindaklanjuti laporan tanpa format data baru.</p>
+                <h2 class="section-title">Ringkasan laporan warga</h2>
+                <p class="mt-4 max-w-xl leading-7 text-slate-600">Laporan yang masuk akan ditinjau langsung oleh operator desa melalui panel admin.</p>
             </div>
 
             <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                <div class="space-y-5">
-                    @foreach ($statusLabels as $status => $meta)
-                        @php
-                            $count = (int) ($statusCounts[$status] ?? 0);
-                            $width = max(6, round(($count / $maxStatus) * 100));
-                        @endphp
-                        <div>
-                            <div class="flex items-center justify-between gap-4">
-                                <p class="text-sm font-bold text-slate-700">{{ $meta['label'] }}</p>
-                                <p class="text-sm font-bold text-slate-950">{{ $formatNumber($count) }}</p>
-                            </div>
-                            <div class="mt-2 h-2 overflow-hidden rounded-full bg-slate-100">
-                                <div class="h-full rounded-full {{ $meta['class'] }}" style="width: {{ $width }}%"></div>
-                            </div>
-                        </div>
-                    @endforeach
+                <div class="space-y-4 text-sm text-slate-600">
+                    <div class="rounded-xl bg-slate-50 p-4">
+                        <p class="font-bold text-slate-900">Jumlah laporan masuk</p>
+                        <p class="mt-2">{{ $formatNumber((int) ($stats[2]['value'] ?? 0)) }} pengaduan tercatat.</p>
+                    </div>
+                    <div class="rounded-xl bg-slate-50 p-4">
+                        <p class="font-bold text-slate-900">Perhatian operator</p>
+                        <p class="mt-2">Semua laporan akan ditinjau tanpa menampilkan status berjenjang di halaman publik.</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -230,7 +215,7 @@
             <div>
                 <p class="eyebrow text-emerald-700">Form Pengaduan</p>
                 <h2 class="section-title">Sampaikan laporan ke pemerintah desa</h2>
-                <p class="mt-4 leading-7 text-slate-600">Form ini memakai kolom yang sama dengan CRUD Pengaduan: nama pengirim, kontak pengirim, isi aduan, status, dan catatan admin. Status awal otomatis pending.</p>
+                <p class="mt-4 leading-7 text-slate-600">Form ini memuat nama pengirim, kontak pengirim, dan isi aduan untuk melaporkan kebutuhan atau masalah masyarakat.</p>
 
                 <div class="mt-7 rounded-2xl bg-emerald-800 p-6 text-white">
                     <p class="font-display text-2xl font-bold">Agar cepat diproses</p>
@@ -284,7 +269,7 @@
                 </div>
 
                 <div class="mt-6 flex flex-wrap items-center justify-between gap-4 border-t border-slate-100 pt-5">
-                    <span class="rounded-full bg-amber-50 px-3 py-1.5 text-xs font-bold text-amber-700 ring-1 ring-amber-100">Status awal: pending</span>
+                    <span class="rounded-full bg-amber-50 px-3 py-1.5 text-xs font-bold text-amber-700 ring-1 ring-amber-100">Laporan akan ditinjau operator</span>
                     <button type="submit" class="btn-primary">Kirim pengaduan <span aria-hidden="true">&rarr;</span></button>
                 </div>
             </form>
