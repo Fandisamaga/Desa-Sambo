@@ -13,7 +13,10 @@ class PengaduanController extends Controller
             'title' => 'Pengaduan Masyarakat',
             'singular' => 'pengaduan',
             'route' => 'admin.pengaduan',
-            'description' => 'Kelola laporan dan tindak lanjut pengaduan masyarakat.',
+            'description' => 'Lihat dan cek detail laporan masyarakat yang diajukan melalui layanan publik.',
+            'can_create' => false,
+            'can_edit' => false,
+            'can_delete' => false,
         ];
     }
 
@@ -21,7 +24,6 @@ class PengaduanController extends Controller
     {
         return [
             ['label' => 'Pengirim', 'key' => 'nama_pengirim', 'secondary' => 'kontak_pengirim'],
-            ['label' => 'Status', 'key' => 'status', 'type' => 'badge'],
             ['label' => 'Masuk', 'key' => 'created_at', 'type' => 'date'],
         ];
     }
@@ -50,26 +52,13 @@ class PengaduanController extends Controller
 
     public function create()
     {
-        return view('admin.resources.form', [
-            'resource' => $this->resource(),
-            'fields' => $this->fields(),
-        ]);
+        return redirect()->route('admin.pengaduan.index');
     }
 
     public function store(Request $request)
     {
-        $data = $request->validate([
-            'nama_pengirim' => ['required', 'string', 'max:100'],
-            'kontak_pengirim' => ['required', 'string', 'max:50'],
-            'isi_aduan' => ['required', 'string'],
-            'status' => ['required', 'in:pending,diproses,selesai,ditolak'],
-            'catatan_admin' => ['nullable', 'string'],
-        ]);
-
-        Pengaduan::create($data);
-
         return redirect()->route('admin.pengaduan.index')
-            ->with('success', 'Pengaduan berhasil ditambahkan.');
+            ->with('info', 'Pengaduan hanya dapat dikirim oleh masyarakat melalui formulir layanan publik.');
     }
 
     public function storePublic(Request $request)
@@ -101,34 +90,18 @@ class PengaduanController extends Controller
 
     public function edit(Pengaduan $pengaduan)
     {
-        return view('admin.resources.form', [
-            'resource' => $this->resource(),
-            'fields' => $this->fields(),
-            'item' => $pengaduan,
-        ]);
+        return redirect()->route('admin.pengaduan.show', $pengaduan);
     }
 
     public function update(Request $request, Pengaduan $pengaduan)
     {
-        $data = $request->validate([
-            'nama_pengirim' => ['required', 'string', 'max:100'],
-            'kontak_pengirim' => ['required', 'string', 'max:50'],
-            'isi_aduan' => ['required', 'string'],
-            'status' => ['required', 'in:pending,diproses,selesai,ditolak'],
-            'catatan_admin' => ['nullable', 'string'],
-        ]);
-
-        $pengaduan->update($data);
-
-        return redirect()->route('admin.pengaduan.index')
-            ->with('success', 'Pengaduan berhasil diperbarui.');
+        return redirect()->route('admin.pengaduan.show', $pengaduan)
+            ->with('info', 'Perubahan status dan data pengaduan tidak dilakukan dari panel admin ini.');
     }
 
     public function destroy(Pengaduan $pengaduan)
     {
-        $pengaduan->delete();
-
         return redirect()->route('admin.pengaduan.index')
-            ->with('success', 'Pengaduan berhasil dihapus.');
+            ->with('info', 'Pengaduan tidak dapat dihapus dari panel admin ini.');
     }
 }

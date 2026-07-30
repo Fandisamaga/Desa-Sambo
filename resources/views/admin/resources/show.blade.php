@@ -12,9 +12,17 @@
             </div>
             <div class="flex gap-3">
                 <a href="{{ route($resource['route'] . '.index') }}" class="btn-soft">&larr; Kembali</a>
-                <a href="{{ route($resource['route'] . '.edit', $item) }}" class="btn-primary">Edit</a>
+                @if (($resource['can_edit'] ?? true))
+                    <a href="{{ route($resource['route'] . '.edit', $item) }}" class="btn-primary">Edit</a>
+                @endif
             </div>
         </div>
+
+        @if (session('info'))
+            <div class="rounded-lg border border-sky-200 bg-sky-50 px-4 py-3 text-sm font-semibold text-sky-800">
+                {{ session('info') }}
+            </div>
+        @endif
 
         <div class="overflow-hidden rounded-lg bg-white shadow-sm ring-1 ring-slate-200">
             <dl class="divide-y divide-slate-100">

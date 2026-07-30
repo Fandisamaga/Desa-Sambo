@@ -94,9 +94,15 @@ class AdminCrudViewsTest extends TestCase
             'admin.dokumen-publik' => $dokumen,
         ] as $route => $model) {
             $this->actingAs($admin)->get(route($route . '.index'))->assertOk();
-            $this->actingAs($admin)->get(route($route . '.create'))->assertOk();
             $this->actingAs($admin)->get(route($route . '.show', $model))->assertOk();
-            $this->actingAs($admin)->get(route($route . '.edit', $model))->assertOk();
+
+            if ($route === 'admin.pengaduan') {
+                $this->actingAs($admin)->get(route($route . '.create'))->assertRedirect(route($route . '.index'));
+                $this->actingAs($admin)->get(route($route . '.edit', $model))->assertRedirect(route($route . '.show', $model));
+            } else {
+                $this->actingAs($admin)->get(route($route . '.create'))->assertOk();
+                $this->actingAs($admin)->get(route($route . '.edit', $model))->assertOk();
+            }
         }
     }
 
