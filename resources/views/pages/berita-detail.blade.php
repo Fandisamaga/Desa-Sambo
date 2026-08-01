@@ -35,7 +35,7 @@
             <div class="mt-8 grid gap-10 lg:grid-cols-[.82fr_1.18fr]">
                 <div>
                     <p class="eyebrow text-emerald-700">Berita Desa Sambo</p>
-                    <h1 class="mt-5 font-display text-4xl font-bold leading-tight text-slate-950 sm:text-5xl lg:text-6xl">{{ $berita->judul }}</h1>
+                    <h1 class="mt-5 break-words font-display text-4xl font-bold leading-tight text-slate-950 sm:text-5xl lg:text-6xl">{{ $berita->judul }}</h1>
                     <p class="mt-5 text-sm font-bold text-slate-500">{{ $dateLabel($berita) }}</p>
                 </div>
 
@@ -65,7 +65,7 @@
                 <div class="space-y-5 text-base leading-8 text-slate-700">
                     @foreach (preg_split('/\R{2,}/', trim((string) $berita->konten)) as $paragraph)
                         @if (trim($paragraph) !== '')
-                            <p>{{ trim($paragraph) }}</p>
+                            <p class="break-words">{{ trim($paragraph) }}</p>
                         @endif
                     @endforeach
                 </div>
@@ -86,10 +86,10 @@
 
                 <div class="mt-9 grid gap-6 md:grid-cols-3">
                     @foreach ($relatedBerita as $item)
-                        <article class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
+                        <article class="overflow-hidden rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
                             <p class="text-xs font-bold uppercase tracking-[.16em] text-emerald-700">{{ $dateLabel($item) }}</p>
-                            <h3 class="mt-3 font-display text-2xl font-bold leading-snug text-slate-950">{{ $item->judul }}</h3>
-                            <p class="mt-3 text-sm leading-6 text-slate-500">{{ $excerpt($item->konten) }}</p>
+                            <h3 class="mt-3 break-words font-display text-2xl font-bold leading-snug text-slate-950">{{ $item->judul }}</h3>
+                            <p class="mt-3 break-words text-sm leading-6 text-slate-500">{{ $excerpt($item->konten) }}</p>
                             <div class="mt-5 flex flex-wrap items-center justify-end gap-3">
                                 <a href="{{ route('berita.detail', $item->slug) }}" class="text-sm font-bold text-emerald-700 hover:text-emerald-900">Baca &rarr;</a>
                             </div>

@@ -16,7 +16,6 @@
                 ['label' => 'UMKM Desa', 'route' => 'umkm', 'url' => '/umkm', 'icon' => 'business'],
                 ['label' => 'Berita', 'route' => 'berita', 'url' => '/berita', 'icon' => 'news'],
                 ['label' => 'PPID', 'route' => 'ppid', 'url' => '/ppid', 'icon' => 'document'],
-                ['label' => 'Program KKN', 'route' => 'kkn', 'url' => '/program-kkn', 'icon' => 'program'],
                 ['label' => 'Pengaduan', 'route' => 'layanan*', 'url' => '/layanan', 'icon' => 'service'],
             ];
         @endphp

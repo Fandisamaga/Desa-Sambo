@@ -8,13 +8,26 @@
             ['icon' => 'PP', 'title' => 'PPID', 'description' => 'Akses arsip dokumen publik desa.', 'href' => route('ppid'), 'cta' => 'Buka'],
             ['icon' => 'DK', 'title' => 'Data Kependudukan', 'description' => 'Informasi dan pembaruan data warga.', 'href' => route('infografis'), 'cta' => 'Lihat'],
             ['icon' => 'AW', 'title' => 'Aspirasi Warga', 'description' => 'Sampaikan saran dan laporan Anda.', 'href' => route('layanan'), 'cta' => 'Kirim'],
-            ['icon' => 'JD', 'title' => 'Jadwal Kegiatan', 'description' => 'Agenda desa dan kegiatan masyarakat.', 'href' => route('kkn'), 'cta' => 'Lihat'],
+            ['icon' => 'BD', 'title' => 'Berita Desa', 'description' => 'Kabar dan kegiatan terbaru warga.', 'href' => route('berita'), 'cta' => 'Baca'],
         ];
 
-        $news = [
-            ['category' => 'Kegiatan Desa', 'title' => 'Musyawarah warga untuk program 2026', 'excerpt' => 'Warga dan perangkat desa menyusun prioritas pembangunan bersama.', 'date' => '12 Juli 2026'],
-            ['category' => 'KKN', 'title' => 'Mahasiswa KKN mulai program literasi digital', 'excerpt' => 'Pelatihan praktis untuk mendampingi warga menggunakan layanan digital.', 'date' => '8 Juli 2026'],
+        $statToneClasses = [
+            'emerald' => ['card' => 'border-emerald-200 bg-emerald-50', 'accent' => 'bg-emerald-700', 'text' => 'text-emerald-700'],
+            'amber' => ['card' => 'border-amber-200 bg-amber-50', 'accent' => 'bg-amber-500', 'text' => 'text-amber-700'],
+            'sky' => ['card' => 'border-sky-200 bg-sky-50', 'accent' => 'bg-sky-600', 'text' => 'text-sky-700'],
+            'rose' => ['card' => 'border-rose-200 bg-rose-50', 'accent' => 'bg-rose-500', 'text' => 'text-rose-700'],
         ];
+
+        $infoPreviewStats = collect($populationStats['summary'] ?? [])->take(4);
+        $homeBerita = $homeBerita ?? collect();
+        $featuredBerita = $featuredBerita ?? $homeBerita->first();
+        $homeStats = $homeStats ?? [];
+        $heroBackgrounds = collect(\Illuminate\Support\Facades\Storage::disk('public')->files('background'))
+            ->filter(fn ($path) => preg_match('/\.(jpe?g|png|webp|avif)$/i', $path))
+            ->sort()
+            ->take(4)
+            ->map(fn ($path) => asset('storage/' . $path))
+            ->values();
 
         $umkm = ($featuredUmkm ?? collect())->map(fn ($item) => [
             'icon' => strtoupper(substr($item->nama_produk, 0, 2)),
@@ -23,57 +36,67 @@
             'owner' => $item->deskripsi ? \Illuminate\Support\Str::limit($item->deskripsi, 70) : ($item->produk_jasa ?: 'Produk dan jasa warga Desa Sambo'),
             'color' => 'umkm-sage',
         ]);
+
+        $excerpt = fn (?string $content, int $limit = 150): string => \Illuminate\Support\Str::limit(strip_tags((string) $content), $limit);
+
+        $thumbnailUrl = function ($item): ?string {
+            $path = trim((string) $item->thumbnail_path);
+
+            if ($path === '') {
+                return null;
+            }
+
+            return str_starts_with($path, 'http://') || str_starts_with($path, 'https://') || str_starts_with($path, '/')
+                ? $path
+                : asset('storage/' . $path);
+        };
+
+        $dateLabel = function ($item): string {
+            $date = $item->tanggal_upload ?? $item->created_at;
+
+            return $date ? $date->locale('id')->translatedFormat('d F Y') : '-';
+        };
     @endphp
-    <section class="hero-section overflow-hidden">
-        <div class="container-page relative grid items-center gap-12 py-16 lg:grid-cols-[1.05fr_.95fr] lg:py-24">
-            <div class="relative z-10">
-                <p class="eyebrow text-emerald-700">Selamat datang di ruang digital kami</p>
-                <h1 class="mt-5 max-w-3xl font-display text-5xl font-bold leading-[1.05] text-slate-900 sm:text-6xl">
-                    Sambo tumbuh melalui <span class="text-emerald-700">kebersamaan.</span>
-                </h1>
-                <p class="mt-6 max-w-xl text-base leading-7 text-slate-600 sm:text-lg">
-                    Informasi desa, PPID, layanan pengaduan, UMKM lokal, dan kegiatan KKN tersedia dalam satu tempat yang mudah diakses.
-                </p>
-                <div class="mt-8 flex flex-wrap gap-3">
-                    <a href="{{ route('profil') }}" class="btn-primary">Jelajahi Desa <span>→</span></a>
-                    <a href="{{ route('ppid') }}" class="btn-soft">Akses PPID</a>
-                </div>
+<section class="hero-section">
+    @if ($heroBackgrounds->isNotEmpty())
+        <div class="hero-background" data-hero-background aria-hidden="true">
+            @foreach ($heroBackgrounds as $image)
+                <div
+                    class="hero-background__image {{ $loop->first ? 'is-active' : '' }}"
+                    data-hero-slide
+                    style="--hero-bg: url('{{ $image }}');"
+                ></div>
+            @endforeach
+        </div>
+    @endif
 
-                <div class="mt-12 grid max-w-lg grid-cols-3 gap-5 border-t border-emerald-900/10 pt-6">
-                    <div>
-                        <p class="font-display text-2xl font-bold text-slate-900">1.248</p>
-                        <p class="mt-1 text-xs text-slate-500">Warga terlayani</p>
-                    </div>
-                    <div>
-                        <p class="font-display text-2xl font-bold text-slate-900">4</p>
-                        <p class="mt-1 text-xs text-slate-500">Dusun</p>
-                    </div>
-                    <div>
-                        <p class="font-display text-2xl font-bold text-slate-900">12</p>
-                        <p class="mt-1 text-xs text-slate-500">Program aktif</p>
-                    </div>
-                </div>
-            </div>
+    <div class="container-page relative py-16 lg:py-24">
+        <div class="hero-content relative z-10 text-center mx-auto">
+            <p class="eyebrow text-emerald-100">
+                Selamat datang di ruang digital kami
+            </p>
 
-            <div class="relative mx-auto w-full max-w-lg">
-                <div class="hero-orb hero-orb-one"></div>
-                <div class="hero-orb hero-orb-two"></div>
-                <div class="relative overflow-hidden rounded-4xl border border-emerald-900/10 bg-white p-5 shadow-xl">
-                    <div class="rounded-[1.4rem] bg-[linear-gradient(145deg,#edf7e8_0%,#b7dbb9_45%,#49876b_100%)] p-7 pt-32">
-                        <p class="max-w-56 font-display text-3xl font-bold leading-tight text-emerald-950">
-                            Alam, budaya, dan warga yang saling menguatkan.
-                        </p>
-                    </div>
+            <h1 class="mt-5 font-display text-5xl font-bold leading-[1.05] text-white sm:text-6xl">
+                Sambo tumbuh melalui <br>
+                <span class="text-lime-300">kebersamaan</span>
+            </h1>
 
-                    <div class="-mt-5 mx-3 rounded-2xl bg-white p-5 shadow-lg ring-1 ring-slate-900/5">
-                        <p class="text-xs font-bold uppercase tracking-wider text-emerald-700">Info terkini</p>
-                        <p class="mt-2 font-display text-xl font-bold text-slate-900">Gotong royong bersih desa</p>
-                        <p class="mt-2 text-sm text-slate-500">Minggu, 20 Juli · Lapangan Desa</p>
-                    </div>
-                </div>
+            <p class="mt-6 mx-auto max-w-2xl text-base leading-7 text-emerald-50 sm:text-lg">
+                Informasi desa, PPID, layanan pengaduan, UMKM lokal, dan kegiatan masyarakat tersedia dalam satu tempat yang mudah diakses.
+            </p>
+
+            <div class="mt-8 flex justify-center flex-wrap gap-3">
+                <a href="{{ route('profil') }}" class="btn-primary">
+                    Jelajahi Desa →
+                </a>
+
+                <a href="{{ route('ppid') }}" class="btn-soft">
+                    Akses PPID
+                </a>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
     <section class="container-page py-16 lg:py-24">
         <div class="flex flex-wrap items-end justify-between gap-5">
@@ -82,7 +105,7 @@
                 <h2 class="section-title">UMKM Desa Sambo</h2>
                 <p class="mt-3 max-w-xl text-slate-600">Temukan produk dan jasa terbaik yang dibuat oleh warga Sambo.</p>
             </div>
-            <a href="{{ route('umkm') }}" class="link-arrow">Jelajahi UMKM →</a>
+            <a href="{{ route('umkm') }}" class="link-arrow">Jelajahi UMKM &rarr;</a>
         </div>
 
         <div class="mt-9 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
@@ -95,7 +118,7 @@
                         <p class="text-xs font-bold uppercase tracking-wider text-emerald-700">{{ $item['category'] }}</p>
                         <h3 class="mt-2 font-display text-xl font-bold text-slate-900">{{ $item['name'] }}</h3>
                         <p class="mt-2 text-sm text-slate-500">{{ $item['owner'] }}</p>
-                        <a href="{{ route('umkm') }}" class="mt-5 inline-block text-sm font-bold text-emerald-700">Lihat produk →</a>
+                        <a href="{{ route('umkm') }}" class="mt-5 inline-block text-sm font-bold text-emerald-700">Lihat produk &rarr;</a>
                     </div>
                 </article>
             @empty
@@ -113,7 +136,7 @@
                 <p class="eyebrow text-emerald-700">Akses cepat</p>
                 <h2 class="section-title">Akses untuk masyarakat</h2>
             </div>
-            <a href="{{ route('ppid') }}" class="link-arrow">Buka PPID →</a>
+            <a href="{{ route('ppid') }}" class="link-arrow">Buka PPID &rarr;</a>
         </div>
 
         <div class="mt-9 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -122,7 +145,7 @@
                     <span class="grid h-11 w-11 place-items-center rounded-xl bg-emerald-50 text-sm font-black text-emerald-800">{{ $service['icon'] }}</span>
                     <h3>{{ $service['title'] }}</h3>
                     <p>{{ $service['description'] }}</p>
-                    <span class="mt-auto text-sm font-bold text-emerald-700">{{ $service['cta'] }} →</span>
+                    <span class="mt-auto text-sm font-bold text-emerald-700">{{ $service['cta'] }} &rarr;</span>
                 </a>
             @endforeach
         </div>
@@ -131,58 +154,85 @@
     <section id="infografis" class="container-page py-16 lg:py-24">
         <div class="flex flex-wrap items-end justify-between gap-5">
             <div>
-                <p class="eyebrow text-emerald-700">Infografis Desa</p>
-                <h2 class="section-title">Sekilas data Desa Sambo</h2>
-                <p class="mt-3 max-w-xl text-slate-600">Visualisasi singkat tentang data, partisipasi warga, dan keberlanjutan desa.</p>
+                <p class="eyebrow text-emerald-700">Data Penduduk</p>
+                <h2 class="section-title">Ringkasan kependudukan</h2>
+                <p class="mt-3 max-w-xl text-slate-600">Preview data yang sama dengan tab Penduduk di halaman Info Grafis.</p>
             </div>
-            <a href="{{ route('infografis') }}" class="link-arrow">Lihat info grafis →</a>
+            <a href="{{ route('infografis') }}" class="link-arrow">Lihat info grafis &rarr;</a>
         </div>
 
-        <div class="mt-9 grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
-            <article class="rounded-3xl border border-emerald-900/10 bg-white p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg">
-                <p class="text-xs font-bold uppercase tracking-wider text-emerald-700">Cakupan digital</p>
-                <p class="mt-4 text-4xl font-display font-bold text-slate-900">100%</p>
-                <p class="mt-2 text-sm leading-6 text-slate-500">Akses informasi desa, PPID, dan kanal pengaduan tersedia untuk seluruh warga.</p>
-            </article>
-
-            <article class="rounded-3xl border border-emerald-900/10 bg-white p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg">
-                <p class="text-xs font-bold uppercase tracking-wider text-emerald-700">Partisipasi warga</p>
-                <p class="mt-4 text-4xl font-display font-bold text-slate-900">4</p>
-                <p class="mt-2 text-sm leading-6 text-slate-500">Dusun aktif berkolaborasi dalam program pembangunan dan kegiatan komunitas.</p>
-            </article>
-
-            <article class="rounded-3xl border border-emerald-900/10 bg-white p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg">
-                <p class="text-xs font-bold uppercase tracking-wider text-emerald-700">Program desa</p>
-                <p class="mt-4 text-4xl font-display font-bold text-slate-900">12</p>
-                <p class="mt-2 text-sm leading-6 text-slate-500">Inisiatif aktif yang mendukung lingkungan, edukasi, kesehatan, dan UMKM lokal.</p>
-            </article>
-
-            <article class="rounded-3xl border border-emerald-900/10 bg-white p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg">
-                <p class="text-xs font-bold uppercase tracking-wider text-emerald-700">Kebersamaan</p>
-                <p class="mt-4 text-4xl font-display font-bold text-slate-900">97%</p>
-                <p class="mt-2 text-sm leading-6 text-slate-500">Tingkat kepuasan warga terhadap pelayanan desa dan komunikasi publik.</p>
-            </article>
+        <div class="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            @foreach ($infoPreviewStats as $stat)
+                @php $tone = $statToneClasses[$stat['tone']] ?? $statToneClasses['emerald']; @endphp
+                <article class="rounded-2xl border p-6 shadow-sm {{ $tone['card'] }}">
+                    <span class="block h-1.5 w-12 rounded-full {{ $tone['accent'] }}"></span>
+                    <p class="mt-5 text-xs font-bold uppercase tracking-[.16em] {{ $tone['text'] }}">{{ $stat['label'] }}</p>
+                    <div class="mt-3 flex items-end gap-2">
+                        <p class="font-display text-4xl font-bold leading-none text-slate-950">{{ $stat['value'] }}</p>
+                        <p class="pb-1 text-sm font-bold text-slate-500">{{ $stat['unit'] }}</p>
+                    </div>
+                    <p class="mt-4 text-sm leading-6 text-slate-600">{{ $stat['description'] }}</p>
+                </article>
+            @endforeach
         </div>
+
+        @unless ($populationStats['hasData'] ?? false)
+            <div class="mt-6 rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center">
+                <p class="font-display text-2xl font-bold text-slate-900">Belum ada data penduduk.</p>
+                <p class="mt-2 text-sm leading-6 text-slate-500">Data penduduk dari admin akan tampil otomatis di beranda dan halaman Info Grafis.</p>
+            </div>
+        @endunless
     </section>
 
     <section class="bg-emerald-50/70 py-16 lg:py-24">
         <div class="container-page grid gap-10 lg:grid-cols-[.8fr_1.2fr]">
             <div>
                 <p class="eyebrow text-emerald-700">Kabar Sambo</p>
-                <h2 class="section-title">Cerita dan kegiatan desa</h2>
-                <p class="mt-4 max-w-sm leading-7 text-slate-600">Ikuti pembaruan program desa dan kontribusi mahasiswa KKN untuk Sambo.</p>
-                <a href="{{ route('berita') }}" class="btn-primary mt-7">Semua berita <span>→</span></a>
+                <h2 class="section-title">Berita Desa Sambo</h2>
+                <p class="mt-4 max-w-sm leading-7 text-slate-600">Informasi kegiatan, pengumuman, dan cerita warga yang dipublikasikan pemerintah desa.</p>
+
+                <div class="mt-8 grid max-w-sm grid-cols-2 gap-4">
+                    <div class="rounded-2xl bg-emerald-50 p-5 ring-1 ring-emerald-100">
+                        <p class="text-xs font-bold uppercase tracking-[.16em] text-emerald-700">Publikasi</p>
+                        <p class="mt-3 font-display text-3xl font-bold text-slate-950">{{ $publishedBeritaCount ?? '0' }}</p>
+                    </div>
+                    <div class="rounded-2xl bg-amber-50 p-5 ring-1 ring-amber-100">
+                        <p class="text-xs font-bold uppercase tracking-[.16em] text-amber-700">Terbaru</p>
+                        <p class="mt-3 text-sm font-bold leading-6 text-slate-900">{{ $featuredBerita ? $dateLabel($featuredBerita) : 'Belum ada berita' }}</p>
+                    </div>
+                </div>
+
+                <a href="{{ route('berita') }}" class="btn-primary mt-7">Semua berita <span aria-hidden="true">&rarr;</span></a>
             </div>
 
-            <div class="grid gap-4 sm:grid-cols-2">
-                @foreach ($news as $item)
-                    <article class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-emerald-950/5">
-                        <p class="text-xs font-bold uppercase tracking-wider text-emerald-700">{{ $item['category'] }}</p>
-                        <h3 class="mt-3 font-display text-xl font-bold text-slate-900">{{ $item['title'] }}</h3>
-                        <p class="mt-3 text-sm leading-6 text-slate-500">{{ $item['excerpt'] }}</p>
-                        <p class="mt-5 text-xs font-medium text-slate-400">{{ $item['date'] }}</p>
+            <div class="grid gap-6 sm:grid-cols-2">
+                @forelse ($homeBerita as $item)
+                    @php $thumbnail = $thumbnailUrl($item); @endphp
+                    <article class="overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-200 transition hover:-translate-y-1 hover:shadow-lg">
+                        <div class="h-44 bg-emerald-100">
+                            @if ($thumbnail)
+                                <img src="{{ $thumbnail }}" alt="Thumbnail {{ $item->judul }}" class="h-full w-full object-cover">
+                            @else
+                                <div class="grid h-full place-items-center bg-[linear-gradient(135deg,#f0fdf4_0%,#bbf7d0_48%,#0f766e_100%)] p-6 text-center">
+                                    <span class="rounded-full bg-white/85 px-4 py-2 text-xs font-bold uppercase tracking-[.16em] text-emerald-800">Berita Desa</span>
+                                </div>
+                            @endif
+                        </div>
+                        <div class="p-6">
+                            <p class="text-xs font-bold uppercase tracking-[.16em] text-emerald-700">{{ $dateLabel($item) }}</p>
+                            <h3 class="mt-3 font-display text-2xl font-bold leading-snug text-slate-950">{{ $item->judul }}</h3>
+                            <p class="mt-3 text-sm leading-6 text-slate-500">{{ $excerpt($item->konten) }}</p>
+                            <div class="mt-5 flex justify-end">
+                                <a href="{{ route('berita.detail', $item->slug) }}" class="text-sm font-bold text-emerald-700 hover:text-emerald-900">Baca lengkap &rarr;</a>
+                            </div>
+                        </div>
                     </article>
-                @endforeach
+                @empty
+                    <article class="rounded-2xl border border-dashed border-slate-300 bg-white p-8 sm:col-span-2">
+                        <p class="font-display text-2xl font-bold text-slate-950">Belum ada berita publish.</p>
+                        <p class="mt-2 max-w-xl text-sm leading-6 text-slate-500">Berita yang ditambahkan dari admin dengan status publish akan tampil otomatis di beranda dan halaman Berita.</p>
+                    </article>
+                @endforelse
             </div>
         </div>
     </section>
@@ -190,11 +240,11 @@
     <section class="container-page py-16 lg:py-24">
         <div class="rounded-4xl bg-slate-900 px-7 py-10 text-white sm:px-12 lg:flex lg:items-center lg:justify-between">
             <div>
-                <p class="eyebrow text-lime-300">Kolaborasi KKN</p>
+                <p class="eyebrow text-lime-300">Kolaborasi Warga</p>
                 <h2 class="mt-3 font-display text-3xl font-bold">Punya ide untuk Desa Sambo?</h2>
                 <p class="mt-3 max-w-xl text-slate-300">Mari berkolaborasi untuk kegiatan yang bermanfaat bagi warga dan masa depan desa.</p>
             </div>
-            <a href="{{ route('kkn') }}" class="btn-light mt-7 lg:mt-0">Program KKN <span>→</span></a>
+            <a href="{{ route('layanan') }}" class="btn-light mt-7 lg:mt-0">Kirim Aspirasi <span aria-hidden="true">&rarr;</span></a>
         </div>
     </section>
 @endsection

@@ -12,6 +12,24 @@ document.querySelectorAll('[data-sidebar-open]').forEach((button) => button.addE
 document.querySelectorAll('[data-sidebar-close]').forEach((button) => button.addEventListener('click', () => setSidebar(false)));
 overlay?.addEventListener('click', () => setSidebar(false));
 
+document.querySelectorAll('[data-hero-background]').forEach((hero) => {
+    const slides = Array.from(hero.querySelectorAll('[data-hero-slide]'));
+
+    if (slides.length <= 1 || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        return;
+    }
+
+    let activeIndex = slides.findIndex((slide) => slide.classList.contains('is-active'));
+    activeIndex = activeIndex >= 0 ? activeIndex : 0;
+    slides[activeIndex]?.classList.add('is-active');
+
+    window.setInterval(() => {
+        slides[activeIndex].classList.remove('is-active');
+        activeIndex = (activeIndex + 1) % slides.length;
+        slides[activeIndex].classList.add('is-active');
+    }, 6500);
+});
+
 document.querySelectorAll('[data-infographic-tabs]').forEach((tablist) => {
     const tabs = tablist.querySelectorAll('[data-infographic-tab]');
     const panels = document.querySelectorAll('[data-infographic-panel]');
@@ -50,5 +68,50 @@ document.querySelectorAll('[data-apbdes-section]').forEach((section) => {
 
     if (select?.value) {
         setYear(select.value);
+    }
+});
+
+const deleteDialog = document.querySelector('#delete-confirmation-dialog');
+const deleteConfirmButton = document.querySelector('[data-delete-confirm]');
+let pendingDeleteForm = null;
+
+const closeDeleteDialog = () => {
+    if (!deleteDialog) return;
+
+    deleteDialog.classList.add('hidden');
+    deleteDialog.classList.remove('flex');
+    deleteDialog.setAttribute('aria-hidden', 'true');
+    pendingDeleteForm = null;
+};
+
+document.querySelectorAll('[data-delete-form]').forEach((form) => {
+    form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        if (!deleteDialog) {
+            form.submit();
+            return;
+        }
+
+        pendingDeleteForm = form;
+        deleteDialog.classList.remove('hidden');
+        deleteDialog.classList.add('flex');
+        deleteDialog.setAttribute('aria-hidden', 'false');
+        deleteConfirmButton?.focus();
+    });
+});
+
+document.querySelectorAll('[data-delete-cancel]').forEach((button) => {
+    button.addEventListener('click', closeDeleteDialog);
+});
+
+deleteConfirmButton?.addEventListener('click', () => {
+    const form = pendingDeleteForm;
+    closeDeleteDialog();
+    form?.submit();
+});
+
+document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && pendingDeleteForm) {
+        closeDeleteDialog();
     }
 });

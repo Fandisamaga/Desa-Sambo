@@ -4,6 +4,8 @@
 
 @section('content')
     @php
+        use Illuminate\Support\Facades\Storage;
+
         $missions = [
             'Meningkatkan kualitas pelayanan publik yang cepat, terbuka, dan mudah dijangkau masyarakat.',
             'Mendorong pembangunan desa yang merata melalui musyawarah, gotong royong, dan pemanfaatan data desa.',
@@ -12,20 +14,20 @@
         ];
 
         $government = [
-            ['role' => 'Kepala Desa', 'name' => 'SARMAN'],
-            ['role' => 'Sekretaris Desa', 'name' => 'RISTO'],
-            ['role' => 'Kepala Seksi Pemerintahan', 'name' => 'AZHAR'],
-            ['role' => 'Kepala Seksi Kesra', 'name' => 'RAHMAYANI'],
-            ['role' => 'Kepala Seksi Pelayanan', 'name' => 'WIRZAN'],
-            ['role' => 'Kepala Urusan Umum dan Perencanaan', 'name' => 'ASMAWATI'],
-            ['role' => 'Kepala Urusan Keuangan', 'name' => 'DEBI RAHMAWATI'],
+            ['role' => 'Kepala Desa', 'name' => 'SARMAN', 'photo' => 'aparat-desa/sarman.jpeg'],
+            ['role' => 'Sekretaris Desa', 'name' => 'RISTO', 'photo' => 'aparat-desa/risto.jpeg'],
+            ['role' => 'Kepala Seksi Pemerintahan', 'name' => 'AZHAR', 'photo' => 'aparat-desa/azhar.jpeg'],
+            ['role' => 'Kepala Seksi Kesra', 'name' => 'RAHMAYANI', 'photo' => 'aparat-desa/rahmayani.jpeg'],
+            ['role' => 'Kepala Seksi Pelayanan', 'name' => 'WIRZAN', 'photo' => 'aparat-desa/wirzan.jpeg'],
+            ['role' => 'Kepala Urusan Umum dan Perencanaan', 'name' => 'ASMAWATI', 'photo' => 'aparat-desa/asmawati.jpeg'],
+            ['role' => 'Kepala Urusan Keuangan', 'name' => 'DEBI RAHMAWATI', 'photo' => 'aparat-desa/debi-rahmawati.jpeg'],
         ];
 
         $dusun = [
-            ['role' => 'Kepala Dusun I', 'name' => 'SAIFUL'],
-            ['role' => 'Kepala Dusun II', 'name' => 'DJISMAN'],
-            ['role' => 'Kepala Dusun III', 'name' => 'ARIFIN'],
-            ['role' => 'Kepala Dusun IV', 'name' => 'AKBAR SALMI'],
+            ['role' => 'Kepala Dusun I', 'name' => 'SAIFUL', 'photo' => 'aparat-desa/saiful.jpeg'],
+            ['role' => 'Kepala Dusun II', 'name' => 'DJISMAN', 'photo' => 'aparat-desa/djisman.jpeg'],
+            ['role' => 'Kepala Dusun III', 'name' => 'ARIFIN', 'photo' => 'aparat-desa/arifin.jpeg'],
+            ['role' => 'Kepala Dusun IV', 'name' => 'AKBAR SALMI', 'photo' => 'aparat-desa/akbar-salmi.jpeg'],
         ];
 
         $mapsUrl = 'https://maps.app.goo.gl/juBGj5z5D37rCQ1r5';
@@ -123,6 +125,34 @@
                         <p class="mt-3 font-display text-lg font-bold text-slate-900">{{ $person['name'] }}</p>
                     </article>
                 @endforeach
+            </div>
+
+            <div class="mt-16">
+                <div class="flex flex-wrap items-end justify-between gap-5">
+                    <div>
+                        <p class="eyebrow text-emerald-700">Aparat Desa</p>
+                        <h2 class="section-title">Foto aparat desa</h2>
+                        <p class="mt-3 max-w-2xl text-slate-600">Perkenalkan aparat desa dan kepala dusun yang mendukung struktur pemerintahan Desa Sambo.</p>
+                    </div>
+                </div>
+
+                <div class="mt-9 grid gap-5 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
+                    @foreach (array_merge($government, $dusun) as $person)
+                        @php
+                            $photoUrl = Storage::disk('public')->exists($person['photo'])
+                                ? asset('storage/' . $person['photo'])
+                                : 'https://ui-avatars.com/api/?name=' . urlencode($person['name']) . '&background=10b981&color=ffffff&size=512';
+                        @endphp
+
+                        <article class="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+                            <img src="{{ $photoUrl }}" alt="Foto {{ $person['name'] }}" class="h-56 w-full object-cover">
+                            <div class="p-5">
+                                <p class="text-xs font-bold uppercase tracking-[.16em] text-emerald-700">{{ $person['role'] }}</p>
+                                <p class="mt-3 font-display text-xl font-bold text-slate-950">{{ $person['name'] }}</p>
+                            </div>
+                        </article>
+                    @endforeach
+                </div>
             </div>
         </div>
     </section>

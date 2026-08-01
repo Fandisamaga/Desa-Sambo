@@ -14,12 +14,11 @@
         @endforeach
     </div>
 
-    <div class="mt-8 grid gap-6 xl:grid-cols-[1.35fr_.65fr]">
+    <div class="mt-8">
         <section class="rounded-lg bg-white p-6 shadow-sm ring-1 ring-slate-200">
             <div class="flex items-center justify-between gap-4">
                 <div>
                     <p class="text-sm font-bold text-slate-900">Aktivitas terbaru</p>
-                    <p class="mt-1 text-sm text-slate-500">Ringkasan data terakhir dari modul admin.</p>
                 </div>
                 <a href="{{ route('admin.berita.index') }}" class="text-sm font-bold text-emerald-700">Kelola berita &rarr;</a>
             </div>
@@ -37,22 +36,5 @@
             </div>
         </section>
 
-        <section class="rounded-lg bg-emerald-800 p-6 text-white">
-            <p class="text-sm font-bold">Akses cepat CRUD</p>
-            <div class="mt-6 space-y-3">
-                <a href="{{ route('admin.produk-umkm.index') }}" class="block rounded-lg bg-white/10 px-4 py-3 text-sm font-bold hover:bg-white/15">
-                    Kelola UMKM &rarr;
-                </a>
-                <a href="{{ route('admin.pengaduan.index') }}" class="block rounded-lg bg-white/10 px-4 py-3 text-sm font-bold hover:bg-white/15">
-                    Tinjau pengaduan &rarr;
-                </a>
-                <a href="{{ route('admin.dokumen-publik.index') }}" class="block rounded-lg bg-white/10 px-4 py-3 text-sm font-bold hover:bg-white/15">
-                    Kelola dokumen PPID &rarr;
-                </a>
-                <a href="{{ route('admin.apbdes.index') }}" class="block rounded-lg bg-white/10 px-4 py-3 text-sm font-bold hover:bg-white/15">
-                    Kelola APBDes &rarr;
-                </a>
-            </div>
-        </section>
     </div>
 @endsection
