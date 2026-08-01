@@ -24,10 +24,10 @@
     @endphp
 
     <section class="bg-white">
-        <div class="container-page py-10 sm:py-14 lg:py-16">
-            <div class="grid gap-10 lg:grid-cols-[.9fr_1.1fr] lg:items-start">
+        <div class="container-page py-8 sm:py-14 lg:py-16">
+            <div class="grid gap-6 sm:gap-10 lg:grid-cols-[.9fr_1.1fr] lg:items-start">
                 <div>
-                    <h1 class="max-w-xl text-5xl font-black uppercase leading-tight text-emerald-700 sm:text-6xl lg:text-7xl">
+                    <h1 class="max-w-xl text-4xl font-black uppercase leading-tight text-emerald-700 sm:text-6xl lg:text-7xl">
                         Infografis<br>Desa Sambo
                     </h1>
                 </div>
@@ -35,22 +35,22 @@
                 <div class="lg:pt-2">
                     <div class="grid grid-cols-3 border-b border-slate-200" data-infographic-tabs role="tablist" aria-label="Kategori infografis">
                         @foreach ($infographicTabs as $tab)
-                            <button type="button" class="group flex min-h-28 flex-col items-center justify-end gap-2 border-b-2 px-2 pb-3 text-center text-sm font-extrabold transition hover:text-emerald-700 {{ $loop->first ? 'border-emerald-700 text-slate-700' : 'border-transparent text-slate-500' }}" data-infographic-tab="{{ $tab['key'] }}" role="tab" aria-selected="{{ $loop->first ? 'true' : 'false' }}" aria-controls="panel-{{ $tab['key'] }}">
+                            <button type="button" class="group flex min-h-24 flex-col items-center justify-end gap-1 border-b-2 px-1 pb-2 text-center text-xs font-extrabold transition hover:text-emerald-700 sm:min-h-28 sm:gap-2 sm:px-2 sm:pb-3 sm:text-sm {{ $loop->first ? 'border-emerald-700 text-slate-700' : 'border-transparent text-slate-500' }}" data-infographic-tab="{{ $tab['key'] }}" role="tab" aria-selected="{{ $loop->first ? 'true' : 'false' }}" aria-controls="panel-{{ $tab['key'] }}">
                                 @if ($tab['key'] === 'penduduk')
-                                    <svg class="h-11 w-11 stroke-current sm:h-14 sm:w-14" viewBox="0 0 64 64" fill="none" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <svg class="h-9 w-9 stroke-current sm:h-14 sm:w-14" viewBox="0 0 64 64" fill="none" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                                         <circle cx="23" cy="20" r="9"></circle>
                                         <path d="M8 48v-4c0-8 6-14 15-14s15 6 15 14v4"></path>
                                         <circle cx="44" cy="20" r="7"></circle>
                                         <path d="M43 31c7 0 12 5 12 12v5"></path>
                                     </svg>
                                 @elseif ($tab['key'] === 'apbdes')
-                                    <svg class="h-11 w-11 stroke-current sm:h-14 sm:w-14" viewBox="0 0 64 64" fill="none" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <svg class="h-9 w-9 stroke-current sm:h-14 sm:w-14" viewBox="0 0 64 64" fill="none" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                                         <rect x="9" y="13" width="35" height="23" rx="5"></rect>
                                         <rect x="18" y="22" width="35" height="23" rx="5"></rect>
                                         <circle cx="36" cy="33.5" r="5"></circle>
                                     </svg>
                                 @else
-                                    <svg class="h-11 w-11 stroke-current sm:h-14 sm:w-14" viewBox="0 0 64 64" fill="none" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <svg class="h-9 w-9 stroke-current sm:h-14 sm:w-14" viewBox="0 0 64 64" fill="none" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                                         <path d="M10 48h10V31H10z"></path>
                                         <path d="M27 48h10V21H27z"></path>
                                         <path d="M44 48h10V10H44z"></path>
@@ -63,7 +63,7 @@
                 </div>
             </div>
 
-            <div class="pt-14">
+            <div class="pt-10 sm:pt-14">
                 @foreach ($infographicTabs as $tab)
                     <section id="panel-{{ $tab['key'] }}" class="{{ $loop->first ? '' : 'hidden' }}" data-infographic-panel="{{ $tab['key'] }}" role="tabpanel">
                         @if ($tab['key'] === 'penduduk')
@@ -75,38 +75,38 @@
                                     </div>
                                 </div>
 
-                                <div class="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                                <div class="mt-7 grid grid-cols-2 gap-3 sm:mt-8 sm:gap-4 sm:grid-cols-2 xl:grid-cols-4">
                                     @foreach ($populationStats['summary'] as $stat)
-                                        <article class="rounded-2xl border p-6 shadow-sm {{ $statToneClasses[$stat['tone']]['card'] }}">
-                                            <span class="block h-1.5 w-12 rounded-full {{ $statToneClasses[$stat['tone']]['accent'] }}"></span>
-                                            <p class="mt-5 text-xs font-bold uppercase tracking-[.16em] {{ $statToneClasses[$stat['tone']]['text'] }}">{{ $stat['label'] }}</p>
-                                            <div class="mt-3 flex items-end gap-2">
-                                                <p class="font-display text-4xl font-bold leading-none text-slate-950">{{ $stat['value'] }}</p>
-                                                <p class="pb-1 text-sm font-bold text-slate-500">{{ $stat['unit'] }}</p>
+                                        <article class="rounded-xl border p-4 shadow-sm sm:rounded-2xl sm:p-6 {{ $statToneClasses[$stat['tone']]['card'] }}">
+                                            <span class="block h-1 w-10 rounded-full sm:h-1.5 sm:w-12 {{ $statToneClasses[$stat['tone']]['accent'] }}"></span>
+                                            <p class="mt-3 text-[10px] font-bold uppercase tracking-[.12em] sm:mt-5 sm:text-xs sm:tracking-[.16em] {{ $statToneClasses[$stat['tone']]['text'] }}">{{ $stat['label'] }}</p>
+                                            <div class="mt-2 flex items-end gap-1.5 sm:mt-3 sm:gap-2">
+                                                <p class="font-display text-3xl font-bold leading-none text-slate-950 sm:text-4xl">{{ $stat['value'] }}</p>
+                                                <p class="pb-0.5 text-xs font-bold text-slate-500 sm:pb-1 sm:text-sm">{{ $stat['unit'] }}</p>
                                             </div>
-                                            <p class="mt-4 text-sm leading-6 text-slate-600">{{ $stat['description'] }}</p>
+                                            <p class="mt-3 text-xs leading-5 text-slate-600 sm:mt-4 sm:text-sm sm:leading-6">{{ $stat['description'] }}</p>
                                         </article>
                                     @endforeach
                                 </div>
 
                                 @unless ($populationStats['hasData'])
-                                    <div class="mt-6 rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center">
+                                    <div class="mt-5 rounded-xl border border-dashed border-slate-300 bg-slate-50 p-5 text-center sm:mt-6 sm:rounded-2xl sm:p-8">
                                         <p class="font-display text-2xl font-bold text-slate-900">Belum ada data penduduk.</p>
                                     </div>
                                 @endunless
 
-                                <div class="mt-6 grid gap-6 lg:grid-cols-[.9fr_1.1fr]">
-                                    <article class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+                                <div class="mt-5 grid gap-4 sm:mt-6 sm:gap-6 lg:grid-cols-[.9fr_1.1fr]">
+                                    <article class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:rounded-2xl sm:p-8">
                                         <div class="flex flex-wrap items-start justify-between gap-5">
                                             <div>
                                                 <p class="eyebrow text-emerald-700">Jenis kelamin</p>
                                                 <h3 class="mt-2 font-display text-2xl font-bold text-slate-900">Laki-laki dan perempuan</h3>
                                             </div>
-                                            <div class="grid h-28 w-28 place-items-center rounded-full" style="background: conic-gradient(#0284c7 0 {{ $populationStats['gender'][0]['percent'] }}%, #e11d48 {{ $populationStats['gender'][0]['percent'] }}% 100%)">
-                                                <span class="grid h-20 w-20 place-items-center rounded-full bg-white text-center font-display text-xl font-bold text-slate-900">{{ $populationStats['total'] }}</span>
+                                            <div class="grid h-20 w-20 place-items-center rounded-full sm:h-28 sm:w-28" style="background: conic-gradient(#0284c7 0 {{ $populationStats['gender'][0]['percent'] }}%, #e11d48 {{ $populationStats['gender'][0]['percent'] }}% 100%)">
+                                                <span class="grid h-14 w-14 place-items-center rounded-full bg-white text-center font-display text-base font-bold text-slate-900 sm:h-20 sm:w-20 sm:text-xl">{{ $populationStats['total'] }}</span>
                                             </div>
                                         </div>
-                                        <div class="mt-7 grid gap-4 sm:grid-cols-2">
+                                        <div class="mt-5 grid gap-4 sm:mt-7 sm:grid-cols-2">
                                             @foreach ($populationStats['gender'] as $gender)
                                                 <div class="border-t border-slate-200 pt-4">
                                                     <div class="flex items-center justify-between gap-4">
@@ -119,7 +119,7 @@
                                         </div>
                                     </article>
 
-                                    <article class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+                                    <article class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:rounded-2xl sm:p-8">
                                         <p class="eyebrow text-emerald-700">Kelompok umur</p>
                                         <h3 class="mt-2 font-display text-2xl font-bold text-slate-900">Sebaran berdasarkan usia</h3>
                                         <div class="mt-6 space-y-4">
@@ -136,8 +136,8 @@
                                     </article>
                                 </div>
 
-                                <div class="mt-6 grid gap-6 lg:grid-cols-[1.12fr_.88fr]">
-                                    <article class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+                                <div class="mt-5 grid gap-4 sm:mt-6 sm:gap-6 lg:grid-cols-[1.12fr_.88fr]">
+                                    <article class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:rounded-2xl sm:p-8">
                                         <p class="eyebrow text-emerald-700">Pekerjaan</p>
                                         <h3 class="mt-2 font-display text-2xl font-bold text-slate-900">Pembagian berdasarkan pekerjaan</h3>
                                         <div class="mt-6 grid gap-x-6 gap-y-5 sm:grid-cols-2">
@@ -157,7 +157,7 @@
                                         </div>
                                     </article>
 
-                                    <article class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+                                    <article class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:rounded-2xl sm:p-8">
                                         <p class="eyebrow text-emerald-700">Agama</p>
                                         <h3 class="mt-2 font-display text-2xl font-bold text-slate-900">Pembagian berdasarkan agama</h3>
                                         <div class="mt-6 space-y-5">
@@ -183,7 +183,7 @@
                             </div>
                         @elseif ($tab['key'] === 'apbdes')
                             <div data-apbdes-section>
-                                <div class="grid gap-10 lg:grid-cols-[.72fr_1.28fr] lg:items-center">
+                                <div class="grid gap-7 sm:gap-10 lg:grid-cols-[.72fr_1.28fr] lg:items-center">
                                     <div>
                                         <h2 class="font-display text-4xl font-bold leading-tight text-emerald-700 sm:text-5xl">APB Desa Sambo</h2>
                                         <p class="mt-4 max-w-lg text-lg font-semibold leading-9 text-slate-950">{{ $apbdesStats['location'] }}</p>
@@ -237,7 +237,7 @@
                                             </div>
                                         </div>
                                     @else
-                                        <div class="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center">
+                                        <div class="rounded-xl border border-dashed border-slate-300 bg-slate-50 p-5 text-center sm:rounded-2xl sm:p-8">
                                             <p class="font-display text-2xl font-bold text-slate-900">Belum ada data APBDes.</p>
                                             <p class="mt-2 text-sm leading-6 text-slate-500">Tambahkan data melalui admin APBDes agar ringkasan dan grafik tampil otomatis.</p>
                                         </div>
@@ -245,7 +245,7 @@
                                 </div>
 
                                 @if ($apbdesStats['hasData'])
-                                    <article class="mt-12 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+                                    <article class="mt-8 rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:mt-12 sm:rounded-2xl sm:p-8">
                                         <div class="flex flex-wrap items-end justify-between gap-4">
                                             <div>
                                                 <p class="eyebrow text-emerald-700">Grafik APBDes</p>
@@ -257,13 +257,13 @@
                                             </div>
                                         </div>
 
-                                        <div class="mt-8 grid min-h-72 items-end gap-4 border-b border-l border-slate-200 px-4 pb-6 sm:gap-8 sm:px-8" style="grid-template-columns: repeat({{ max(1, $apbdesYears->count()) }}, minmax(0, 1fr));">
+                                        <div class="mt-6 grid min-h-56 items-end gap-3 border-b border-l border-slate-200 px-3 pb-5 sm:mt-8 sm:min-h-72 sm:gap-8 sm:px-8 sm:pb-6" style="grid-template-columns: repeat({{ max(1, $apbdesYears->count()) }}, minmax(0, 1fr));">
                                             @foreach ($apbdesYears as $year)
                                                 @php
                                                     $incomeHeight = max(12, round(($year['income'] / $apbdesChartMax) * 100));
                                                     $spendingHeight = max(12, round(($year['spending'] / $apbdesChartMax) * 100));
                                                 @endphp
-                                                <div class="flex h-64 flex-col justify-end gap-3">
+                                                <div class="flex h-48 flex-col justify-end gap-2 sm:h-64 sm:gap-3">
                                                     <div class="flex flex-1 items-end justify-center gap-3 sm:gap-4">
                                                         <div class="group relative flex h-full w-8 items-end justify-center sm:w-12">
                                                             <span class="w-full rounded-t-xl bg-emerald-600" style="height: {{ $incomeHeight }}%"></span>
@@ -283,7 +283,7 @@
                                     @foreach ($apbdesYears as $year)
                                         <div class="mt-6 {{ $loop->last ? '' : 'hidden' }}" data-apbdes-year-panel="{{ $year['year'] }}">
                                             <div class="grid gap-6 lg:grid-cols-2">
-                                                <article class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+                                                <article class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:rounded-2xl sm:p-8">
                                                     <p class="eyebrow text-emerald-700">Data Pendapatan Desa</p>
                                                     <h3 class="mt-2 font-display text-2xl font-bold text-slate-900">Rincian pendapatan {{ $year['year'] }}</h3>
                                                     <div class="mt-6 space-y-4">
@@ -296,7 +296,7 @@
                                                     </div>
                                                 </article>
 
-                                                <article class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+                                                <article class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:rounded-2xl sm:p-8">
                                                     <p class="eyebrow text-emerald-700">Data Belanja Desa</p>
                                                     <h3 class="mt-2 font-display text-2xl font-bold text-slate-900">Rincian belanja {{ $year['year'] }}</h3>
                                                     <div class="mt-6 space-y-4">
@@ -315,7 +315,7 @@
                             </div>
                         @else
                             <div class="flex flex-col justify-center items-center d">
-                                <article class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+                                <article class="w-full rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:rounded-2xl sm:p-8">
                                     <p class="eyebrow text-emerald-700">Stunting</p>
                                     <h3 class="mt-2 font-display text-2xl font-bold text-slate-900">Jumlah anak stunting</h3>
                                     <p class="mt-6 text-5xl font-bold text-slate-950">{{ number_format($stuntingStats['count'] ?? 0, 0, ',', '.') }}</p>

@@ -70,22 +70,22 @@
         </div>
     @endif
 
-    <div class="container-page relative py-16 lg:py-24">
+    <div class="container-page relative py-12 sm:py-16 lg:py-24">
         <div class="hero-content relative z-10 text-center mx-auto">
             <p class="eyebrow text-emerald-100">
                 Selamat datang di ruang digital kami
             </p>
 
-            <h1 class="mt-5 font-display text-5xl font-bold leading-[1.05] text-white sm:text-6xl">
+            <h1 class="mt-4 font-display text-4xl font-bold leading-[1.05] text-white sm:mt-5 sm:text-6xl">
                 Sambo tumbuh melalui <br>
                 <span class="text-lime-300">kebersamaan</span>
             </h1>
 
-            <p class="mt-6 mx-auto max-w-2xl text-base leading-7 text-emerald-50 sm:text-lg">
+            <p class="mt-4 mx-auto max-w-2xl text-base leading-7 text-emerald-50 sm:mt-6 sm:text-lg">
                 Informasi desa, PPID, layanan pengaduan, UMKM lokal, dan kegiatan masyarakat tersedia dalam satu tempat yang mudah diakses.
             </p>
 
-            <div class="mt-8 flex justify-center flex-wrap gap-3">
+            <div class="mt-6 flex flex-wrap justify-center gap-3 sm:mt-8">
                 <a href="{{ route('profil') }}" class="btn-primary">
                     Jelajahi Desa →
                 </a>
@@ -108,17 +108,17 @@
             <a href="{{ route('umkm') }}" class="link-arrow">Jelajahi UMKM &rarr;</a>
         </div>
 
-        <div class="mt-9 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+        <div class="mt-7 grid gap-4 sm:mt-9 sm:gap-5 sm:grid-cols-2 xl:grid-cols-3">
             @forelse ($umkm as $item)
-                <article class="overflow-hidden rounded-2xl bg-white ring-1 ring-slate-200 transition hover:-translate-y-1 hover:shadow-lg">
+                <article class="overflow-hidden rounded-xl bg-white ring-1 ring-slate-200 transition hover:-translate-y-1 hover:shadow-lg sm:rounded-2xl">
                     <div class="umkm-cover {{ $item['color'] }}">
                         <span>{{ $item['icon'] }}</span>
                     </div>
-                    <div class="p-6">
+                    <div class="p-4 sm:p-6">
                         <p class="text-xs font-bold uppercase tracking-wider text-emerald-700">{{ $item['category'] }}</p>
-                        <h3 class="mt-2 font-display text-xl font-bold text-slate-900">{{ $item['name'] }}</h3>
-                        <p class="mt-2 text-sm text-slate-500">{{ $item['owner'] }}</p>
-                        <a href="{{ route('umkm') }}" class="mt-5 inline-block text-sm font-bold text-emerald-700">Lihat produk &rarr;</a>
+                        <h3 class="mt-2 font-display text-lg font-bold text-slate-900 sm:text-xl">{{ $item['name'] }}</h3>
+                        <p class="mt-2 text-sm leading-6 text-slate-500">{{ $item['owner'] }}</p>
+                        <a href="{{ route('umkm') }}" class="mt-4 inline-block text-sm font-bold text-emerald-700 sm:mt-5">Lihat produk &rarr;</a>
                     </div>
                 </article>
             @empty
@@ -139,13 +139,13 @@
             <a href="{{ route('ppid') }}" class="link-arrow">Buka PPID &rarr;</a>
         </div>
 
-        <div class="mt-9 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div class="mt-7 grid gap-3 min-[360px]:grid-cols-2 sm:mt-9 sm:gap-4 lg:grid-cols-4">
             @foreach ($services as $service)
                 <a href="{{ $service['href'] }}" class="service-card">
-                    <span class="grid h-11 w-11 place-items-center rounded-xl bg-emerald-50 text-sm font-black text-emerald-800">{{ $service['icon'] }}</span>
+                    <span class="grid h-9 w-9 place-items-center rounded-lg bg-emerald-50 text-xs font-black text-emerald-800 sm:h-11 sm:w-11 sm:rounded-xl sm:text-sm">{{ $service['icon'] }}</span>
                     <h3>{{ $service['title'] }}</h3>
                     <p>{{ $service['description'] }}</p>
-                    <span class="mt-auto text-sm font-bold text-emerald-700">{{ $service['cta'] }} &rarr;</span>
+                    <span class="mt-auto pt-3 text-xs font-bold text-emerald-700 sm:pt-0 sm:text-sm">{{ $service['cta'] }} &rarr;</span>
                 </a>
             @endforeach
         </div>
@@ -161,17 +161,17 @@
             <a href="{{ route('infografis') }}" class="link-arrow">Lihat info grafis &rarr;</a>
         </div>
 
-        <div class="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <div class="mt-7 grid grid-cols-2 gap-3 sm:mt-8 sm:gap-4 xl:grid-cols-4">
             @foreach ($infoPreviewStats as $stat)
                 @php $tone = $statToneClasses[$stat['tone']] ?? $statToneClasses['emerald']; @endphp
-                <article class="rounded-2xl border p-6 shadow-sm {{ $tone['card'] }}">
-                    <span class="block h-1.5 w-12 rounded-full {{ $tone['accent'] }}"></span>
-                    <p class="mt-5 text-xs font-bold uppercase tracking-[.16em] {{ $tone['text'] }}">{{ $stat['label'] }}</p>
-                    <div class="mt-3 flex items-end gap-2">
-                        <p class="font-display text-4xl font-bold leading-none text-slate-950">{{ $stat['value'] }}</p>
-                        <p class="pb-1 text-sm font-bold text-slate-500">{{ $stat['unit'] }}</p>
+                <article class="rounded-xl border p-4 shadow-sm sm:rounded-2xl sm:p-6 {{ $tone['card'] }}">
+                    <span class="block h-1.5 w-10 rounded-full sm:w-12 {{ $tone['accent'] }}"></span>
+                    <p class="mt-4 text-[10px] font-bold uppercase tracking-[.12em] {{ $tone['text'] }} sm:mt-5 sm:text-xs sm:tracking-[.16em]">{{ $stat['label'] }}</p>
+                    <div class="mt-2 flex items-end gap-1.5 sm:mt-3 sm:gap-2">
+                        <p class="font-display text-3xl font-bold leading-none text-slate-950 sm:text-4xl">{{ $stat['value'] }}</p>
+                        <p class="pb-0.5 text-xs font-bold text-slate-500 sm:pb-1 sm:text-sm">{{ $stat['unit'] }}</p>
                     </div>
-                    <p class="mt-4 text-sm leading-6 text-slate-600">{{ $stat['description'] }}</p>
+                    <p class="mt-3 text-xs leading-5 text-slate-600 sm:mt-4 sm:text-sm sm:leading-6">{{ $stat['description'] }}</p>
                 </article>
             @endforeach
         </div>
@@ -185,18 +185,18 @@
     </section>
 
     <section class="bg-emerald-50/70 py-16 lg:py-24">
-        <div class="container-page grid gap-10 lg:grid-cols-[.8fr_1.2fr]">
+        <div class="container-page grid grid-cols-1 gap-10 lg:grid-cols-[.8fr_1.2fr]">
             <div>
                 <p class="eyebrow text-emerald-700">Kabar Sambo</p>
                 <h2 class="section-title">Berita Desa Sambo</h2>
                 <p class="mt-4 max-w-sm leading-7 text-slate-600">Informasi kegiatan, pengumuman, dan cerita warga yang dipublikasikan pemerintah desa.</p>
 
-                <div class="mt-8 grid max-w-sm grid-cols-2 gap-4">
-                    <div class="rounded-2xl bg-emerald-50 p-5 ring-1 ring-emerald-100">
+                <div class="mt-7 grid max-w-sm grid-cols-2 gap-3 sm:mt-8 sm:gap-4">
+                    <div class="rounded-xl bg-emerald-50 p-4 ring-1 ring-emerald-100 sm:rounded-2xl sm:p-5">
                         <p class="text-xs font-bold uppercase tracking-[.16em] text-emerald-700">Publikasi</p>
                         <p class="mt-3 font-display text-3xl font-bold text-slate-950">{{ $publishedBeritaCount ?? '0' }}</p>
                     </div>
-                    <div class="rounded-2xl bg-amber-50 p-5 ring-1 ring-amber-100">
+                    <div class="rounded-xl bg-amber-50 p-4 ring-1 ring-amber-100 sm:rounded-2xl sm:p-5">
                         <p class="text-xs font-bold uppercase tracking-[.16em] text-amber-700">Terbaru</p>
                         <p class="mt-3 text-sm font-bold leading-6 text-slate-900">{{ $featuredBerita ? $dateLabel($featuredBerita) : 'Belum ada berita' }}</p>
                     </div>
@@ -205,11 +205,11 @@
                 <a href="{{ route('berita') }}" class="btn-primary mt-7">Semua berita <span aria-hidden="true">&rarr;</span></a>
             </div>
 
-            <div class="grid gap-6 sm:grid-cols-2">
+            <div class="grid gap-4 sm:gap-6 sm:grid-cols-2">
                 @forelse ($homeBerita as $item)
                     @php $thumbnail = $thumbnailUrl($item); @endphp
-                    <article class="overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-200 transition hover:-translate-y-1 hover:shadow-lg">
-                        <div class="h-44 bg-emerald-100">
+                    <article class="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-slate-200 transition hover:-translate-y-1 hover:shadow-lg sm:rounded-2xl">
+                        <div class="h-36 bg-emerald-100 sm:h-44">
                             @if ($thumbnail)
                                 <img src="{{ $thumbnail }}" alt="Thumbnail {{ $item->judul }}" class="h-full w-full object-cover">
                             @else
@@ -218,11 +218,11 @@
                                 </div>
                             @endif
                         </div>
-                        <div class="p-6">
+                        <div class="p-4 sm:p-6">
                             <p class="text-xs font-bold uppercase tracking-[.16em] text-emerald-700">{{ $dateLabel($item) }}</p>
-                            <h3 class="mt-3 font-display text-2xl font-bold leading-snug text-slate-950">{{ $item->judul }}</h3>
-                            <p class="mt-3 text-sm leading-6 text-slate-500">{{ $excerpt($item->konten) }}</p>
-                            <div class="mt-5 flex justify-end">
+                            <h3 class="mt-3 font-display text-xl font-bold leading-snug text-slate-950 sm:text-2xl">{{ $item->judul }}</h3>
+                            <p class="mt-2 text-sm leading-6 text-slate-500 sm:mt-3">{{ $excerpt($item->konten) }}</p>
+                            <div class="mt-4 flex justify-end sm:mt-5">
                                 <a href="{{ route('berita.detail', $item->slug) }}" class="text-sm font-bold text-emerald-700 hover:text-emerald-900">Baca lengkap &rarr;</a>
                             </div>
                         </div>

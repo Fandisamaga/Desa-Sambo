@@ -114,7 +114,7 @@
 
     <div id="delete-confirmation-dialog" class="fixed inset-0 z-[60] hidden items-center justify-center p-4" aria-hidden="true">
         <button type="button" data-delete-cancel class="absolute inset-0 bg-slate-950/50 backdrop-blur-sm" aria-label="Tutup konfirmasi hapus"></button>
-        <div class="relative w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl ring-1 ring-slate-900/10" role="dialog" aria-modal="true" aria-labelledby="delete-dialog-title" aria-describedby="delete-dialog-description">
+        <div class="relative w-full max-w-md rounded-xl bg-white p-5 shadow-2xl ring-1 ring-slate-900/10 sm:rounded-2xl sm:p-6" role="dialog" aria-modal="true" aria-labelledby="delete-dialog-title" aria-describedby="delete-dialog-description">
             <div class="flex h-11 w-11 items-center justify-center rounded-full bg-red-50 text-xl font-bold text-red-600" aria-hidden="true">!</div>
             <h2 id="delete-dialog-title" class="mt-4 font-display text-2xl font-bold text-slate-900">Hapus {{ $resource['singular'] }}?</h2>
             <p id="delete-dialog-description" class="mt-2 text-sm leading-6 text-slate-600">Data yang dihapus tidak dapat dikembalikan. Pastikan data ini sudah tidak diperlukan.</p>

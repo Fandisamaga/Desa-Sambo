@@ -6,8 +6,8 @@
         <title>Masuk Operator | Desa Sambo</title>
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="grid min-h-screen place-items-center bg-emerald-50 p-5">
-        <main class="w-full max-w-md rounded-lg bg-white p-8 shadow-xl shadow-emerald-950/10 ring-1 ring-emerald-900/5">
+    <body class="grid min-h-screen place-items-center bg-emerald-50 p-4 sm:p-5">
+        <main class="w-full max-w-md rounded-xl bg-white p-5 shadow-xl shadow-emerald-950/10 ring-1 ring-emerald-900/5 sm:rounded-lg sm:p-8">
             <a href="{{ route('home') }}" class="flex items-center gap-3">
                 <span class="grid h-11 w-11 place-items-center rounded-xl bg-emerald-700 text-sm font-black text-white">DS</span>
                 <span>
@@ -16,7 +16,7 @@
                 </span>
             </a>
 
-            <h1 class="mt-9 font-display text-3xl font-bold text-slate-900">Masuk ke dashboard</h1>
+            <h1 class="mt-7 font-display text-2xl font-bold text-slate-900 sm:mt-9 sm:text-3xl">Masuk ke dashboard</h1>
             <p class="mt-2 text-sm leading-6 text-slate-500">Akses ini khusus untuk administrator website desa.</p>
 
             @if ($errors->any())
