@@ -3,13 +3,14 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="icon" type="image/jpeg" href="{{ asset('storage/logo.jpeg') }}">
         <title>Masuk Operator | Desa Sambo</title>
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="grid min-h-screen place-items-center bg-emerald-50 p-4 sm:p-5">
         <main class="w-full max-w-md rounded-xl bg-white p-5 shadow-xl shadow-emerald-950/10 ring-1 ring-emerald-900/5 sm:rounded-lg sm:p-8">
             <a href="{{ route('home') }}" class="flex items-center gap-3">
-                <span class="grid h-11 w-11 place-items-center rounded-xl bg-emerald-700 text-sm font-black text-white">DS</span>
+                <span class="grid h-11 w-11 place-items-center overflow-hidden rounded-xl bg-white ring-1 ring-slate-200"><img src="{{ asset('storage/logo.jpeg') }}" alt="Logo Desa Sambo" class="h-full w-full object-cover"></span>
                 <span>
                     <span class="block text-[10px] font-bold uppercase tracking-[.16em] text-emerald-700">Panel Operator</span>
                     <span class="font-display text-xl font-bold text-slate-900">Desa Sambo</span>

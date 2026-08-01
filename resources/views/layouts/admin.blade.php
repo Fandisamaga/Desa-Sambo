@@ -3,6 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="icon" type="image/jpeg" href="{{ asset('storage/logo.jpeg') }}">
         <title>@yield('title', 'Admin Desa Sambo')</title>
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
@@ -26,7 +27,7 @@
         <aside id="mobile-sidebar" class="fixed inset-y-0 left-0 z-40 flex w-72 -translate-x-full flex-col border-r border-slate-200 bg-white px-5 py-6 transition-transform lg:hidden">
             <div class="flex items-center justify-between">
                 <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3">
-                    <span class="grid h-10 w-10 place-items-center rounded-xl bg-emerald-700 text-sm font-black text-white">DS</span>
+                    <span class="grid h-10 w-10 place-items-center overflow-hidden rounded-xl bg-white ring-1 ring-slate-200"><img src="{{ asset('storage/logo.jpeg') }}" alt="Logo Desa Sambo" class="h-full w-full object-cover"></span>
                     <span>
                         <span class="block text-[10px] font-bold uppercase tracking-[.16em] text-emerald-700">Operator</span>
                         <span class="font-display text-lg font-bold text-slate-900">Desa Sambo</span>
@@ -47,7 +48,7 @@
 
         <aside class="fixed inset-y-0 left-0 hidden w-72 flex-col border-r border-slate-200 bg-white px-5 py-7 lg:flex">
             <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 px-2">
-                <span class="grid h-11 w-11 place-items-center rounded-xl bg-emerald-700 text-sm font-black text-white">DS</span>
+                <span class="grid h-11 w-11 place-items-center overflow-hidden rounded-xl bg-white ring-1 ring-slate-200"><img src="{{ asset('storage/logo.jpeg') }}" alt="Logo Desa Sambo" class="h-full w-full object-cover"></span>
                 <span>
                     <span class="block text-[10px] font-bold uppercase tracking-[.16em] text-emerald-700">Operator</span>
                     <span class="font-display text-xl font-bold text-slate-900">Desa Sambo</span>

@@ -1,2 +1,4 @@
-*
-!.gitignore
+/background
+/berita
+/produk-umkm
+.gitignore

@@ -4,6 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#0f5d45">
+        <link rel="icon" type="image/jpeg" href="{{ asset('storage/logo.jpeg') }}">
         <title>@yield('title', 'Desa Sambo')</title>
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
@@ -23,7 +24,7 @@
         <aside id="mobile-sidebar" class="fixed inset-y-0 left-0 z-50 flex w-80 -translate-x-full flex-col bg-white px-6 py-6 shadow-2xl transition-transform duration-300 lg:hidden" aria-label="Navigasi utama">
             <div class="flex items-center justify-between">
                 <a href="{{ route('home') }}" class="flex items-center gap-3">
-                    <span class="grid h-11 w-11 place-items-center rounded-2xl bg-emerald-700 text-sm font-black text-white">DS</span>
+                    <span class="grid h-11 w-11 place-items-center overflow-hidden rounded-2xl bg-white ring-1 ring-slate-200"><img src="{{ asset('storage/logo.jpeg') }}" alt="Logo Desa Sambo" class="h-full w-full object-cover"></span>
                     <span><span class="block text-xs font-semibold uppercase tracking-[.16em] text-emerald-700">Website Resmi</span><span class="font-display text-xl font-bold text-slate-900">Desa Sambo</span></span>
                 </a>
                 <button type="button" class="rounded-lg p-2 text-slate-600 hover:bg-slate-100" data-sidebar-close aria-label="Tutup menu">✕</button>
@@ -54,7 +55,7 @@
         <header class="fixed inset-x-0 top-0 z-30 border-b border-slate-200/80 bg-white/90 backdrop-blur">
             <div class="container-page flex h-16 items-center justify-between gap-3 sm:h-20 sm:gap-4">
                 <a href="{{ route('home') }}" class="flex items-center gap-3" aria-label="Beranda Desa Sambo">
-                    <span class="grid h-10 w-10 place-items-center rounded-xl bg-emerald-700 text-sm font-black text-white shadow-lg shadow-emerald-900/15 sm:h-11 sm:w-11 sm:rounded-2xl">DS</span>
+                    <span class="grid h-10 w-10 place-items-center overflow-hidden rounded-xl bg-white shadow-lg shadow-emerald-900/15 ring-1 ring-slate-200 sm:h-11 sm:w-11 sm:rounded-2xl"><img src="{{ asset('storage/logo.jpeg') }}" alt="Logo Desa Sambo" class="h-full w-full object-cover"></span>
                     <span><span class="block text-[9px] font-bold uppercase tracking-[.14em] text-emerald-700 sm:text-[10px] sm:tracking-[.18em]">Website Resmi</span><span class="font-display text-lg font-bold text-slate-900 sm:text-xl">Desa Sambo</span></span>
                 </a>
                 <nav class="hidden items-center gap-1 lg:flex" aria-label="Navigasi utama">
