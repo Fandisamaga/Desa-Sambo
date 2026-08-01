@@ -73,6 +73,7 @@ class AdminCrudViewsTest extends TestCase
             'kontak_pengirim' => '08123456789',
             'isi_aduan' => 'Lampu jalan perlu diperbaiki.',
             'status' => 'pending',
+            'catatan_admin' => 'Perlu tindak lanjut operator.',
         ]);
         $dokumen = DokumenPublik::create([
             'judul_dokumen' => 'Laporan Desa',
@@ -94,12 +95,30 @@ class AdminCrudViewsTest extends TestCase
             'admin.pengaduan' => $pengaduan,
             'admin.dokumen-publik' => $dokumen,
         ] as $route => $model) {
-            $this->actingAs($admin)->get(route($route . '.index'))->assertOk();
-            $this->actingAs($admin)->get(route($route . '.show', $model))->assertOk();
+            $indexResponse = $this->actingAs($admin)->get(route($route . '.index'))->assertOk();
+            $showResponse = $this->actingAs($admin)->get(route($route . '.show', $model))->assertOk();
 
             if ($route === 'admin.pengaduan') {
+                $indexResponse
+                    ->assertDontSee('>Edit<', false)
+                    ->assertSee('>Hapus<', false)
+                    ->assertSee('Hapus pengaduan?')
+                    ->assertSee('Ya, hapus');
+
+                $showResponse
+                    ->assertDontSee('Status')
+                    ->assertDontSee('Pending')
+                    ->assertDontSee('Catatan admin')
+                    ->assertDontSee('Perlu tindak lanjut operator.');
+
                 $this->actingAs($admin)->get(route($route . '.create'))->assertRedirect(route($route . '.index'));
                 $this->actingAs($admin)->get(route($route . '.edit', $model))->assertRedirect(route($route . '.show', $model));
+
+                $this->actingAs($admin)
+                    ->delete(route($route . '.destroy', $model))
+                    ->assertRedirect(route($route . '.index'));
+
+                $this->assertDatabaseMissing('pengaduan', ['id' => $model->id]);
             } else {
                 $this->actingAs($admin)->get(route($route . '.create'))->assertOk();
                 $this->actingAs($admin)->get(route($route . '.edit', $model))->assertOk();
@@ -168,12 +187,67 @@ class AdminCrudViewsTest extends TestCase
         $this->get(route('berita.detail', $draftBerita->slug))->assertNotFound();
     }
 
+    public function test_home_page_uses_infographic_summary_and_published_news(): void
+    {
+        $kategoriBerita = KategoriBerita::create(['nama_kategori' => 'Kabar Desa', 'slug' => 'kabar-desa']);
+        $publishedBerita = Berita::create([
+            'kategori_berita_id' => $kategoriBerita->id,
+            'judul' => 'Musyawarah Desa',
+            'slug' => 'musyawarah-desa',
+            'konten' => 'Warga dan perangkat desa membahas program prioritas.',
+            'status' => 'publish',
+            'tanggal_upload' => '2026-07-19',
+        ]);
+
+        Berita::create([
+            'kategori_berita_id' => $kategoriBerita->id,
+            'judul' => 'Catatan Internal',
+            'slug' => 'catatan-internal',
+            'konten' => 'Belum dipublikasikan.',
+            'status' => 'draft',
+            'tanggal_upload' => '2026-07-20',
+        ]);
+
+        $kartuKeluarga = KartuKeluarga::create([
+            'no_kk' => '1234567890123456',
+            'alamat' => 'Dusun Sambo',
+            'rt' => '001',
+            'rw' => '002',
+            'dusun' => 'Sambo',
+        ]);
+
+        Penduduk::create([
+            'kartu_keluarga_id' => $kartuKeluarga->id,
+            'nik' => '1234567890123456',
+            'nama_lengkap' => 'Warga Sambo',
+            'tempat_lahir' => 'Sambo',
+            'tanggal_lahir' => '2000-01-01',
+            'jenis_kelamin' => 'Laki-laki',
+            'agama' => 'Islam',
+            'pendidikan' => 'SMA',
+            'pekerjaan' => 'Petani',
+            'status_kawin' => 'Belum kawin',
+            'status_keluarga' => 'Kepala Keluarga',
+        ]);
+
+        $this->get(route('home'))
+            ->assertOk()
+            ->assertSee('Ringkasan kependudukan')
+            ->assertSee('Jumlah Penduduk')
+            ->assertSee('Keluarga')
+            ->assertSee('Musyawarah Desa')
+            ->assertSee('19 Juli 2026')
+            ->assertSee(route('berita.detail', $publishedBerita->slug), false)
+            ->assertDontSee('Cakupan digital')
+            ->assertDontSee('Catatan Internal');
+    }
+
     public function test_public_layanan_page_records_pengaduan(): void
     {
         $this->get(route('layanan'))
             ->assertOk()
             ->assertSee('Layanan Pengaduan Desa Sambo')
-            ->assertSee('Pengaduan masuk')
+            ->assertSee('Tersimpan untuk admin')
             ->assertDontSee('Surat Pengantar');
 
         $this->post(route('layanan.pengaduan.store'), [

@@ -13,10 +13,10 @@ class PengaduanController extends Controller
             'title' => 'Pengaduan Masyarakat',
             'singular' => 'pengaduan',
             'route' => 'admin.pengaduan',
-            'description' => 'Lihat dan cek detail laporan masyarakat yang diajukan melalui layanan publik.',
+            'description' => 'Baca detail laporan masyarakat yang diajukan melalui layanan publik.',
             'can_create' => false,
             'can_edit' => false,
-            'can_delete' => false,
+            'can_delete' => true,
         ];
     }
 
@@ -33,9 +33,7 @@ class PengaduanController extends Controller
         return [
             ['name' => 'nama_pengirim', 'label' => 'Nama pengirim', 'type' => 'text', 'required' => true],
             ['name' => 'kontak_pengirim', 'label' => 'Kontak pengirim', 'type' => 'text', 'required' => true],
-            ['name' => 'status', 'label' => 'Status', 'type' => 'select', 'options' => ['pending' => 'Pending', 'diproses' => 'Diproses', 'selesai' => 'Selesai', 'ditolak' => 'Ditolak'], 'default' => 'pending', 'required' => true],
             ['name' => 'isi_aduan', 'label' => 'Isi aduan', 'type' => 'textarea', 'rows' => 7, 'required' => true],
-            ['name' => 'catatan_admin', 'label' => 'Catatan admin', 'type' => 'textarea', 'rows' => 5],
         ];
     }
 
@@ -76,7 +74,7 @@ class PengaduanController extends Controller
         ]);
 
         return redirect()->route('layanan.pengaduan')
-            ->with('success', 'Pengaduan berhasil dikirim. Operator desa akan menindaklanjuti melalui panel admin.');
+            ->with('success', 'Pengaduan berhasil dikirim dan tersedia untuk dibaca oleh admin desa.');
     }
 
     public function show(Pengaduan $pengaduan)
@@ -96,12 +94,14 @@ class PengaduanController extends Controller
     public function update(Request $request, Pengaduan $pengaduan)
     {
         return redirect()->route('admin.pengaduan.show', $pengaduan)
-            ->with('info', 'Perubahan status dan data pengaduan tidak dilakukan dari panel admin ini.');
+            ->with('info', 'Pengaduan hanya dapat dibaca dari panel admin ini.');
     }
 
     public function destroy(Pengaduan $pengaduan)
     {
+        $pengaduan->delete();
+
         return redirect()->route('admin.pengaduan.index')
-            ->with('info', 'Pengaduan tidak dapat dihapus dari panel admin ini.');
+            ->with('success', 'Pengaduan berhasil dihapus.');
     }
 }

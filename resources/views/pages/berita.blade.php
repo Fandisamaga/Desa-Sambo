@@ -70,8 +70,8 @@
                         </div>
                         <div class="pt-6">
                             <p class="text-xs font-bold uppercase tracking-[.18em] text-emerald-700">{{ $dateLabel($featuredBerita) }}</p>
-                            <h2 class="mt-3 font-display text-3xl font-bold leading-tight text-slate-950">{{ $featuredBerita->judul }}</h2>
-                            <p class="mt-4 text-sm leading-6 text-slate-600">{{ $excerpt($featuredBerita->konten, 190) }}</p>
+                            <h2 class="mt-3 break-words font-display text-3xl font-bold leading-tight text-slate-950">{{ $featuredBerita->judul }}</h2>
+                            <p class="mt-4 break-words text-sm leading-6 text-slate-600">{{ $excerpt($featuredBerita->konten, 190) }}</p>
                             <div class="mt-6 flex flex-wrap items-center gap-4">
                                 <a href="{{ route('berita.detail', $featuredBerita->slug) }}" class="btn-primary">Baca lengkap <span aria-hidden="true">&rarr;</span></a>
                             </div>
@@ -111,8 +111,8 @@
                     </div>
                     <div class="p-6">
                         <p class="text-xs font-bold uppercase tracking-[.16em] text-emerald-700">{{ $dateLabel($item) }}</p>
-                        <h3 class="mt-3 font-display text-2xl font-bold leading-snug text-slate-950">{{ $item->judul }}</h3>
-                        <p class="mt-3 text-sm leading-6 text-slate-500">{{ $excerpt($item->konten) }}</p>
+                        <h3 class="mt-3 break-words font-display text-2xl font-bold leading-snug text-slate-950">{{ $item->judul }}</h3>
+                        <p class="mt-3 break-words text-sm leading-6 text-slate-500">{{ $excerpt($item->konten) }}</p>
                         <div class="mt-5 flex flex-wrap items-center justify-end gap-3">
                             <a href="{{ route('berita.detail', $item->slug) }}" class="text-sm font-bold text-emerald-700 hover:text-emerald-900">Baca lengkap &rarr;</a>
                         </div>

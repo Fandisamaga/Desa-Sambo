@@ -24,7 +24,6 @@ Route::get('/berita/{berita:slug}', [PublicPageController::class, 'detailBerita'
 Route::get('/umkm', [PublicPageController::class, 'umkm'])->name('umkm');
 Route::get('/ppid', [PublicPageController::class, 'ppid'])->name('ppid');
 Route::redirect('/dokumen-publik', '/ppid')->name('dokumen-publik');
-Route::get('/program-kkn', [PublicPageController::class, 'programKkn'])->name('kkn');
 
 Route::get('/layanan', [LayananController::class, 'index'])->name('layanan');
 Route::redirect('/layanan/surat-keterangan-domisili', '/layanan')->name('layanan.domisili');

@@ -19,7 +19,7 @@ class DashboardController extends Controller
             ['label' => 'Berita', 'value' => Berita::count(), 'note' => Berita::where('status', 'publish')->count() . ' publish', 'route' => 'admin.berita.index'],
             ['label' => 'Produk UMKM', 'value' => ProdukUmkm::count(), 'note' => 'Produk terdaftar', 'route' => 'admin.produk-umkm.index'],
             ['label' => 'Dokumen Publik', 'value' => DokumenPublik::count(), 'note' => 'Tampil di PPID', 'route' => 'admin.dokumen-publik.index'],
-            ['label' => 'Pengaduan', 'value' => Pengaduan::count(), 'note' => Pengaduan::where('status', 'pending')->count() . ' pending', 'route' => 'admin.pengaduan.index'],
+            ['label' => 'Pengaduan', 'value' => Pengaduan::count(), 'note' => 'Laporan warga', 'route' => 'admin.pengaduan.index'],
         ];
 
         $activities = [

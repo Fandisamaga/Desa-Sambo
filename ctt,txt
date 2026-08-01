@@ -1,6 +1,6 @@
 Desain sudah diperbarui menjadi lebih clean: dominan putih, sage, emerald lembut, dan aksen lime seperlunya.
 Perubahan utama:
-Sidebar desktop permanen dengan menu Beranda, Profil, Berita, UMKM, KKN, dan Layanan.
+Sidebar desktop permanen dengan menu Beranda, Profil, Berita, UMKM, PPID, dan Layanan.
 Sidebar mobile tetap tersedia melalui tombol menu.
 Hero beranda dibuat lebih terang dan minimal.
 Fitur UMKM ditambahkan:Menu dan route /umkm

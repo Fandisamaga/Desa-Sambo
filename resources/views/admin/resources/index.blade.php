@@ -80,12 +80,16 @@
                                 <td class="px-4 py-4">
                                     <div class="flex items-center justify-end gap-2">
                                         <a href="{{ route($resource['route'] . '.show', $item) }}" class="rounded-lg border border-slate-200 px-3 py-2 text-xs font-bold text-slate-600 hover:border-emerald-200 hover:text-emerald-700">Detail</a>
-                                        <a href="{{ route($resource['route'] . '.edit', $item) }}" class="rounded-lg border border-slate-200 px-3 py-2 text-xs font-bold text-slate-600 hover:border-emerald-200 hover:text-emerald-700">Edit</a>
-                                        <form method="POST" action="{{ route($resource['route'] . '.destroy', $item) }}" onsubmit="return confirm('Hapus data ini?')">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="rounded-lg border border-red-100 px-3 py-2 text-xs font-bold text-red-600 hover:bg-red-50">Hapus</button>
-                                        </form>
+                                        @if ($resource['can_edit'] ?? true)
+                                            <a href="{{ route($resource['route'] . '.edit', $item) }}" class="rounded-lg border border-slate-200 px-3 py-2 text-xs font-bold text-slate-600 hover:border-emerald-200 hover:text-emerald-700">Edit</a>
+                                        @endif
+                                        @if ($resource['can_delete'] ?? true)
+                                            <form method="POST" action="{{ route($resource['route'] . '.destroy', $item) }}" data-delete-form>
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="rounded-lg border border-red-100 px-3 py-2 text-xs font-bold text-red-600 hover:bg-red-50">Hapus</button>
+                                            </form>
+                                        @endif
                                     </div>
                                 </td>
                             </tr>
@@ -107,4 +111,17 @@
             @endif
         </div>
     </section>
+
+    <div id="delete-confirmation-dialog" class="fixed inset-0 z-[60] hidden items-center justify-center p-4" aria-hidden="true">
+        <button type="button" data-delete-cancel class="absolute inset-0 bg-slate-950/50 backdrop-blur-sm" aria-label="Tutup konfirmasi hapus"></button>
+        <div class="relative w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl ring-1 ring-slate-900/10" role="dialog" aria-modal="true" aria-labelledby="delete-dialog-title" aria-describedby="delete-dialog-description">
+            <div class="flex h-11 w-11 items-center justify-center rounded-full bg-red-50 text-xl font-bold text-red-600" aria-hidden="true">!</div>
+            <h2 id="delete-dialog-title" class="mt-4 font-display text-2xl font-bold text-slate-900">Hapus {{ $resource['singular'] }}?</h2>
+            <p id="delete-dialog-description" class="mt-2 text-sm leading-6 text-slate-600">Data yang dihapus tidak dapat dikembalikan. Pastikan data ini sudah tidak diperlukan.</p>
+            <div class="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+                <button type="button" data-delete-cancel class="btn-soft justify-center">Batal</button>
+                <button type="button" data-delete-confirm class="inline-flex items-center justify-center rounded-lg bg-red-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">Ya, hapus</button>
+            </div>
+        </div>
+    </div>
 @endsection

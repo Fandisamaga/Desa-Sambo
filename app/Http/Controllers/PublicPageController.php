@@ -17,8 +17,21 @@ class PublicPageController extends Controller
 {
     public function home(): View
     {
+        $infographicData = $this->buildInfographicData();
+        $publishedBerita = $this->publishedBerita();
+        $summaryByLabel = collect($infographicData['populationStats']['summary'])->keyBy('label');
+
         return view('pages.home', [
             'featuredUmkm' => Schema::hasTable('produk_umkm') ? ProdukUmkm::latest()->take(3)->get() : collect(),
+            'homeBerita' => $publishedBerita->take(2)->values(),
+            'featuredBerita' => $publishedBerita->first(),
+            'publishedBeritaCount' => number_format($publishedBerita->count(), 0, ',', '.'),
+            'homeStats' => [
+                ['label' => 'Warga tercatat', 'value' => $summaryByLabel->get('Jumlah Penduduk')['value'] ?? '0'],
+                ['label' => 'Kartu keluarga', 'value' => $summaryByLabel->get('Keluarga')['value'] ?? '0'],
+                ['label' => 'Berita publish', 'value' => number_format($publishedBerita->count(), 0, ',', '.')],
+            ],
+            ...$infographicData,
         ]);
     }
 
@@ -29,92 +42,12 @@ class PublicPageController extends Controller
 
     public function infoGrafis(): View
     {
-        $penduduk = Schema::hasTable('penduduk')
-            ? Penduduk::query()->get(['tanggal_lahir', 'jenis_kelamin', 'pekerjaan', 'agama'])
-            : collect();
-
-        $totalPenduduk = $penduduk->count();
-        $totalKk = Schema::hasTable('kartu_keluarga') ? KartuKeluarga::query()->count() : 0;
-        $totalLakiLaki = $penduduk->where('jenis_kelamin', 'Laki-laki')->count();
-        $totalPerempuan = $penduduk->where('jenis_kelamin', 'Perempuan')->count();
-
-        $percent = fn (int $value, int $total = null) => ($total ?? $totalPenduduk) > 0
-            ? round(($value / ($total ?? $totalPenduduk)) * 100, 1)
-            : 0;
-
-        $formatCount = fn (int $value) => number_format($value, 0, ',', '.');
-
-        $ageBuckets = $this->buildAgeBuckets($penduduk);
-        $groupStats = fn (string $field) => $this->buildGroupStats($penduduk, $field, $percent, $formatCount);
-
-        $apbdesYears = Schema::hasTable('apbdes')
-            ? Apbdes::query()
-                ->orderBy('tahun')
-                ->get()
-                ->map(fn (Apbdes $item) => [
-                    'year' => (string) $item->tahun,
-                    'income' => $item->pendapatan,
-                    'spending' => $item->belanja,
-                    'financingIncome' => $item->penerimaan_pembiayaan,
-                    'financingExpense' => $item->pengeluaran_pembiayaan,
-                    'incomeItems' => [
-                        ['label' => 'Pendapatan', 'amount' => $item->pendapatan],
-                        ['label' => 'Penerimaan pembiayaan', 'amount' => $item->penerimaan_pembiayaan],
-                    ],
-                    'spendingItems' => [
-                        ['label' => 'Belanja', 'amount' => $item->belanja],
-                        ['label' => 'Pengeluaran pembiayaan', 'amount' => $item->pengeluaran_pembiayaan],
-                    ],
-                ])
-                ->values()
-            : collect();
-
-        $stuntingCount = Schema::hasTable('stunting') ? Stunting::query()->count() : 0;
-
-        return view('pages.info-grafis', [
-            'populationStats' => [
-                'summary' => [
-                    ['label' => 'Jumlah Penduduk', 'value' => $formatCount($totalPenduduk), 'unit' => 'Jiwa', 'description' => 'Total warga yang tercatat pada CRUD Penduduk.', 'tone' => 'emerald'],
-                    ['label' => 'Keluarga', 'value' => $formatCount($totalKk), 'unit' => 'KK', 'description' => 'Jumlah kartu keluarga yang tercatat di admin.', 'tone' => 'amber'],
-                    ['label' => 'Laki-laki', 'value' => $formatCount($totalLakiLaki), 'unit' => 'Jiwa', 'description' => $percent($totalLakiLaki) . '% dari total penduduk.', 'tone' => 'sky'],
-                    ['label' => 'Perempuan', 'value' => $formatCount($totalPerempuan), 'unit' => 'Jiwa', 'description' => $percent($totalPerempuan) . '% dari total penduduk.', 'tone' => 'rose'],
-                ],
-                'gender' => [
-                    ['label' => 'Laki-laki', 'value' => $formatCount($totalLakiLaki), 'percent' => $percent($totalLakiLaki), 'tone' => 'sky'],
-                    ['label' => 'Perempuan', 'value' => $formatCount($totalPerempuan), 'percent' => $percent($totalPerempuan), 'tone' => 'rose'],
-                ],
-                'ageGroups' => collect($ageBuckets)->map(fn ($count, $label) => [
-                    'label' => $label,
-                    'value' => $formatCount($count),
-                    'percent' => $percent($count),
-                ])->values(),
-                'jobs' => $groupStats('pekerjaan'),
-                'religions' => $groupStats('agama'),
-                'total' => $formatCount($totalPenduduk),
-                'hasData' => $totalPenduduk > 0,
-            ],
-            'apbdesStats' => [
-                'location' => 'Desa Sambo, Kecamatan Dolo Selatan, Kabupaten Sigi, Provinsi Sulawesi Tengah',
-                'years' => $apbdesYears,
-                'hasData' => $apbdesYears->isNotEmpty(),
-            ],
-            'stuntingStats' => [
-                'count' => $stuntingCount,
-                'hasData' => $stuntingCount > 0,
-                'description' => 'Jumlah anak di daftar stunting berdasarkan data penduduk.',
-            ],
-        ]);
+        return view('pages.info-grafis', $this->buildInfographicData());
     }
 
     public function berita(): View
     {
-        $berita = Schema::hasTable('berita')
-            ? Berita::query()
-                ->where('status', 'publish')
-                ->orderByDesc(Schema::hasColumn('berita', 'tanggal_upload') ? 'tanggal_upload' : 'created_at')
-                ->latest('created_at')
-                ->get()
-            : collect();
+        $berita = $this->publishedBerita();
 
         return view('pages.berita', [
             'berita' => $berita,
@@ -182,9 +115,94 @@ class PublicPageController extends Controller
         ]);
     }
 
-    public function programKkn(): View
+    private function publishedBerita()
     {
-        return view('pages.placeholder');
+        return Schema::hasTable('berita')
+            ? Berita::query()
+                ->where('status', 'publish')
+                ->orderByDesc(Schema::hasColumn('berita', 'tanggal_upload') ? 'tanggal_upload' : 'created_at')
+                ->latest('created_at')
+                ->get()
+            : collect();
+    }
+
+    private function buildInfographicData(): array
+    {
+        $penduduk = Schema::hasTable('penduduk')
+            ? Penduduk::query()->get(['tanggal_lahir', 'jenis_kelamin', 'pekerjaan', 'agama'])
+            : collect();
+
+        $totalPenduduk = $penduduk->count();
+        $totalKk = Schema::hasTable('kartu_keluarga') ? KartuKeluarga::query()->count() : 0;
+        $totalLakiLaki = $penduduk->where('jenis_kelamin', 'Laki-laki')->count();
+        $totalPerempuan = $penduduk->where('jenis_kelamin', 'Perempuan')->count();
+
+        $percent = fn (int $value, int $total = null) => ($total ?? $totalPenduduk) > 0
+            ? round(($value / ($total ?? $totalPenduduk)) * 100, 1)
+            : 0;
+
+        $formatCount = fn (int $value) => number_format($value, 0, ',', '.');
+
+        $ageBuckets = $this->buildAgeBuckets($penduduk);
+        $groupStats = fn (string $field) => $this->buildGroupStats($penduduk, $field, $percent, $formatCount);
+
+        $apbdesYears = Schema::hasTable('apbdes')
+            ? Apbdes::query()
+                ->orderBy('tahun')
+                ->get()
+                ->map(fn (Apbdes $item) => [
+                    'year' => (string) $item->tahun,
+                    'income' => $item->pendapatan,
+                    'spending' => $item->belanja,
+                    'financingIncome' => $item->penerimaan_pembiayaan,
+                    'financingExpense' => $item->pengeluaran_pembiayaan,
+                    'incomeItems' => [
+                        ['label' => 'Pendapatan', 'amount' => $item->pendapatan],
+                        ['label' => 'Penerimaan pembiayaan', 'amount' => $item->penerimaan_pembiayaan],
+                    ],
+                    'spendingItems' => [
+                        ['label' => 'Belanja', 'amount' => $item->belanja],
+                        ['label' => 'Pengeluaran pembiayaan', 'amount' => $item->pengeluaran_pembiayaan],
+                    ],
+                ])
+                ->values()
+            : collect();
+
+        $stuntingCount = Schema::hasTable('stunting') ? Stunting::query()->count() : 0;
+
+        return [
+            'populationStats' => [
+                'summary' => [
+                    ['label' => 'Jumlah Penduduk', 'value' => $formatCount($totalPenduduk), 'unit' => 'Jiwa', 'description' => 'Total warga yang tercatat pada CRUD Penduduk.', 'tone' => 'emerald'],
+                    ['label' => 'Keluarga', 'value' => $formatCount($totalKk), 'unit' => 'KK', 'description' => 'Jumlah kartu keluarga yang tercatat di admin.', 'tone' => 'amber'],
+                    ['label' => 'Laki-laki', 'value' => $formatCount($totalLakiLaki), 'unit' => 'Jiwa', 'description' => $percent($totalLakiLaki) . '% dari total penduduk.', 'tone' => 'sky'],
+                    ['label' => 'Perempuan', 'value' => $formatCount($totalPerempuan), 'unit' => 'Jiwa', 'description' => $percent($totalPerempuan) . '% dari total penduduk.', 'tone' => 'rose'],
+                ],
+                'gender' => [
+                    ['label' => 'Laki-laki', 'value' => $formatCount($totalLakiLaki), 'percent' => $percent($totalLakiLaki), 'tone' => 'sky'],
+                    ['label' => 'Perempuan', 'value' => $formatCount($totalPerempuan), 'percent' => $percent($totalPerempuan), 'tone' => 'rose'],
+                ],
+                'ageGroups' => collect($ageBuckets)->map(fn ($count, $label) => [
+                    'label' => $label,
+                    'value' => $formatCount($count),
+                    'percent' => $percent($count),
+                ])->values(),
+                'jobs' => $groupStats('pekerjaan'),
+                'religions' => $groupStats('agama'),
+                'total' => $formatCount($totalPenduduk),
+                'hasData' => $totalPenduduk > 0,
+            ],
+            'apbdesStats' => [
+                'location' => 'Desa Sambo, Kecamatan Dolo Selatan, Kabupaten Sigi, Provinsi Sulawesi Tengah',
+                'years' => $apbdesYears,
+                'hasData' => $apbdesYears->isNotEmpty(),
+            ],
+            'stuntingStats' => [
+                'count' => $stuntingCount,
+                'hasData' => $stuntingCount > 0,
+                'description' => 'Jumlah anak di daftar stunting berdasarkan data penduduk.',
+            ],
+        ];
     }
 
     private function documentUrl(?string $path): string
