@@ -1,4 +1,9 @@
 *
 !private/
 !public/
+!public/aparat-desa/
+!public/aparat-desa/**
+!public/background/
+!public/background/**
+!public/logo.jpeg
 !.gitignore
