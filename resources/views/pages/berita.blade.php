@@ -32,47 +32,47 @@
     @endphp
 
     <section class="bg-white">
-        <div class="container-page grid items-center gap-10 py-16 lg:grid-cols-[.86fr_1.14fr] lg:py-24">
+        <div class="container-page grid grid-cols-1 items-center gap-8 py-12 sm:py-16 lg:grid-cols-[.86fr_1.14fr] lg:py-24">
             <div>
                 <p class="eyebrow text-emerald-700">Kabar Sambo</p>
-                <h1 class="mt-5 max-w-3xl font-display text-5xl font-bold leading-tight text-slate-950 sm:text-6xl">Berita Desa Sambo</h1>
-                <p class="mt-6 max-w-2xl text-lg leading-8 text-slate-600">
+                <h1 class="mt-4 max-w-3xl break-words font-display text-3xl font-bold leading-tight text-slate-950 sm:mt-5 sm:text-6xl">Berita Desa Sambo</h1>
+                <p class="mt-4 max-w-2xl text-base leading-7 text-slate-600 sm:mt-6 sm:text-lg sm:leading-8">
                     Informasi kegiatan, pengumuman, dan cerita warga yang dipublikasikan pemerintah desa.
                 </p>
 
-                <div class="mt-8 grid max-w-lg grid-cols-2 gap-4">
-                    <div class="rounded-2xl bg-emerald-50 p-5 ring-1 ring-emerald-100">
+                <div class="mt-7 grid max-w-lg grid-cols-2 gap-3 sm:mt-8 sm:gap-4">
+                    <div class="rounded-xl bg-emerald-50 p-4 ring-1 ring-emerald-100 sm:rounded-2xl sm:p-5">
                         <p class="text-xs font-bold uppercase tracking-[.16em] text-emerald-700">Publikasi</p>
                         <p class="mt-3 font-display text-3xl font-bold text-slate-950">{{ number_format($berita->count(), 0, ',', '.') }}</p>
                     </div>
-                    <div class="rounded-2xl bg-amber-50 p-5 ring-1 ring-amber-100">
+                    <div class="rounded-xl bg-amber-50 p-4 ring-1 ring-amber-100 sm:rounded-2xl sm:p-5">
                         <p class="text-xs font-bold uppercase tracking-[.16em] text-amber-700">Terbaru</p>
                         <p class="mt-3 text-sm font-bold leading-6 text-slate-900">{{ $featuredBerita ? $dateLabel($featuredBerita) : 'Belum ada berita' }}</p>
                     </div>
                 </div>
             </div>
 
-            <div class="rounded-2xl border border-emerald-100 bg-white p-6 text-slate-900 shadow-xl shadow-emerald-950/10">
+            <div class="rounded-xl border border-emerald-100 bg-white p-4 text-slate-900 shadow-xl shadow-emerald-950/10 sm:rounded-2xl sm:p-6">
                 @if ($featuredBerita)
                     @php $featuredThumbnail = $thumbnailUrl($featuredBerita); @endphp
                     <article>
                         <div class="overflow-hidden rounded-xl bg-emerald-50">
                             @if ($featuredThumbnail)
-                                <img src="{{ $featuredThumbnail }}" alt="Thumbnail {{ $featuredBerita->judul }}" class="h-72 w-full object-cover">
+                                <img src="{{ $featuredThumbnail }}" alt="Thumbnail {{ $featuredBerita->judul }}" class="h-52 w-full object-cover sm:h-72">
                             @else
-                                <div class="grid h-72 place-items-center bg-[linear-gradient(135deg,#ecfdf5_0%,#86efac_46%,#115e59_100%)] p-8 text-center">
+                                <div class="grid h-52 place-items-center bg-[linear-gradient(135deg,#ecfdf5_0%,#86efac_46%,#115e59_100%)] p-5 text-center sm:h-72 sm:p-8">
                                     <div>
                                         <p class="text-xs font-bold uppercase tracking-[.18em] text-emerald-950/70">Berita terkini</p>
-                                        <p class="mt-3 font-display text-4xl font-bold leading-tight text-emerald-950">{{ $featuredBerita->judul }}</p>
+                                        <p class="mt-3 font-display text-2xl font-bold leading-tight text-emerald-950 sm:text-4xl">{{ $featuredBerita->judul }}</p>
                                     </div>
                                 </div>
                             @endif
                         </div>
-                        <div class="pt-6">
+                        <div class="pt-4 sm:pt-6">
                             <p class="text-xs font-bold uppercase tracking-[.18em] text-emerald-700">{{ $dateLabel($featuredBerita) }}</p>
-                            <h2 class="mt-3 break-words font-display text-3xl font-bold leading-tight text-slate-950">{{ $featuredBerita->judul }}</h2>
-                            <p class="mt-4 break-words text-sm leading-6 text-slate-600">{{ $excerpt($featuredBerita->konten, 190) }}</p>
-                            <div class="mt-6 flex flex-wrap items-center gap-4">
+                            <h2 class="mt-3 break-words font-display text-2xl font-bold leading-tight text-slate-950 sm:text-3xl">{{ $featuredBerita->judul }}</h2>
+                            <p class="mt-3 break-words text-sm leading-6 text-slate-600 sm:mt-4">{{ $excerpt($featuredBerita->konten, 190) }}</p>
+                            <div class="mt-5 flex flex-wrap items-center gap-4 sm:mt-6">
                                 <a href="{{ route('berita.detail', $featuredBerita->slug) }}" class="btn-primary">Baca lengkap <span aria-hidden="true">&rarr;</span></a>
                             </div>
                         </div>
@@ -88,7 +88,7 @@
         </div>
     </section>
 
-    <section class="container-page py-16 lg:py-24">
+    <section class="container-page py-12 sm:py-16 lg:py-24">
         <div class="flex flex-wrap items-end justify-between gap-5">
             <div>
                 <p class="eyebrow text-emerald-700">Daftar berita</p>
@@ -96,11 +96,11 @@
             </div>
         </div>
 
-        <div class="mt-9 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+        <div class="mt-7 grid gap-4 sm:mt-9 sm:gap-6 md:grid-cols-2 xl:grid-cols-3">
             @forelse ($otherBerita as $item)
                 @php $thumbnail = $thumbnailUrl($item); @endphp
-                <article class="overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-200 transition hover:-translate-y-1 hover:shadow-lg">
-                    <div class="h-52 bg-emerald-100">
+                <article class="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-slate-200 transition hover:-translate-y-1 hover:shadow-lg sm:rounded-2xl">
+                    <div class="h-40 bg-emerald-100 sm:h-52">
                         @if ($thumbnail)
                             <img src="{{ $thumbnail }}" alt="Thumbnail {{ $item->judul }}" class="h-full w-full object-cover">
                         @else
@@ -109,11 +109,11 @@
                             </div>
                         @endif
                     </div>
-                    <div class="p-6">
+                    <div class="p-4 sm:p-6">
                         <p class="text-xs font-bold uppercase tracking-[.16em] text-emerald-700">{{ $dateLabel($item) }}</p>
-                        <h3 class="mt-3 break-words font-display text-2xl font-bold leading-snug text-slate-950">{{ $item->judul }}</h3>
-                        <p class="mt-3 break-words text-sm leading-6 text-slate-500">{{ $excerpt($item->konten) }}</p>
-                        <div class="mt-5 flex flex-wrap items-center justify-end gap-3">
+                        <h3 class="mt-3 break-words font-display text-xl font-bold leading-snug text-slate-950 sm:text-2xl">{{ $item->judul }}</h3>
+                        <p class="mt-2 break-words text-sm leading-6 text-slate-500 sm:mt-3">{{ $excerpt($item->konten) }}</p>
+                        <div class="mt-4 flex flex-wrap items-center justify-end gap-3 sm:mt-5">
                             <a href="{{ route('berita.detail', $item->slug) }}" class="text-sm font-bold text-emerald-700 hover:text-emerald-900">Baca lengkap &rarr;</a>
                         </div>
                     </div>

@@ -62,25 +62,25 @@
     @endphp
 
     <section class="bg-white">
-        <div class="container-page grid gap-10 py-16 lg:grid-cols-[.82fr_1.18fr] lg:py-24">
+        <div class="container-page grid grid-cols-1 gap-8 py-12 sm:py-16 lg:grid-cols-[.82fr_1.18fr] lg:py-24">
             <div>
                 <p class="eyebrow text-emerald-700">Etalase Warga</p>
-                <h1 class="mt-5 font-display text-5xl font-bold leading-tight text-slate-900 sm:text-6xl">UMKM Desa Sambo</h1>
-                <p class="mt-5 max-w-xl text-lg leading-8 text-slate-600">Berikut Daftar UMKM yang ada di desa Sambo</p>
+                <h1 class="mt-4 font-display text-3xl font-bold leading-tight text-slate-900 sm:mt-5 sm:text-6xl">UMKM Desa Sambo</h1>
+                <p class="mt-4 max-w-xl text-base leading-7 text-slate-600 sm:mt-5 sm:text-lg sm:leading-8">Berikut Daftar UMKM yang ada di desa Sambo</p>
             </div>
 
-            <div class="grid gap-4 sm:grid-cols-3">
+            <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
                 @foreach ($stats as $stat)
-                    <article class="rounded-2xl border border-emerald-900/10 bg-emerald-50 p-6">
+                    <article class="rounded-xl border border-emerald-900/10 bg-emerald-50 p-4 sm:rounded-2xl sm:p-6 {{ $loop->last ? 'col-span-2 sm:col-span-1' : '' }}">
                         <p class="text-xs font-bold uppercase tracking-[.16em] text-emerald-700">{{ $stat['label'] }}</p>
-                        <p class="mt-4 font-display text-4xl font-bold text-slate-950">{{ $stat['value'] }}</p>
+                        <p class="mt-3 font-display text-3xl font-bold text-slate-950 sm:mt-4 sm:text-4xl">{{ $stat['value'] }}</p>
                     </article>
                 @endforeach
             </div>
         </div>
     </section>
 
-    <section class="bg-slate-50 py-16 lg:py-24">
+    <section class="bg-slate-50 py-12 sm:py-16 lg:py-24">
         <div class="container-page">
             <div class="flex flex-wrap items-end justify-between gap-5">
                 <div>
@@ -89,7 +89,7 @@
                 </div>
             </div>
 
-            <div class="mt-9 grid gap-6">
+            <div class="mt-7 grid gap-4 sm:mt-9 sm:gap-6">
                 @forelse ($produkUmkm as $item)
                     @php
                         $photoPath = trim((string) $item->foto_path);
@@ -114,32 +114,32 @@
                         $initials = strtoupper(substr($item->nama_produk, 0, 2));
                     @endphp
 
-                    <article class="overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-200">
+                    <article class="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-slate-200 sm:rounded-2xl">
                         <div class="grid lg:grid-cols-[.78fr_1.22fr]">
-                            <div class="relative min-h-72 bg-emerald-100 p-6">
+                            <div class="relative h-52 bg-emerald-100 p-4 sm:h-72 sm:p-6">
                                 @if ($photoUrl)
-                                    <img src="{{ $photoUrl }}" alt="Foto {{ $item->nama_produk }}" class="h-full min-h-72 w-full rounded-2xl object-cover">
+                                    <img src="{{ $photoUrl }}" alt="Foto {{ $item->nama_produk }}" class="h-full w-full rounded-xl object-cover sm:rounded-2xl">
                                 @else
-                                    <div class="grid h-full min-h-72 place-items-center rounded-2xl border border-emerald-900/10 bg-[linear-gradient(145deg,#ecfdf5_0%,#bbf7d0_46%,#0f766e_100%)] p-8 text-center">
+                                    <div class="grid h-full place-items-center rounded-xl border border-emerald-900/10 bg-[linear-gradient(145deg,#ecfdf5_0%,#bbf7d0_46%,#0f766e_100%)] p-5 text-center sm:rounded-2xl sm:p-8">
                                         <div>
-                                            <span class="mx-auto grid h-24 w-24 place-items-center rounded-full bg-white/85 font-display text-3xl font-bold text-emerald-800 shadow-sm">{{ $initials }}</span>
-                                            <p class="mt-6 text-xs font-bold uppercase tracking-[.18em] text-emerald-900/70">{{ $item->jenis_usaha ?: 'UMKM Desa' }}</p>
-                                            <h3 class="mt-3 font-display text-4xl font-bold text-emerald-950">{{ $item->nama_produk }}</h3>
+                                            <span class="mx-auto grid h-16 w-16 place-items-center rounded-full bg-white/85 font-display text-2xl font-bold text-emerald-800 shadow-sm sm:h-24 sm:w-24 sm:text-3xl">{{ $initials }}</span>
+                                            <p class="mt-4 text-xs font-bold uppercase tracking-[.18em] text-emerald-900/70 sm:mt-6">{{ $item->jenis_usaha ?: 'UMKM Desa' }}</p>
+                                            <h3 class="mt-2 font-display text-2xl font-bold text-emerald-950 sm:mt-3 sm:text-4xl">{{ $item->nama_produk }}</h3>
                                         </div>
                                     </div>
                                 @endif
                             </div>
 
-                            <div class="p-6 sm:p-8">
+                            <div class="p-4 sm:p-8">
                                 <div class="flex flex-wrap items-start justify-between gap-4">
                                     <div>
                                         <p class="text-xs font-bold uppercase tracking-[.16em] text-emerald-700">{{ $item->jenis_usaha ?: 'UMKM Desa' }}</p>
-                                        <h3 class="mt-2 font-display text-3xl font-bold text-slate-900">{{ $item->nama_produk }}</h3>
-                                        <p class="mt-3 max-w-2xl leading-7 text-slate-600">{{ $item->deskripsi ?: 'Informasi usaha dapat dilengkapi melalui admin Produk UMKM.' }}</p>
+                                        <h3 class="mt-2 font-display text-2xl font-bold text-slate-900 sm:text-3xl">{{ $item->nama_produk }}</h3>
+                                        <p class="mt-2 max-w-2xl leading-6 text-slate-600 sm:mt-3 sm:leading-7">{{ $item->deskripsi ?: 'Informasi usaha dapat dilengkapi melalui admin Produk UMKM.' }}</p>
                                     </div>
                                 </div>
 
-                                <div class="mt-7 grid gap-x-8 gap-y-5 border-y border-slate-200 py-6 sm:grid-cols-2">
+                                <div class="mt-5 grid gap-x-6 gap-y-4 border-y border-slate-200 py-5 sm:mt-7 sm:gap-x-8 sm:gap-y-5 sm:py-6 sm:grid-cols-2">
                                     <div>
                                         <p class="text-xs font-bold uppercase tracking-[.16em] text-slate-400">Nama Pemilik</p>
                                         <p class="mt-2 font-bold text-slate-900">{{ $item->nama_pemilik ?: '-' }}</p>
@@ -190,7 +190,7 @@
                                     </div>
                                 @endif
 
-                                <div class="mt-8 flex flex-wrap gap-3">
+                                <div class="mt-6 flex flex-wrap gap-3 sm:mt-8">
                                     @if ($whatsappUrl)
                                         <a href="{{ $whatsappUrl }}" target="_blank" rel="noopener noreferrer" class="btn-primary">Hubungi WhatsApp <span aria-hidden="true">&rarr;</span></a>
                                     @endif

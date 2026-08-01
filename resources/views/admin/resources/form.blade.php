@@ -24,13 +24,13 @@
             </div>
         @endif
 
-        <form method="POST" action="{{ $isEdit ? route($resource['route'] . '.update', $item) : route($resource['route'] . '.store') }}" enctype="multipart/form-data" class="rounded-lg bg-white p-6 shadow-sm ring-1 ring-slate-200">
+        <form method="POST" action="{{ $isEdit ? route($resource['route'] . '.update', $item) : route($resource['route'] . '.store') }}" enctype="multipart/form-data" class="rounded-lg bg-white p-4 shadow-sm ring-1 ring-slate-200 sm:p-6">
             @csrf
             @if ($isEdit)
                 @method('PUT')
             @endif
 
-            <div class="grid gap-5 md:grid-cols-2">
+            <div class="grid gap-4 sm:gap-5 md:grid-cols-2">
                 @foreach ($fields as $field)
                     @php
                         $name = $field['name'];

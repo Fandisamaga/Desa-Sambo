@@ -4,6 +4,6 @@
 }
 
 @layer base {
-    html { scroll-behavior: smooth; }
-    body { min-width: 320px; }
+    html { overflow-x: hidden; scroll-behavior: smooth; }
+    body { overflow-x: hidden; }
 }

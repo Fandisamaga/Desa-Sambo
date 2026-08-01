@@ -51,11 +51,11 @@
             </div>
         </aside>
 
-        <header class="relative z-30 border-b border-slate-200/80 bg-white/90 backdrop-blur">
-            <div class="container-page flex h-20 items-center justify-between gap-4">
+        <header class="fixed inset-x-0 top-0 z-30 border-b border-slate-200/80 bg-white/90 backdrop-blur">
+            <div class="container-page flex h-16 items-center justify-between gap-3 sm:h-20 sm:gap-4">
                 <a href="{{ route('home') }}" class="flex items-center gap-3" aria-label="Beranda Desa Sambo">
-                    <span class="grid h-11 w-11 place-items-center rounded-2xl bg-emerald-700 text-sm font-black text-white shadow-lg shadow-emerald-900/15">DS</span>
-                    <span><span class="block text-[10px] font-bold uppercase tracking-[.18em] text-emerald-700">Website Resmi</span><span class="font-display text-xl font-bold text-slate-900">Desa Sambo</span></span>
+                    <span class="grid h-10 w-10 place-items-center rounded-xl bg-emerald-700 text-sm font-black text-white shadow-lg shadow-emerald-900/15 sm:h-11 sm:w-11 sm:rounded-2xl">DS</span>
+                    <span><span class="block text-[9px] font-bold uppercase tracking-[.14em] text-emerald-700 sm:text-[10px] sm:tracking-[.18em]">Website Resmi</span><span class="font-display text-lg font-bold text-slate-900 sm:text-xl">Desa Sambo</span></span>
                 </a>
                 <nav class="hidden items-center gap-1 lg:flex" aria-label="Navigasi utama">
                 @foreach ($navigation as $item)
@@ -73,16 +73,16 @@
                     @endif
                 @endforeach
                 </nav>
-                <button type="button" class="rounded-xl border border-slate-200 p-2.5 text-slate-700 lg:hidden" data-sidebar-open aria-label="Buka menu"><span class="block text-xl leading-none">☰</span></button>
+                <button type="button" class="rounded-lg border border-slate-200 p-2 text-slate-700 sm:rounded-xl sm:p-2.5 lg:hidden" data-sidebar-open aria-label="Buka menu"><span class="block text-xl leading-none">☰</span></button>
             </div>
         </header>
 
-        <main>
+        <main class="pt-16 sm:pt-20">
             @yield('content')
         </main>
 
         <footer class="bg-slate-950 text-slate-300">
-            <div class="container-page grid gap-10 py-14 md:grid-cols-[1.3fr_.7fr_.9fr]">
+            <div class="container-page grid gap-8 py-10 sm:gap-10 sm:py-14 md:grid-cols-[1.3fr_.7fr_.9fr]">
                 <div>
                     <p class="font-display text-2xl font-bold text-white">Desa Sambo</p>
                     <p class="mt-3 max-w-sm text-sm leading-6 text-slate-400">Media informasi, PPID, pengaduan, dan kolaborasi warga Desa Sambo.</p>
