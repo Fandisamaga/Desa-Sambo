@@ -6,6 +6,7 @@ use App\Models\ArsipSurat;
 use App\Models\KategoriSurat;
 use App\Models\Penduduk;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 
 class ArsipSuratController extends Controller
@@ -43,7 +44,7 @@ class ArsipSuratController extends Controller
             ['name' => 'nomor_surat', 'label' => 'Nomor surat', 'type' => 'text', 'required' => true],
             ['name' => 'tanggal_surat', 'label' => 'Tanggal surat', 'type' => 'date', 'required' => true],
             ['name' => 'perihal', 'label' => 'Perihal', 'type' => 'text', 'required' => true],
-            ['name' => 'file_path', 'label' => 'Path file', 'type' => 'text', 'required' => true],
+            ['name' => 'file_path', 'label' => 'File surat', 'type' => 'file', 'accept' => '.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip', 'current_path' => 'file_path', 'required' => true],
             ['name' => 'keterangan', 'label' => 'Keterangan', 'type' => 'textarea', 'rows' => 5],
         ];
     }
@@ -76,8 +77,10 @@ class ArsipSuratController extends Controller
             'tanggal_surat' => ['required', 'date'],
             'perihal' => ['required', 'string', 'max:200'],
             'keterangan' => ['nullable', 'string'],
-            'file_path' => ['required', 'string', 'max:255'],
+            'file_path' => ['required', 'file', 'mimes:pdf,doc,docx,xls,xlsx,ppt,pptx,zip', 'max:20480'],
         ]);
+
+        $data['file_path'] = $request->file('file_path')->store('arsip-surat', 'public');
 
         ArsipSurat::create($data);
 
@@ -114,8 +117,18 @@ class ArsipSuratController extends Controller
             'tanggal_surat' => ['required', 'date'],
             'perihal' => ['required', 'string', 'max:200'],
             'keterangan' => ['nullable', 'string'],
-            'file_path' => ['required', 'string', 'max:255'],
+            'file_path' => ['nullable', 'file', 'mimes:pdf,doc,docx,xls,xlsx,ppt,pptx,zip', 'max:20480'],
         ]);
+
+        if ($request->hasFile('file_path')) {
+            if ($arsipSurat->file_path && Storage::disk('public')->exists($arsipSurat->file_path)) {
+                Storage::disk('public')->delete($arsipSurat->file_path);
+            }
+
+            $data['file_path'] = $request->file('file_path')->store('arsip-surat', 'public');
+        } else {
+            unset($data['file_path']);
+        }
 
         $arsipSurat->update($data);
 
@@ -125,6 +138,10 @@ class ArsipSuratController extends Controller
 
     public function destroy(ArsipSurat $arsipSurat)
     {
+        if ($arsipSurat->file_path && Storage::disk('public')->exists($arsipSurat->file_path)) {
+            Storage::disk('public')->delete($arsipSurat->file_path);
+        }
+
         $arsipSurat->delete();
 
         return redirect()->route('admin.arsip-surat.index')

@@ -14,7 +14,9 @@ use App\Models\Pengaduan;
 use App\Models\ProdukUmkm;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class AdminCrudViewsTest extends TestCase
@@ -144,6 +146,65 @@ class AdminCrudViewsTest extends TestCase
         $this->assertDatabaseHas('berita', [
             'judul' => 'Berita Baru Tanpa Pilih Kategori',
             'kategori_berita_id' => KategoriBerita::where('slug', 'berita-desa')->value('id'),
+        ]);
+    }
+
+    public function test_admin_can_upload_dokumen_publik_file(): void
+    {
+        Storage::fake('public');
+
+        $admin = User::factory()->create(['is_admin' => true]);
+        $file = UploadedFile::fake()->create('laporan.pdf', 100, 'application/pdf');
+
+        $response = $this->actingAs($admin)
+            ->post(route('admin.dokumen-publik.store'), [
+                'judul_dokumen' => 'Laporan Desa',
+                'file_path' => $file,
+                'tahun' => 2026,
+            ]);
+
+        $response->assertRedirect(route('admin.dokumen-publik.index'));
+
+        Storage::disk('public')->assertExists('dokumen-publik/' . $file->hashName());
+        $this->assertDatabaseHas('dokumen_publik', [
+            'judul_dokumen' => 'Laporan Desa',
+            'file_path' => 'dokumen-publik/' . $file->hashName(),
+            'tahun' => 2026,
+        ]);
+    }
+
+    public function test_admin_can_upload_arsip_surat_file(): void
+    {
+        Storage::fake('public');
+
+        $admin = User::factory()->create(['is_admin' => true]);
+        $kategoriSurat = KategoriSurat::create(['nama_kategori' => 'Domisili']);
+        $kartuKeluarga = KartuKeluarga::create([
+            'no_kk' => '1234567890123456',
+            'alamat' => 'Dusun Sambo',
+            'rt' => '001',
+            'rw' => '002',
+            'dusun' => 'Sambo',
+        ]);
+
+        $file = UploadedFile::fake()->create('surat.pdf', 100, 'application/pdf');
+
+        $response = $this->actingAs($admin)
+            ->post(route('admin.arsip-surat.store'), [
+                'kategori_surat_id' => $kategoriSurat->id,
+                'penduduk_id' => $kartuKeluarga->id,
+                'nomor_surat' => '001/DS/VII/2026',
+                'tanggal_surat' => '2026-07-19',
+                'perihal' => 'Surat Domisili',
+                'file_path' => $file,
+            ]);
+
+        $response->assertRedirect(route('admin.arsip-surat.index'));
+
+        Storage::disk('public')->assertExists('arsip-surat/' . $file->hashName());
+        $this->assertDatabaseHas('arsip_surat', [
+            'nomor_surat' => '001/DS/VII/2026',
+            'file_path' => 'arsip-surat/' . $file->hashName(),
         ]);
     }
 

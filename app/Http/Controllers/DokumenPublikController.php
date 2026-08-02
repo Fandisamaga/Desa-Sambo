@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\DokumenPublik;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class DokumenPublikController extends Controller
 {
@@ -31,7 +32,7 @@ class DokumenPublikController extends Controller
         return [
             ['name' => 'judul_dokumen', 'label' => 'Judul dokumen', 'type' => 'text', 'required' => true],
             ['name' => 'tahun', 'label' => 'Tahun', 'type' => 'number', 'min' => 1900, 'required' => true],
-            ['name' => 'file_path', 'label' => 'Path file', 'type' => 'text', 'required' => true],
+            ['name' => 'file_path', 'label' => 'File dokumen', 'type' => 'file', 'accept' => '.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip', 'current_path' => 'file_path', 'required' => true],
         ];
     }
 
@@ -58,9 +59,11 @@ class DokumenPublikController extends Controller
     {
         $data = $request->validate([
             'judul_dokumen' => ['required', 'string', 'max:200'],
-            'file_path' => ['required', 'string', 'max:255'],
+            'file_path' => ['required', 'file', 'mimes:pdf,doc,docx,xls,xlsx,ppt,pptx,zip', 'max:20480'],
             'tahun' => ['required', 'integer', 'min:1900'],
         ]);
+
+        $data['file_path'] = $request->file('file_path')->store('dokumen-publik', 'public');
 
         DokumenPublik::create($data);
 
@@ -90,9 +93,19 @@ class DokumenPublikController extends Controller
     {
         $data = $request->validate([
             'judul_dokumen' => ['required', 'string', 'max:200'],
-            'file_path' => ['required', 'string', 'max:255'],
+            'file_path' => ['nullable', 'file', 'mimes:pdf,doc,docx,xls,xlsx,ppt,pptx,zip', 'max:20480'],
             'tahun' => ['required', 'integer', 'min:1900'],
         ]);
+
+        if ($request->hasFile('file_path')) {
+            if ($dokumenPublik->file_path && Storage::disk('public')->exists($dokumenPublik->file_path)) {
+                Storage::disk('public')->delete($dokumenPublik->file_path);
+            }
+
+            $data['file_path'] = $request->file('file_path')->store('dokumen-publik', 'public');
+        } else {
+            unset($data['file_path']);
+        }
 
         $dokumenPublik->update($data);
 
@@ -102,6 +115,10 @@ class DokumenPublikController extends Controller
 
     public function destroy(DokumenPublik $dokumenPublik)
     {
+        if ($dokumenPublik->file_path && Storage::disk('public')->exists($dokumenPublik->file_path)) {
+            Storage::disk('public')->delete($dokumenPublik->file_path);
+        }
+
         $dokumenPublik->delete();
 
         return redirect()->route('admin.dokumen-publik.index')
