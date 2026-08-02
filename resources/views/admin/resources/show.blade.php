@@ -46,7 +46,7 @@
                             @elseif ($value instanceof \Illuminate\Support\Carbon)
                                 {{ $value->format('d/m/Y') }}
                             @elseif ($type === 'file' && $value)
-                                <a class="text-emerald-700" href="{{ url('storage/' . $value) }}" target="_blank">{{ $value }}</a>
+                                <a class="text-emerald-700" href="{{ asset('storage/' . $value) }}" target="_blank">{{ $value }}</a>
                             @else
                                 {{ $value ?: '-' }}
                             @endif

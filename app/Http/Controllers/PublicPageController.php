@@ -10,6 +10,7 @@ use App\Models\Penduduk;
 use App\Models\ProdukUmkm;
 use App\Models\Stunting;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class PublicPageController extends Controller
@@ -212,15 +213,11 @@ class PublicPageController extends Controller
             return '#';
         }
 
-        if (preg_match('/^https?:\/\//i', $path)) {
+        if (preg_match('/^https?:\/\//i', $path) || str_starts_with($path, '/')) {
             return $path;
         }
 
-        if (str_starts_with($path, '/')) {
-            return $path;
-        }
-
-        return url('storage/' . ltrim($path, '/'));
+        return Storage::url($path);
     }
 
     private function buildAgeBuckets($penduduk): array
