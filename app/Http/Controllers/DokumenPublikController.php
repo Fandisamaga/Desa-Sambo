@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\DokumenPublik;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class DokumenPublikController extends Controller
 {
@@ -63,7 +64,7 @@ class DokumenPublikController extends Controller
             'tahun' => ['required', 'integer', 'min:1900'],
         ]);
 
-        $data['file_path'] = $request->file('file_path')->store('dokumen-publik', 'public');
+        $data['file_path'] = $this->storeDocumentFile($request->file('file_path'), $data['judul_dokumen']);
 
         DokumenPublik::create($data);
 
@@ -102,7 +103,9 @@ class DokumenPublikController extends Controller
                 Storage::disk('public')->delete($dokumenPublik->file_path);
             }
 
-            $data['file_path'] = $request->file('file_path')->store('dokumen-publik', 'public');
+            $data['file_path'] = $this->storeDocumentFile($request->file('file_path'), $data['judul_dokumen']);
+        } elseif ($dokumenPublik->file_path && $dokumenPublik->judul_dokumen !== $data['judul_dokumen']) {
+            $data['file_path'] = $this->renameDocumentFile($dokumenPublik->file_path, $data['judul_dokumen']);
         } else {
             unset($data['file_path']);
         }
@@ -123,5 +126,45 @@ class DokumenPublikController extends Controller
 
         return redirect()->route('admin.dokumen-publik.index')
             ->with('success', 'Dokumen publik berhasil dihapus.');
+    }
+
+    private function storeDocumentFile($file, string $title): string
+    {
+        $baseName = Str::slug($title) ?: 'dokumen-publik';
+        $extension = $file->getClientOriginalExtension() ?: $file->extension();
+        $filename = sprintf('%s.%s', $baseName, $extension);
+        $path = 'dokumen-publik/' . $filename;
+        $counter = 1;
+
+        while (Storage::disk('public')->exists($path)) {
+            $filename = sprintf('%s-%s.%s', $baseName, $counter++, $extension);
+            $path = 'dokumen-publik/' . $filename;
+        }
+
+        return $file->storeAs('dokumen-publik', basename($path), 'public');
+    }
+
+    private function renameDocumentFile(string $currentPath, string $title): string
+    {
+        if (! Storage::disk('public')->exists($currentPath)) {
+            return $currentPath;
+        }
+
+        $extension = pathinfo($currentPath, PATHINFO_EXTENSION) ?: 'pdf';
+        $baseName = Str::slug($title) ?: 'dokumen-publik';
+        $newFilename = sprintf('%s.%s', $baseName, $extension);
+        $newPath = 'dokumen-publik/' . $newFilename;
+        $counter = 1;
+
+        while (Storage::disk('public')->exists($newPath) && $newPath !== $currentPath) {
+            $newFilename = sprintf('%s-%s.%s', $baseName, $counter++, $extension);
+            $newPath = 'dokumen-publik/' . $newFilename;
+        }
+
+        if ($newPath !== $currentPath) {
+            Storage::disk('public')->move($currentPath, $newPath);
+        }
+
+        return $newPath;
     }
 }

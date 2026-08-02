@@ -165,11 +165,44 @@ class AdminCrudViewsTest extends TestCase
 
         $response->assertRedirect(route('admin.dokumen-publik.index'));
 
-        Storage::disk('public')->assertExists('dokumen-publik/' . $file->hashName());
+        $expectedFileName = 'laporan-desa.pdf';
+        Storage::disk('public')->assertExists('dokumen-publik/' . $expectedFileName);
         $this->assertDatabaseHas('dokumen_publik', [
             'judul_dokumen' => 'Laporan Desa',
-            'file_path' => 'dokumen-publik/' . $file->hashName(),
+            'file_path' => 'dokumen-publik/' . $expectedFileName,
             'tahun' => 2026,
+        ]);
+    }
+
+    public function test_admin_can_update_dokumen_publik_title_and_rename_file(): void
+    {
+        Storage::fake('public');
+
+        $admin = User::factory()->create(['is_admin' => true]);
+        $file = UploadedFile::fake()->create('dokumen-lama.pdf', 100, 'application/pdf');
+
+        $this->actingAs($admin)
+            ->post(route('admin.dokumen-publik.store'), [
+                'judul_dokumen' => 'Laporan Awal',
+                'file_path' => $file,
+                'tahun' => 2026,
+            ])
+            ->assertRedirect(route('admin.dokumen-publik.index'));
+
+        $document = DokumenPublik::first();
+
+        $this->actingAs($admin)
+            ->put(route('admin.dokumen-publik.update', $document), [
+                'judul_dokumen' => 'Laporan Baru',
+                'tahun' => 2026,
+            ])
+            ->assertRedirect(route('admin.dokumen-publik.index'));
+
+        Storage::disk('public')->assertExists('dokumen-publik/laporan-baru.pdf');
+        Storage::disk('public')->assertMissing('dokumen-publik/laporan-awal.pdf');
+        $this->assertDatabaseHas('dokumen_publik', [
+            'judul_dokumen' => 'Laporan Baru',
+            'file_path' => 'dokumen-publik/laporan-baru.pdf',
         ]);
     }
 

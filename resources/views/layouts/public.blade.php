@@ -49,6 +49,7 @@
                 <p class="text-sm font-bold">Butuh bantuan?</p>
                 <p class="mt-1 text-xs leading-5 text-emerald-100">Hubungi kantor desa pada jam pelayanan.</p>
                 <a href="{{ route('layanan') }}" class="mt-4 inline-flex text-sm font-bold underline underline-offset-4">Kanal pengaduan →</a>
+                <a href="{{ route('admin.login') }}" class="mt-4 inline-flex rounded-full bg-white px-4 py-2 text-sm font-semibold text-emerald-800 shadow-sm shadow-slate-900/10">Masuk Admin</a>
             </div>
         </aside>
 
@@ -73,6 +74,7 @@
                         <a href="{{ $item['url'] }}" class="rounded-lg px-3 py-2 text-sm font-semibold {{ request()->routeIs($item['route']) ? 'bg-emerald-50 text-emerald-800' : 'text-slate-600 hover:text-emerald-700' }}">{{ $item['label'] }}</a>
                     @endif
                 @endforeach
+                    <a href="{{ route('admin.login') }}" class="rounded-full bg-emerald-700 px-4 py-2 text-sm font-semibold text-white shadow-sm shadow-emerald-900/20 transition hover:bg-emerald-600">Masuk</a>
                 </nav>
                 <button type="button" class="rounded-lg border border-slate-200 p-2 text-slate-700 sm:rounded-xl sm:p-2.5 lg:hidden" data-sidebar-open aria-label="Buka menu"><span class="block text-xl leading-none">☰</span></button>
             </div>
