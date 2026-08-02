@@ -22,11 +22,29 @@
         $homeBerita = $homeBerita ?? collect();
         $featuredBerita = $featuredBerita ?? $homeBerita->first();
         $homeStats = $homeStats ?? [];
+        $storageUrl = function (?string $path): ?string {
+            $path = trim((string) $path);
+
+            if ($path === '') {
+                return null;
+            }
+
+            if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://') || str_starts_with($path, '/')) {
+                return $path;
+            }
+
+            $path = preg_replace('#^(?:public/)?storage/#', '', $path);
+
+            return \Illuminate\Support\Facades\Storage::disk('public')->exists($path)
+                ? \Illuminate\Support\Facades\Storage::disk('public')->url($path)
+                : asset('storage/' . $path);
+        };
+
         $heroBackgrounds = collect(\Illuminate\Support\Facades\Storage::disk('public')->files('background'))
             ->filter(fn ($path) => preg_match('/\.(jpe?g|png|webp|avif)$/i', $path))
             ->sort()
             ->take(4)
-            ->map(fn ($path) => asset('storage/' . $path))
+            ->map(fn ($path) => $storageUrl($path))
             ->values();
 
         $umkm = ($featuredUmkm ?? collect())->map(fn ($item) => [
@@ -39,16 +57,10 @@
 
         $excerpt = fn (?string $content, int $limit = 150): string => \Illuminate\Support\Str::limit(strip_tags((string) $content), $limit);
 
-        $thumbnailUrl = function ($item): ?string {
+        $thumbnailUrl = function ($item) use ($storageUrl): ?string {
             $path = trim((string) $item->thumbnail_path);
 
-            if ($path === '') {
-                return null;
-            }
-
-            return str_starts_with($path, 'http://') || str_starts_with($path, 'https://') || str_starts_with($path, '/')
-                ? $path
-                : asset('storage/' . $path);
+            return $storageUrl($path);
         };
 
         $dateLabel = function ($item): string {

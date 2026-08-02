@@ -12,16 +12,28 @@
             return \Illuminate\Support\Str::limit(strip_tags((string) $content), $limit);
         };
 
-        $thumbnailUrl = function ($item): ?string {
-            $path = trim((string) $item->thumbnail_path);
+        $storageUrl = function (?string $path): ?string {
+            $path = trim((string) $path);
 
             if ($path === '') {
                 return null;
             }
 
-            return str_starts_with($path, 'http://') || str_starts_with($path, 'https://') || str_starts_with($path, '/')
-                ? $path
+            if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://') || str_starts_with($path, '/')) {
+                return $path;
+            }
+
+            $path = preg_replace('#^(?:public/)?storage/#', '', $path);
+
+            return \Illuminate\Support\Facades\Storage::disk('public')->exists($path)
+                ? \Illuminate\Support\Facades\Storage::disk('public')->url($path)
                 : asset('storage/' . $path);
+        };
+
+        $thumbnailUrl = function ($item) use ($storageUrl): ?string {
+            $path = trim((string) $item->thumbnail_path);
+
+            return $storageUrl($path);
         };
 
         $dateLabel = function ($item): string {

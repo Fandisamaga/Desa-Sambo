@@ -49,7 +49,7 @@
                 <p class="text-sm font-bold">Butuh bantuan?</p>
                 <p class="mt-1 text-xs leading-5 text-emerald-100">Hubungi kantor desa pada jam pelayanan.</p>
                 <a href="{{ route('layanan') }}" class="mt-4 inline-flex text-sm font-bold underline underline-offset-4">Kanal pengaduan →</a>
-                <a href="{{ route('admin.login') }}" class="mt-4 inline-flex rounded-full bg-white px-4 py-2 text-sm font-semibold text-emerald-800 shadow-sm shadow-slate-900/10">Masuk Admin</a>
+                <a href="{{ url('/admin/login') }}" class="mt-4 inline-flex rounded-full bg-white px-4 py-2 text-sm font-semibold text-emerald-800 shadow-sm shadow-slate-900/10">Masuk Admin</a>
             </div>
         </aside>
 
