@@ -22,45 +22,54 @@
         $homeBerita = $homeBerita ?? collect();
         $featuredBerita = $featuredBerita ?? $homeBerita->first();
         $homeStats = $homeStats ?? [];
-        $storageUrl = function (?string $path): ?string {
-            $path = trim((string) $path);
+        $heroBackgrounds = collect(\Illuminate\Support\Facades\Storage::disk('public')->files('background'))
+            ->filter(fn ($path) => preg_match('/\.(jpe?g|png|webp|avif)$/i', $path))
+            ->sort()
+            ->take(4)
+            ->map(fn ($path) => asset('storage/' . $path))
+            ->values();
+
+        $umkm = ($featuredUmkm ?? collect())->map(function ($item) {
+
+            $photoPath = trim((string) $item->foto_path);
+
+            $photoUrl = null;
+
+            if ($photoPath !== '') {
+                $photoUrl = str_starts_with($photoPath, 'http://')
+                    || str_starts_with($photoPath, 'https://')
+                    || str_starts_with($photoPath, '/')
+                        ? $photoPath
+                        : asset('storage/' . $photoPath);
+            }
+
+            return [
+                'icon' => strtoupper(substr($item->nama_produk, 0, 2)),
+                'name' => $item->nama_produk,
+                'category' => $item->jenis_usaha ?: 'UMKM Desa',
+                'owner' => $item->deskripsi
+                    ? \Illuminate\Support\Str::limit($item->deskripsi, 70)
+                    : ($item->produk_jasa ?: 'Produk dan jasa warga Desa Sambo'),
+
+                // TAMBAHKAN INI
+                'photo' => $photoUrl,
+
+                'color' => 'umkm-sage',
+            ];
+        });
+
+        $excerpt = fn (?string $content, int $limit = 150): string => \Illuminate\Support\Str::limit(strip_tags((string) $content), $limit);
+
+        $thumbnailUrl = function ($item): ?string {
+            $path = trim((string) $item->thumbnail_path);
 
             if ($path === '') {
                 return null;
             }
 
-            if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://') || str_starts_with($path, '/')) {
-                return $path;
-            }
-
-            $path = preg_replace('#^(?:public/)?storage/#', '', $path);
-
-            return \Illuminate\Support\Facades\Storage::disk('public')->exists($path)
-                ? \Illuminate\Support\Facades\Storage::disk('public')->url($path)
+            return str_starts_with($path, 'http://') || str_starts_with($path, 'https://') || str_starts_with($path, '/')
+                ? $path
                 : asset('storage/' . $path);
-        };
-
-        $heroBackgrounds = collect(\Illuminate\Support\Facades\Storage::disk('public')->files('background'))
-            ->filter(fn ($path) => preg_match('/\.(jpe?g|png|webp|avif)$/i', $path))
-            ->sort()
-            ->take(4)
-            ->map(fn ($path) => $storageUrl($path))
-            ->values();
-
-        $umkm = ($featuredUmkm ?? collect())->map(fn ($item) => [
-            'icon' => strtoupper(substr($item->nama_produk, 0, 2)),
-            'name' => $item->nama_produk,
-            'category' => $item->jenis_usaha ?: 'UMKM Desa',
-            'owner' => $item->deskripsi ? \Illuminate\Support\Str::limit($item->deskripsi, 70) : ($item->produk_jasa ?: 'Produk dan jasa warga Desa Sambo'),
-            'color' => 'umkm-sage',
-        ]);
-
-        $excerpt = fn (?string $content, int $limit = 150): string => \Illuminate\Support\Str::limit(strip_tags((string) $content), $limit);
-
-        $thumbnailUrl = function ($item) use ($storageUrl): ?string {
-            $path = trim((string) $item->thumbnail_path);
-
-            return $storageUrl($path);
         };
 
         $dateLabel = function ($item): string {
@@ -119,27 +128,60 @@
             </div>
             <a href="{{ route('umkm') }}" class="link-arrow">Jelajahi UMKM &rarr;</a>
         </div>
-
         <div class="mt-7 grid gap-4 sm:mt-9 sm:gap-5 sm:grid-cols-2 xl:grid-cols-3">
             @forelse ($umkm as $item)
-                <article class="overflow-hidden rounded-xl bg-white ring-1 ring-slate-200 transition hover:-translate-y-1 hover:shadow-lg sm:rounded-2xl">
-                    <div class="umkm-cover {{ $item['color'] }}">
-                        <span>{{ $item['icon'] }}</span>
+
+                <article class="overflow-hidden rounded-2xl bg-white ring-1 ring-slate-200 transition hover:-translate-y-1 hover:shadow-lg">
+
+                    <div class="relative h-52 bg-emerald-100">
+                        @if($item['photo'])
+                            <img
+                                src="{{ $item['photo'] }}"
+                                alt="{{ $item['name'] }}"
+                                class="h-full w-full object-cover transition duration-300 hover:scale-105">
+                        @else
+                            <div class="grid h-full place-items-center bg-[linear-gradient(145deg,#ecfdf5_0%,#bbf7d0_46%,#0f766e_100%)]">
+                                <span class="grid h-16 w-16 place-items-center rounded-full bg-white/85 text-2xl font-bold text-emerald-800 shadow">
+                                    {{ $item['icon'] }}
+                                </span>
+                            </div>
+                        @endif
                     </div>
-                    <div class="p-4 sm:p-6">
-                        <p class="text-xs font-bold uppercase tracking-wider text-emerald-700">{{ $item['category'] }}</p>
-                        <h3 class="mt-2 font-display text-lg font-bold text-slate-900 sm:text-xl">{{ $item['name'] }}</h3>
-                        <p class="mt-2 text-sm leading-6 text-slate-500">{{ $item['owner'] }}</p>
-                        <a href="{{ route('umkm') }}" class="mt-4 inline-block text-sm font-bold text-emerald-700 sm:mt-5">Lihat produk &rarr;</a>
+
+                    <div class="p-6">
+                        <p class="text-xs font-bold uppercase tracking-wider text-emerald-700">
+                            {{ $item['category'] }}
+                        </p>
+
+                        <h3 class="mt-2 font-display text-xl font-bold text-slate-900">
+                            {{ $item['name'] }}
+                        </h3>
+
+                        <p class="mt-2 text-sm leading-6 text-slate-500">
+                            {{ $item['owner'] }}
+                        </p>
+
+                        <a href="{{ route('umkm') }}"
+                            class="mt-5 inline-block text-sm font-bold text-emerald-700">
+                            Lihat produk →
+                        </a>
                     </div>
+
                 </article>
+
             @empty
+
                 <article class="rounded-2xl border border-dashed border-slate-300 bg-white p-8 sm:col-span-2 xl:col-span-3">
-                    <p class="font-display text-2xl font-bold text-slate-900">Belum ada data UMKM.</p>
-                    <p class="mt-2 max-w-xl text-sm leading-6 text-slate-500">Data yang ditambahkan melalui admin Produk UMKM akan tampil di bagian ini.</p>
+                    <p class="font-display text-2xl font-bold text-slate-900">
+                        Belum ada data UMKM.
+                    </p>
+                    <p class="mt-2 max-w-xl text-sm leading-6 text-slate-500">
+                        Data yang ditambahkan melalui admin Produk UMKM akan tampil di bagian ini.
+                    </p>
                 </article>
+
             @endforelse
-        </div>
+        </div>    
     </section>
 
     <section class="container-page py-16 lg:py-24">

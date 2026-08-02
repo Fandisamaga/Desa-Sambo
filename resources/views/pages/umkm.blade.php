@@ -59,24 +59,6 @@
 
             return $low ?? $high ?? '-';
         };
-
-        $storageUrl = function (?string $path): ?string {
-            $path = trim((string) $path);
-
-            if ($path === '') {
-                return null;
-            }
-
-            if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://') || str_starts_with($path, '/')) {
-                return $path;
-            }
-
-            $path = preg_replace('#^(?:public/)?storage/#', '', $path);
-
-            return \Illuminate\Support\Facades\Storage::disk('public')->exists($path)
-                ? \Illuminate\Support\Facades\Storage::disk('public')->url($path)
-                : asset('storage/' . $path);
-        };
     @endphp
 
     <section class="bg-white">
@@ -111,7 +93,12 @@
                 @forelse ($produkUmkm as $item)
                     @php
                         $photoPath = trim((string) $item->foto_path);
-                        $photoUrl = $storageUrl($photoPath);
+                        $photoUrl = null;
+                        if ($photoPath !== '') {
+                            $photoUrl = str_starts_with($photoPath, 'http://') || str_starts_with($photoPath, 'https://') || str_starts_with($photoPath, '/')
+                                ? $photoPath
+                                : asset('storage/' . $photoPath);
+                        }
 
                         $digits = preg_replace('/\D+/', '', (string) $item->no_whatsapp);
                         if ($digits !== '' && str_starts_with($digits, '0')) {

@@ -74,7 +74,7 @@
                         <a href="{{ $item['url'] }}" class="rounded-lg px-3 py-2 text-sm font-semibold {{ request()->routeIs($item['route']) ? 'bg-emerald-50 text-emerald-800' : 'text-slate-600 hover:text-emerald-700' }}">{{ $item['label'] }}</a>
                     @endif
                 @endforeach
-                    <a href="{{ route('admin.login') }}" class="rounded-full bg-emerald-700 px-4 py-2 text-sm font-semibold text-white shadow-sm shadow-emerald-900/20 transition hover:bg-emerald-600">Masuk</a>
+                    <a href="{{ url('/admin/login') }}" class="rounded-full bg-emerald-700 px-4 py-2 text-sm font-semibold text-white shadow-sm shadow-emerald-900/20 transition hover:bg-emerald-600">Masuk</a>
                 </nav>
                 <button type="button" class="rounded-lg border border-slate-200 p-2 text-slate-700 sm:rounded-xl sm:p-2.5 lg:hidden" data-sidebar-open aria-label="Buka menu"><span class="block text-xl leading-none">☰</span></button>
             </div>
