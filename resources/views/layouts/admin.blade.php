@@ -44,6 +44,18 @@
                     </a>
                 @endforeach
             </nav>
+
+            <div class="mt-auto border-t border-slate-100 pt-5">
+                <p class="px-3 text-sm font-bold text-slate-800">{{ auth()->user()->name }}</p>
+                <p class="px-3 text-xs text-slate-500">Administrator</p>
+                <div class="mt-4 flex flex-col gap-2 px-3 text-xs font-bold">
+                    <a class="text-emerald-700" href="{{ route('home') }}" target="_blank">Lihat publik &rarr;</a>
+                    <form method="POST" action="{{ route('admin.logout') }}">
+                        @csrf
+                        <button type="submit" class="text-left text-slate-500 hover:text-red-600">Keluar</button>
+                    </form>
+                </div>
+            </div>
         </aside>
 
         <aside class="fixed inset-y-0 left-0 hidden w-72 flex-col border-r border-slate-200 bg-white px-5 py-7 lg:flex">

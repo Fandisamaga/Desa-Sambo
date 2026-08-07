@@ -17,8 +17,11 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         User::updateOrCreate(
-            ['email' => 'kantordesasamo@gmail.com'],
+            ['email' => 'kantordesasambo@gmail.com'],
             ['name' => 'Administrator Desa Sambo', 'password' => Hash::make('Sambo123'), 'is_admin' => true],
-        );      
+        );   
+        $this->call([
+        ProdukUmkmSeeder::class,
+        ]);   
     }
 }
