@@ -20,8 +20,6 @@ class DatabaseSeeder extends Seeder
             ['email' => 'kantordesasambo@gmail.com'],
             ['name' => 'Administrator Desa Sambo', 'password' => Hash::make('Sambo123'), 'is_admin' => true],
         );   
-        $this->call([
-        ProdukUmkmSeeder::class,
-        ]);   
+  
     }
 }
